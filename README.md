@@ -4,7 +4,7 @@ An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
 Copy and import the [theorems.typ](theorems.typ) file to use in your own projects.
 
-Minimal example below; also see [example.typ](example.typ) for a demonstration of more features, and [differential_calculus.typ](differential_calculus.typ) for a practical use case.
+Minimal example below; also see [example.typ](example.typ) ([render](example.pdf)) for a demonstration of more features, and [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) for a practical use case.
 
 ![basic example](basic.png)
 
