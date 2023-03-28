@@ -44,11 +44,11 @@ Minimal example below; also see [example.typ](example.typ) for a demonstration o
   There are infinitely many primes.
 ]
 #proof[
-  Suppose to the contrary that $p_1, p_2, dots p_n$ is a finite enumeration
+  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
   of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
-  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.
-  Since $p_j$ also divides $P$, it must divide the difference $(P + 1) - P =
-  1$, a contradiction.
+  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
+  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
+  contradiction.
 ]
 
 #corollary[There is no largest prime number.]
