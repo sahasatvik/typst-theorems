@@ -1,4 +1,6 @@
-// Create a theorem environment with counter identified by "identifier", attached to environments with identifier "base". Contents are formatted using "fmt", which maps (name, number, body) to content.
+// Create a theorem environment with counter identified by "identifier",
+// attached to environments with identifier "base". Contents are formatted
+// using "fmt", which maps (name, number, body) to content.
 //
 // Supplying base: "heading" attaches the environment to the heading counter.
 // Supplying base: "" makes the environment count up globally, i.e. keeps it unattached.

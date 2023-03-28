@@ -38,6 +38,19 @@
   ]
 ).with(numbering: none)
 
+// Create custom theorem environments by specifying a formatting function to
+// thmenv
+#let notation = thmenv(
+  "notation",
+  "",                         // Counter increments globally, no resets
+  (name, number, body) => [   // Format content
+    #h(1.2em) *Notation #number #name*:
+    #h(0.5em)
+    #body
+    #v(0.5em)
+  ]
+).with(numbering: "I")        // Display numbering using Roman numerals
+
 
 #let project(title: "", authors: (), body) = {
   set page(height: auto)
@@ -84,10 +97,12 @@
 
 #lemma[#lorem(10)]
 
+#notation[#lorem(5)]
 
 == Sub-Heading
 
 #definition[#lorem(16)]
+#notation[#lorem(7)]
 
 #example(name: [#lorem(3)])[#lorem(10)]
 #remark[#lorem(5)]
@@ -106,3 +121,5 @@
 // The base can be overridden
 #example(numbering: "1.1.1.a", base: "corollary")[#lorem(20)]
 #example(numbering: "1.1.1.a", base: "corollary")[#lorem(10)]
+
+#notation[#lorem(5)]
