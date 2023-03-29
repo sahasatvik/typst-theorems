@@ -20,11 +20,11 @@
 //    base: base        defaults to the "base" supplied when creating the
 //                      environment, can be overriden here.
 
-#let thmenv(identifier, base, fmt) = {
+#let thmenv(identifier, base, base_level, fmt) = {
 
   let global_numbering = numbering
 
-  return (body, name: none, numbering: "1.1", base: base) => {
+  return (body, name: none, numbering: "1.1", base: base, base_level: base_level) => {
     let number = none
     if not numbering == none {
       locate(loc => {
@@ -36,11 +36,26 @@
           }
 
           let tc = counters.at(identifier)
-          let bc = counters.at(base)
-          if tc.slice(0, -1) == bc {
-            counters.at(identifier) = (..bc, tc.last() + 1)
+          if base != none {
+            let bc = counters.at(base)
+            
+            if base_level != none {
+              if bc.len() < base_level {
+                bc = bc + (0,) * (base_level - bc.len())
+              } else if bc.len() > base_level{
+                bc = bc.slice(0, base_level)
+              }
+            }
+
+            if tc.slice(0, -1) == bc {
+              counters.at(identifier) = (..bc, tc.last() + 1)
+            } else {
+              counters.at(identifier) = (..bc, 1)
+            }
           } else {
-            counters.at(identifier) = (..bc, 1)
+            // if we have no base counter, just count one level
+            counters.at(identifier) = (tc.last() + 1,)
+            let latest = counters.at(identifier)
           }
 
           let latest = counters.at(identifier)
@@ -98,7 +113,8 @@
   namefmt: x => [(#x)],
   titlefmt: strong,
   bodyfmt: x => x,
-  base: "heading"
+  base: "heading",
+  base_level: none,
 ) = {
   let boxfmt(name, number, body) = {
     if not name == none {
@@ -129,7 +145,7 @@
       )
     )
   }
-  return thmenv(identifier, base, boxfmt)
+  return thmenv(identifier, base, base_level, boxfmt)
 }
 
 
