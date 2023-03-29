@@ -1,3 +1,12 @@
+// Store theorem environment numbering
+
+#let thmcounters = state("thm",
+  (
+    "counters": ("": (), "heading": ()),
+    "latest": ()
+  )
+)
+
 // Create a theorem environment with counter identified by "identifier",
 // attached to environments with identifier "base". Contents are formatted
 // using "fmt", which maps (name, number, body) to content.
@@ -12,13 +21,6 @@
 //                      environment, can be overriden here.
 
 #let thmenv(identifier, base, fmt) = {
-
-  let thmcounters = state("thm",
-    (
-      "counters": ("": (), "heading": ()),
-      "latest": ()
-    )
-  )
 
   let global_numbering = numbering
 
@@ -56,6 +58,22 @@
 
     fmt(name, number, body)
   }
+}
+
+
+// Reference a theorem with a <label> _inside_ it, using #thmref(<label>).
+// Optionally supply a "fmt" function to change the display style.
+
+#let thmref(label, fmt: nums => numbering("1.1", ..nums)) = {
+  locate(loc => {
+    let elements = query(label, loc)
+    assert(elements.len() > 0, message: "Label not found!")
+    assert(elements.len() == 1, message: "Multiple labels found!")
+    let number = thmcounters.at(
+      elements.first().location()
+    ).at("latest")
+    return fmt(number)
+  })
 }
 
 

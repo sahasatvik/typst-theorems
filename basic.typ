@@ -11,7 +11,7 @@
   base: "theorem",
   titlefmt: strong
 )
-#let definition = thmbox("definition", "Definition")
+#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
 
 #let example = thmplain("example", "Example").with(numbering: none)
 #let proof = thmplain(
@@ -30,6 +30,8 @@
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.
+  Corollary #thmref(<cor_largest_prime>) shows that this list is not
+  exhaustive!
 ]
 
 #theorem(name: "Euclid")[
@@ -44,7 +46,7 @@
 ]
 
 #corollary[
-  There is no largest prime number.
+  There is no largest prime number. <cor_largest_prime>
 ]
 #corollary[
   There are infinitely many composite numbers.

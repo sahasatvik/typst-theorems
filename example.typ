@@ -91,7 +91,11 @@
 ]
 
 #corollary[#lorem(4)]
-#corollary[#lorem(8)]
+#corollary[
+  This corollary will be referenced later, in
+  Lemma #thmref(<lemref>).    // Reference future lemma
+  <corref>    // Label this corollary
+]
 
 #example[#lorem(10)]
 
@@ -105,7 +109,7 @@
 #notation[#lorem(7)]
 
 #example(name: [#lorem(3)])[#lorem(10)]
-#remark[#lorem(5)]
+#remark[#lorem(8)]
 
 #theorem[#lorem(6)]
 
@@ -114,10 +118,15 @@
 #proof(numbering: "1.1")[#lorem(5)]
 
 = Heading
-#lemma[#lorem(14)]
+#lemma[
+  #lorem(14)
+  Refer to Corollary #thmref(<corref>). <lemref>
+]
 #remark[#lorem(8)]
 
-#corollary(name: [#lorem(4)])[#lorem(12)]
+#corollary(name: [#lorem(4)])[
+  #lorem(12) <myref>
+]
 // The base can be overridden
 #example(numbering: "1.1.1.a", base: "corollary")[#lorem(20)]
 #example(numbering: "1.1.1.a", base: "corollary")[#lorem(10)]
