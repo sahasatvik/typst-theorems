@@ -185,7 +185,7 @@ You can limit the number of levels of the `base` numbering used as follows.
 #let definition = thmbox(
   "definition",
   "Definition",
-  base_level: 2,          // take first 2 levels from the base
+  base_level: 1,          // take only the first level from the base
   stroke: rgb("#68ff68") + 1pt
 )
 
