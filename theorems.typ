@@ -151,7 +151,7 @@
         width: 100%,
         radius: radius,
         breakable: breakable,
-        [#title#name:#h(0.2em)#body]
+        [#title#name#h(0.1em):#h(0.2em)#body]
       )
     )
   }
