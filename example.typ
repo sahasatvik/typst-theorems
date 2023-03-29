@@ -2,14 +2,17 @@
 
 // Define theorem environments
 
-#let theorem = thmbox(
-  "theorem",            // The Theorem counter is attached to headings
-  "Theorem",
+#let thmlike = thmbox.with(
+  "theorem",
+  base_level: 1,
+)
+
+#let theorem = thmlike(
+  "Theorem",            // The Theorem counter is attached to headings
   fill: rgb("#e8e8f8")
 )
-#let lemma = thmbox(
-  "theorem",            // Lemmas use the same counter as Theorems
-  "Lemma",
+#let lemma = thmlike(
+  "Lemma",            // Lemmas use the same counter as Theorems
   fill: rgb("#efe6ff")
 )
 #let corollary = thmbox(
@@ -42,7 +45,8 @@
 // thmenv
 #let notation = thmenv(
   "notation",
-  "",                         // Counter increments globally, no resets
+  none,                         // Counter increments globally, no resets
+  none,
   (name, number, body) => [   // Format content
     #h(1.2em) *Notation #number #name*:
     #h(0.5em)
@@ -81,8 +85,9 @@
 = Introduction
 
 #lemma(name: "Pythagoras")[
-  In a right angled triangle, $ a^2 + b^2 = c^2. $
-]
+  In a right angled triangle, $ a^2 + b^2 = c^2. $ <thm-pythagoras>
+] 
+The above theorem is #thmref(<thm-pythagoras>)
 #theorem(name: "WLLN")[#lorem(20)]
 #proof[
   #lorem(30)
