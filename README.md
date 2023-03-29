@@ -12,9 +12,12 @@ Copy and import the [theorems.typ](theorems.typ) file to use in your own project
 - Environment numbers can be referenced, via `#thmref(<label>)`.
  Currently, the `<label>` must be placed _inside_ the environment.
 
-## Examples
+## Manual and Examples
+Get acquainted with `typst-theorems` by checking out the minimal example below!
 
-Minimal example below; also see [example.typ](example.typ) ([render](example.pdf)) for a demonstration of more features, and [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) for a practical use case.
+You can read the [manual](manual.pdf) for a full walkthrough of functionality offered by this module; flick through [manual_examples](manual_examples.pdf) and its [typ file](manual_examples.typ) to just see the examples.
+
+The [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) project provides a practical use case. _(Hastily translated from my notes written in LaTeX)_
 
 ![basic example](basic.png)
 
