@@ -77,8 +77,8 @@ Note that `name` is optional. This `theorem` environment will be numbered
 based on its parent `heading` counter, with successive `theorem`s
 automatically updating the final index.
 
-The `<euclid>` label can be used to refer to this Theorem via `thmref`; more
-on this will be explained in @references[Section].
+The `<euclid>` label can be used to refer to this Theorem via `thmref`;
+this will be futher explained in @references[Section].
 
 You can create another environment which uses the same counter, say for
 _Lemmas_, as follows.
@@ -190,7 +190,7 @@ You can limit the number of levels of the `base` numbering used as follows.
 )
 
 #definition(name: "Prime numbers")[
-  A natural number is called a _prime number_ if it is greater than $1$ can
+  A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers.
 ]
 ```
@@ -201,7 +201,7 @@ You can limit the number of levels of the `base` numbering used as follows.
   stroke: rgb("#68ff68") + 1pt
 )
 #definition(name: "Prime numbers")[
-  A natural number is called a _prime number_ if it is greater than $1$ can
+  A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers.
 ]
 
@@ -358,23 +358,32 @@ You can reference future environments too, like Corollary
 == Overriding `base`
 
 ```typst
-#corollary[
-  All primes greater than $2$ are odd. <oddprime>
-]
-#proof(base: "corollary", numbering: "of 1.1")[
-  Trivial.
-]
-```
-#corollary[
-  All primes greater than $2$ are odd. <oddprime>
-]
-#proof(base: "corollary", numbering: "of 1.1")[
-  Trivial.
+#let remark = thmplain("remark", "Remark", base: "heading")
+#remark[
+  There are infinitely many composite numbers.
 ]
 
-This `proof` environment, which would normally be attached to a `theorem`, now
-uses the `corollary` as a base.
-Note that we have supplied a custom `numbering`, forcing it to be shown.
+#corollary[
+  All primes greater than $2$ are odd. <oddprime>
+]
+#remark(base: "corollary")[
+  Two is a _lone prime_.
+]
+```
+
+#let remark = thmplain("remark", "Remark", base: "heading")
+#remark[
+  There are infinitely many composite numbers.
+]
+#corollary[
+  All primes greater than $2$ are odd. <oddprime>
+]
+#remark(base: "corollary")[
+  Two is a _lone prime_.
+]
+
+This `remark` environment, which would normally be attached to the current
+_heading_, now uses the `corollary` as a base.
 
 
 #v(4em)

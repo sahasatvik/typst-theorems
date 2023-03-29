@@ -78,7 +78,7 @@ these has been explained in full detail there.
   stroke: rgb("#68ff68") + 1pt
 )
 #definition(name: "Prime numbers")[
-  A natural number is called a _prime number_ if it is greater than $1$ can
+  A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers.
 ]
 
@@ -145,9 +145,13 @@ You can reference future environments too, like Corollary
 
 == Overriding `base`
 
+#let remark = thmplain("remark", "Remark", base: "heading")
+#remark[
+  There are infinitely many composite numbers.
+]
 #corollary[
   All primes greater than $2$ are odd. <oddprime>
 ]
-#proof(base: "corollary", numbering: "of 1.1")[
-  Trivial.
+#remark(base: "corollary")[
+  Two is a _lone prime_.
 ]
