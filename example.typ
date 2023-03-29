@@ -49,7 +49,7 @@
   none,
   (name, number, body) => [   // Format content
     #h(1.2em) *Notation #number #name*:
-    #h(0.5em)
+    #h(0.2em)
     #body
     #v(0.5em)
   ]

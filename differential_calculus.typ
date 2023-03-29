@@ -29,7 +29,7 @@
   "exercise",
   "Exercise",
   stroke: rgb("#ffaaaa") + 1pt,
-  base: "",             // Unattached: count globally
+  base: none,           // Unattached: count globally
 ).with(numbering: "I")  // Use Roman numerals
 
 // Examples and remarks are not numbered
