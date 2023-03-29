@@ -67,7 +67,7 @@ Minimal example below; also see [example.typ](example.typ) ([render](example.pdf
 ]
 
 #corollary[
-	There is no largest prime number. <cor_largest_prime>
+  There is no largest prime number. <cor_largest_prime>
 ]
 #corollary[
   There are infinitely many composite numbers.
