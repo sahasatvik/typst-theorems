@@ -101,7 +101,7 @@
     assert(elements.len() == 1, message: "Label <" + str(label) + "> found at multiple locations: " + locationreps)
     let target = elements.first().location()
     let number = thmcounters.at(target).at("latest")
-    return fmt(number)
+    return link(target, fmt(number))
   })
 }
 
