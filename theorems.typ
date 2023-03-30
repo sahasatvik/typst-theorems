@@ -96,11 +96,11 @@
 #let thmref(label, fmt: nums => numbering("1.1", ..nums)) = {
   locate(loc => {
     let elements = query(label, loc)
-    assert(elements.len() > 0, message: "Label not found!")
-    assert(elements.len() == 1, message: "Multiple labels found!")
-    let number = thmcounters.at(
-      elements.first().location()
-    ).at("latest")
+    let locationreps = elements.map(x => repr(x.location().position())).join(", ")
+    assert(elements.len() > 0, message: "Label <" + str(label) + "> not found: referenced at " + repr(loc.position()))
+    assert(elements.len() == 1, message: "Label <" + str(label) + "> found at multiple locations: " + locationreps)
+    let target = elements.first().location()
+    let number = thmcounters.at(target).at("latest")
     return fmt(number)
   })
 }
