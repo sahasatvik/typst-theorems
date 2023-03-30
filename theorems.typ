@@ -93,7 +93,22 @@
 // Reference a theorem with a <label> _inside_ it, using #thmref(<label>).
 // Optionally supply a "fmt" function to change the display style.
 
-#let thmref(label, fmt: nums => numbering("1.1", ..nums)) = {
+#let thmref(
+  label,
+  fmt: auto,
+  makelink: true,
+  ..body
+) = {
+  if fmt == auto {
+    fmt = (nums, body) => {
+      if body.pos().len() > 0 {
+        body = body.pos().join(" ")
+        return [#body #numbering("1.1", ..nums)]
+      }
+      return numbering("1.1", ..nums)
+    }
+  }
+
   locate(loc => {
     let elements = query(label, loc)
     let locationreps = elements.map(x => repr(x.location().position())).join(", ")
@@ -101,7 +116,10 @@
     assert(elements.len() == 1, message: "label <" + str(label) + "> occurs multiple times in the document: found at " + locationreps)
     let target = elements.first().location()
     let number = thmcounters.at(target).at("latest")
-    return link(target, fmt(number))
+    if makelink {
+      return link(target, fmt(number, body))
+    }
+    return fmt(number, body)
   })
 }
 

@@ -33,10 +33,10 @@ these has been explained in full detail there.
   "Lemma",
   fill: rgb("#efe6ff")
 )
+
 #lemma[
   If $n$ divides both $x$ and $y$, it also divides $x - y$.
 ]
-
 
 #let corollary = thmbox(
   "corollary",
@@ -77,9 +77,10 @@ these has been explained in full detail there.
   base_level: 1,
   stroke: rgb("#68ff68") + 1pt
 )
+
 #definition(name: "Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
-  cannot be written as the product of two smaller natural numbers.
+  cannot be written as the product of two smaller natural numbers. <prime>
 ]
 
 #definition(name: "Composite numbers")[
@@ -93,6 +94,7 @@ these has been explained in full detail there.
 
 
 == Custom formatting
+
 #let proof = thmplain(
   "proof",
   "Proof",
@@ -113,16 +115,16 @@ these has been explained in full detail there.
 ]
 
 #let notation = thmenv(
-  "notation",
-  none,
-  none,
-  (name, number, body) => [
+  "notation",                 // identifier
+  none,                       // base - do not attach, count globally
+  none,                       // base_level - use the base as-is
+  (name, number, body) => [   // fmt - format content using the environment name, number, and body
     #h(1.2em) *Notation (#number) #name*:
     #h(0.2em)
     #body
     #v(0.5em)
   ]
-).with(numbering: "I")
+).with(numbering: "I")        // use Roman numerals
 
 #notation[
   The variable $p$ is reserved for prime numbers.
@@ -131,27 +133,51 @@ these has been explained in full detail there.
 
 == Labels and references <references>
 
-#let numfmt = (nums) => {
-  let joined = nums.map(str).join(".")
-  return [(#strong(joined))]
+#pad(
+  left: 1.2em,
+  [
+    Recall that there are infinitely many prime numbers via
+    #thmref(<euclid>)[Theorem].
+  ]
+)
+
+#let numfmt = (nums, body) => {
+  if body.pos().len() > 0 {
+    body = body.pos().join(" ")
+    return smallcaps([#body (#strong(numbering("1.1", ..nums)))])
+  }
+  return smallcaps(strong(numbering("1.1", ..nums)))
 }
 
-Recall that there are infinitely many prime numbers via Theorem
-#thmref(<euclid>, fmt: numfmt).
+#pad(
+  left: 1.2em,
+  [
+    You can reference future environments too, like
+    #thmref(<oddprime>, fmt: numfmt)[Corollary].
+  ]
+)
 
-You can reference future environments too, like Corollary
-#thmref(<oddprime>).
+#pad(
+  left: 1.2em,
+  [
+    This reference to #thmref(<prime>, makelink: false)[Definition] is not
+    linked!
+  ]
+)
 
 
 == Overriding `base`
 
 #let remark = thmplain("remark", "Remark", base: "heading")
+
 #remark[
   There are infinitely many composite numbers.
 ]
+
 #corollary[
   All primes greater than $2$ are odd. <oddprime>
 ]
+
 #remark(base: "corollary")[
   Two is a _lone prime_.
 ]

@@ -30,7 +30,7 @@
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.
-  Corollary #thmref(<cor_largest_prime>) shows that this list is not
+  #thmref(<cor_largest_prime>)[Corollary] shows that this list is not
   exhaustive!
 ]
 
