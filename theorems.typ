@@ -7,23 +7,6 @@
   )
 )
 
-// Create a theorem environment with counter identified by "identifier",
-// attached to environments with identifier "base". Contents are formatted
-// using "fmt", which maps (name, number, body) to content.
-//
-// Supplying base: "heading" attaches the environment to the heading counter.
-// Supplying base: none makes the environment count up globally, i.e. keeps it unattached.
-//
-// A theorem environment is a map (body, name:, numbering:, base:) to content.
-//    name: none        is intended to be shown in the title
-//    numbering: "1.1"  indicates the numbering style, can be "none"
-//    base: base        defaults to the "base" supplied when creating the
-//                      environment, can be overridden here.
-//    base_level: base_level
-//                      specifies the number of levels of numbering before
-//                      the environment count
-//                      defaults to the "base_level" supplied when creating
-//                      the environment, can be overridden here.
 
 #let thmenv(identifier, base, base_level, fmt) = {
 
@@ -90,30 +73,36 @@
 }
 
 
-// Reference a theorem with a <label> _inside_ it, using #thmref(<label>).
-// Optionally supply a "fmt" function to change the display style.
+#let thmref(
+  label,
+  fmt: auto,
+  makelink: true,
+  ..body
+) = {
+  if fmt == auto {
+    fmt = (nums, body) => {
+      if body.pos().len() > 0 {
+        body = body.pos().join(" ")
+        return [#body #numbering("1.1", ..nums)]
+      }
+      return numbering("1.1", ..nums)
+    }
+  }
 
-#let thmref(label, fmt: nums => numbering("1.1", ..nums)) = {
   locate(loc => {
     let elements = query(label, loc)
-    assert(elements.len() > 0, message: "Label not found!")
-    assert(elements.len() == 1, message: "Multiple labels found!")
-    let number = thmcounters.at(
-      elements.first().location()
-    ).at("latest")
-    return fmt(number)
+    let locationreps = elements.map(x => repr(x.location().position())).join(", ")
+    assert(elements.len() > 0, message: "label <" + str(label) + "> does not exist in the document: referenced at " + repr(loc.position()))
+    assert(elements.len() == 1, message: "label <" + str(label) + "> occurs multiple times in the document: found at " + locationreps)
+    let target = elements.first().location()
+    let number = thmcounters.at(target).at("latest")
+    if makelink {
+      return link(target, fmt(number, body))
+    }
+    return fmt(number, body)
   })
 }
 
-
-// Creates a box-like theorem environment with parameters "identifier" and "base" (defaulted to "heading").
-//    head          indicates the name of the environment appearing in the title
-//    namefmt:      formatting to apply to the "name", defaults to wrapping in parentheses
-//    titlefmt:     formatting to apply to the "title" (head + number),  defaults to bold
-//    bodyfmt:      formatting to apply to the body, defaults to identity
-//    padding:      padding around box
-//    fill, stroke, inset, radius, breakable:
-//                  parameters of the box
 
 #let thmbox(
   identifier,
@@ -158,9 +147,6 @@
   return thmenv(identifier, base, base_level, boxfmt)
 }
 
-
-// Plainer defaults on thmbox with no padding, smaller inset, and emphasized
-// title in place of bold.
 
 #let thmplain = thmbox.with(
   padding: (top: 0em, bottom: 0em),

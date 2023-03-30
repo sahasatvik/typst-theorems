@@ -131,7 +131,7 @@ _Corollaries_ can be created as follows.
 
 Note that we have provided a `numbering` string; this can be any valid
 numbering pattern as described in the
-#link("https://typst.app/docs/reference/meta/numbering/")[numbering]
+#linkb("https://typst.app/docs/reference/meta/numbering/")[numbering]
 documentation.
 
 
@@ -191,7 +191,7 @@ You can limit the number of levels of the `base` numbering used as follows.
 
 #definition(name: "Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
-  cannot be written as the product of two smaller natural numbers.
+  cannot be written as the product of two smaller natural numbers. <prime>
 ]
 ```
 #let definition = thmbox(
@@ -202,7 +202,7 @@ You can limit the number of levels of the `base` numbering used as follows.
 )
 #definition(name: "Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
-  cannot be written as the product of two smaller natural numbers.
+  cannot be written as the product of two smaller natural numbers. <prime>
 ]
 
 Note that this environment is _not_ numbered 3.2.1!
@@ -318,39 +318,58 @@ You can place a `<label>` _inside_ a theorem environment to reference it later
 via `thmref`.
 
 ```typst
-#let numfmt = (nums) => {
-  let joined = nums.map(str).join(".")
-  return [(#strong(joined))]
-}
-
-Recall that there are infinitely many prime numbers via Theorem
-#thmref(<euclid>).
+Recall that there are infinitely many prime numbers via
+#thmref(<euclid>)[Theorem].
 ```
-#let numfmt = (nums) => {
-  let joined = nums.map(str).join(".")
-  return [(#strong(joined))]
-}
 #pad(
   left: 1.2em,
   [
-    Recall that there are infinitely many prime numbers via Theorem
-    #thmref(<euclid>, fmt: numfmt).
+    Recall that there are infinitely many prime numbers via
+    #thmref(<euclid>)[Theorem].
   ]
 )
 
 The optional `fmt` argument can be used to convert the counter value (an array
-of integers) into content.
+of integers) and the optional body text into content.
 
 ```typst
-You can reference future environments too, like Corollary
-#thmref(<oddprime>).
-```
+#let numfmt = (nums, body) => {
+  if body.pos().len() > 0 {
+    body = body.pos().join(" ")
+    return smallcaps([#body (#strong(numbering("1.1", ..nums)))])
+  }
+  return smallcaps(strong(numbering("1.1", ..nums)))
+}
 
+You can reference future environments too, like
+#thmref(<oddprime>, fmt: numfmt)[Corollary].
+```
+#let numfmt = (nums, body) => {
+  if body.pos().len() > 0 {
+    body = body.pos().join(" ")
+    return smallcaps([#body (#strong(numbering("1.1", ..nums)))])
+  }
+  return smallcaps(strong(numbering("1.1", ..nums)))
+}
 #pad(
   left: 1.2em,
   [
-    You can reference future environments too, like Corollary
-    #thmref(<oddprime>).
+    You can reference future environments too, like
+    #thmref(<oddprime>, fmt: numfmt)[Corollary].
+  ]
+)
+
+Note that all such references are links to the the label location. The
+`makelink` argument lets you disable this behaviour.
+```typst
+This reference to #thmref(<prime>, makelink: false)[Definition] is not
+linked!
+```
+#pad(
+  left: 1.2em,
+  [
+    This reference to #thmref(<prime>, makelink: false)[Definition] is not
+    linked!
   ]
 )
 
@@ -419,14 +438,19 @@ A `<label>` placed within an environment can be referenced using `thmref`.
 ```typst
 #let thmref(
   label,                  // label
-  fmt:  nums => numbering("1.1", ..nums)
-                          // formatting function, of the form
-                          // [array of integers] -> content
+  fmt: auto,              // formatting function, of the form
+                          // (number array, body arguments) -> content
+  makelink: true,         // create link to label
+  ..body                  // body - typically prepended to number
 ) = { ... }
 ```
 
 Note that the `<label>` _must_ be attached to something _inside_ the
 environment.
+
+*Caution*: Links created by `thmref` will be styled according to `#show link:`
+rules, not `#show ref:` rules.
+
 
 == `thmbox` and `thmplain`
 
@@ -466,7 +490,6 @@ defaults.
 
 = Acknowledgements
 
-Thanks to #link("https://github.com/MJHutchinson")[MJHutchinson] for
-suggesting and implementing the `base_level` and `base: none` features,
-and to the awesome devs of #link("https://typst.app/")[typst.app] for their
-support.
+Thanks to #linkb("https://github.com/MJHutchinson")[MJHutchinson] for
+suggesting and implementing the `base_level` and `base: none` features, and to
+the awesome devs of #linkb("https://typst.app/")[typst.app] for their support.

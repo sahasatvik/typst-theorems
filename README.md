@@ -9,7 +9,7 @@ Copy and import the [theorems.typ](theorems.typ) file to use in your own project
 - Environments can share the same counter, via same `identifier`s.
 - Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
 - The depth of a counter can be manually set, via `base_level`.
-- Environment numbers can be referenced, via `#thmref(<label>)`.
+- Environment numbers can be referenced, via `#thmref(<label>)[]`.
  Currently, the `<label>` must be placed _inside_ the environment.
 
 ## Manual and Examples
@@ -56,7 +56,7 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.
-  Corollary #thmref(<cor_largest_prime>) shows that this list is not
+  #thmref(<cor_largest_prime>)[Corollary] shows that this list is not
   exhaustive!
 ]
 
