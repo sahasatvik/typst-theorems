@@ -97,8 +97,8 @@
   locate(loc => {
     let elements = query(label, loc)
     let locationreps = elements.map(x => repr(x.location().position())).join(", ")
-    assert(elements.len() > 0, message: "Label <" + str(label) + "> not found: referenced at " + repr(loc.position()))
-    assert(elements.len() == 1, message: "Label <" + str(label) + "> found at multiple locations: " + locationreps)
+    assert(elements.len() > 0, message: "label <" + str(label) + "> does not exist in the document: referenced at " + repr(loc.position()))
+    assert(elements.len() == 1, message: "label <" + str(label) + "> occurs multiple times in the document: found at " + locationreps)
     let target = elements.first().location()
     let number = thmcounters.at(target).at("latest")
     return link(target, fmt(number))
