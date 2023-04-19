@@ -118,6 +118,7 @@
   bodyfmt: x => x,
   base: "heading",
   base_level: none,
+  separator: [#h(0.1em):#h(0.2em)],
 ) = {
   let boxfmt(name, number, body) = {
     if not name == none {
@@ -140,7 +141,7 @@
         width: 100%,
         radius: radius,
         breakable: breakable,
-        [#title#name#h(0.1em):#h(0.2em)#body]
+        [#title#name#separator#body]
       )
     )
   }
