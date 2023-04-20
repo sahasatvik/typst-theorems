@@ -116,6 +116,7 @@
   namefmt: x => [(#x)],
   titlefmt: strong,
   bodyfmt: x => x,
+  separator: [#h(0.1em):#h(0.2em)],
   base: "heading",
   base_level: none,
 ) = {
@@ -140,7 +141,7 @@
         width: 100%,
         radius: radius,
         breakable: breakable,
-        [#title#name#h(0.1em):#h(0.2em)#body]
+        [#title#name#separator#body]
       )
     )
   }
