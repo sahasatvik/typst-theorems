@@ -469,6 +469,8 @@ The `thmbox` wraps `thmenv`, supplying a box-like `fmt` function.
   namefmt: x => [(#x)],   // formatting for name
   titlefmt: strong,       // formatting for title (head + number)
   bodyfmt: x => x,        // formatting for body
+  separator: [#h(0.1em):#h(0.2em)],
+                          // separator inserted between name and body
   base: "heading",        // base - defaults to using headings
   base_level: none,       // base_level - defaults to using base as-is
 ) = { ... }
@@ -491,5 +493,7 @@ defaults.
 = Acknowledgements
 
 Thanks to #linkb("https://github.com/MJHutchinson")[MJHutchinson] for
-suggesting and implementing the `base_level` and `base: none` features, and to
-the awesome devs of #linkb("https://typst.app/")[typst.app] for their support.
+suggesting and implementing the `base_level` and `base: none` features,
+#linkb("https://github.com/rmolinari")[rmolinari] for suggesting and
+implementing the `separator: ...` feature, and to the awesome devs of
+#linkb("https://typst.app/")[typst.app] for their support.
