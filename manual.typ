@@ -1,5 +1,6 @@
 #import "manual_template.typ": *
 #import "theorems.typ": *
+#show: thmrules
 
 #show: project.with(
   title: "typst-theorems",
@@ -35,11 +36,13 @@ counters for this purpose. Environments can
 Import all functions provided by `typst-theorems` using
 ```typst
 #import "theorems.typ": *
+#show: thmrules
 ```
+The second line is crucial for displaying `thmenv`s and references correctly!
 
-The core of this module consists of `thmenv` and `thmref`. The functions
-`thmbox` and `thmplain` provide some simple defaults for the appearance of
-`thmenv`s.
+The core of this module consists of `thmenv`.
+The functions `thmbox` and `thmplain` provide some simple defaults for the
+appearance of `thmenv`s.
 
 
 = Feature demonstration
@@ -63,22 +66,22 @@ Create box-like _theorem environments_ using `thmbox`, a wrapper around
 Such definitions are convenient to place in the preamble or a template; use
 the environment in your document via
 ```typst
-#theorem(name: "Euclid")[
-  There are infinitely many primes. <euclid>
-]
+#theorem("Euclid")[
+  There are infinitely many primes.
+] <euclid>
 ```
 
 This produces the following.
-#theorem(name: "Euclid")[
-  There are infinitely many primes. <euclid>
-]
+#theorem("Euclid")[
+  There are infinitely many primes.
+] <euclid>
 
-Note that `name` is optional. This `theorem` environment will be numbered
+Note that the `name` is optional. This `theorem` environment will be numbered
 based on its parent `heading` counter, with successive `theorem`s
 automatically updating the final index.
 
-The `<euclid>` label can be used to refer to this Theorem via `thmref`;
-this will be futher explained in @references[Section].
+The `<euclid>` label can be used to refer to this Theorem via the reference
+`@euclid`. Go to @references to read more.
 
 You can create another environment which uses the same counter, say for
 _Lemmas_, as follows.
@@ -131,7 +134,7 @@ _Corollaries_ can be created as follows.
 
 Note that we have provided a `numbering` string; this can be any valid
 numbering pattern as described in the
-#linkb("https://typst.app/docs/reference/meta/numbering/")[numbering]
+#link("https://typst.app/docs/reference/meta/numbering/")[numbering]
 documentation.
 
 
@@ -189,7 +192,7 @@ You can limit the number of levels of the `base` numbering used as follows.
   stroke: rgb("#68ff68") + 1pt
 )
 
-#definition(name: "Prime numbers")[
+#definition("Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers. <prime>
 ]
@@ -200,7 +203,7 @@ You can limit the number of levels of the `base` numbering used as follows.
   base_level: 1,
   stroke: rgb("#68ff68") + 1pt
 )
-#definition(name: "Prime numbers")[
+#definition("Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers. <prime>
 ]
@@ -208,12 +211,12 @@ You can limit the number of levels of the `base` numbering used as follows.
 Note that this environment is _not_ numbered 3.2.1!
 
 ```typst
-#definition(name: "Composite numbers")[
+#definition("Composite numbers")[
   A natural number is called a _composite number_ if it is greater than $1$
   and not prime.
 ]
 ```
-#definition(name: "Composite numbers")[
+#definition("Composite numbers")[
   A natural number is called a _composite number_ if it is greater than $1$
   and not prime.
 ]
@@ -280,6 +283,7 @@ You can go even further and use the `thmenv` function directly. It accepts an
 ```typst
 #let notation = thmenv(
   "notation",                 // identifier
+  "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body) => [   // fmt - format content using the environment
@@ -297,6 +301,7 @@ You can go even further and use the `thmenv` function directly. It accepts an
 ```
 #let notation = thmenv(
   "notation",                 // identifier
+  "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body) => [   // fmt - format content using the environment name, number, and body
@@ -314,64 +319,33 @@ You can go even further and use the `thmenv` function directly. It accepts an
 
 == Labels and references <references>
 
-You can place a `<label>` _inside_ a theorem environment to reference it later
-via `thmref`.
+You can place a `<label>` outside a theorem environment, and reference it
+later via `@` references! For example, go back to @euclid.
 
 ```typst
-Recall that there are infinitely many prime numbers via
-#thmref(<euclid>)[Theorem].
+Recall that there are infinitely many prime numbers via @euclid.
 ```
 #pad(
   left: 1.2em,
   [
-    Recall that there are infinitely many prime numbers via
-    #thmref(<euclid>)[Theorem].
+    Recall that there are infinitely many prime numbers via @euclid.
   ]
 )
 
-The optional `fmt` argument can be used to convert the counter value (an array
-of integers) and the optional body text into content.
 
 ```typst
-#let numfmt = (nums, body) => {
-  if body.pos().len() > 0 {
-    body = body.pos().join(" ")
-    return smallcaps([#body (#strong(numbering("1.1", ..nums)))])
-  }
-  return smallcaps(strong(numbering("1.1", ..nums)))
-}
-
-You can reference future environments too, like
-#thmref(<oddprime>, fmt: numfmt)[Corollary].
-```
-#let numfmt = (nums, body) => {
-  if body.pos().len() > 0 {
-    body = body.pos().join(" ")
-    return smallcaps([#body (#strong(numbering("1.1", ..nums)))])
-  }
-  return smallcaps(strong(numbering("1.1", ..nums)))
-}
-#pad(
-  left: 1.2em,
-  [
-    You can reference future environments too, like
-    #thmref(<oddprime>, fmt: numfmt)[Corollary].
-  ]
-)
-
-Note that all such references are links to the the label location. The
-`makelink` argument lets you disable this behaviour.
-```typst
-This reference to #thmref(<prime>, makelink: false)[Definition] is not
-linked!
+You can reference future environments too, like @oddprime[Cor.].
 ```
 #pad(
   left: 1.2em,
   [
-    This reference to #thmref(<prime>, makelink: false)[Definition] is not
-    linked!
+    You can reference future environments too, like @oddprime[Cor.].
   ]
 )
+
+*Caution*: Links created by references to `thmenv`s will be styled according
+to `#show link:` rules.
+
 
 
 == Overriding `base`
@@ -383,8 +357,8 @@ linked!
 ]
 
 #corollary[
-  All primes greater than $2$ are odd. <oddprime>
-]
+  All primes greater than $2$ are odd.
+] <oddprime>
 #remark(base: "corollary")[
   Two is a _lone prime_.
 ]
@@ -395,8 +369,8 @@ linked!
   There are infinitely many composite numbers.
 ]
 #corollary[
-  All primes greater than $2$ are odd. <oddprime>
-]
+  All primes greater than $2$ are odd.
+] <oddprime>
 #remark(base: "corollary")[
   Two is a _lone prime_.
 ]
@@ -414,6 +388,7 @@ The `thmenv` function produces a _theorem environment_.
 ```typst
 #let thmenv(
   identifier,             // environment counter name
+  supplement,             // supplement used in references
   base,                   // base counter name, can be "heading" or none
   base_level,             // number of base number levels to use
   fmt                     // formatting function of the form
@@ -424,32 +399,16 @@ The `thmenv` function produces a _theorem environment_.
 A _theorem environment_ is itself a map of the following form.
 ```typst
 (
+  ..name,                 // name, often used in the title
   body,                   // body content
-  name: "",               // name, often used in the title
   numbering: "1.1",       // numbering style, can be a function
+  refnumbering: auto,     // numbering style used in references,
+                          // defaults to "numbering"
   base: base,             // base counter name override
   base_level: base_level  // base_level override
 ) -> content
 ```
 
-== `thmref`
-
-A `<label>` placed within an environment can be referenced using `thmref`.
-```typst
-#let thmref(
-  label,                  // label
-  fmt: auto,              // formatting function, of the form
-                          // (number array, body arguments) -> content
-  makelink: true,         // create link to label
-  ..body                  // body - typically prepended to number
-) = { ... }
-```
-
-Note that the `<label>` _must_ be attached to something _inside_ the
-environment.
-
-*Caution*: Links created by `thmref` will be styled according to `#show link:`
-rules, not `#show ref:` rules.
 
 
 == `thmbox` and `thmplain`
@@ -459,6 +418,7 @@ The `thmbox` wraps `thmenv`, supplying a box-like `fmt` function.
 #let thmbox(
   identifier,             // identifier
   head,                   // head - common name, used in the title
+  supplement: auto,       // supplement for references, defaults to "head"
   fill: none,             // box fill
   stroke: none,           // box stroke
   inset: 1.2em,           // box inset
@@ -492,8 +452,8 @@ defaults.
 
 = Acknowledgements
 
-Thanks to #linkb("https://github.com/MJHutchinson")[MJHutchinson] for
+Thanks to #link("https://github.com/MJHutchinson")[MJHutchinson] for
 suggesting and implementing the `base_level` and `base: none` features,
-#linkb("https://github.com/rmolinari")[rmolinari] for suggesting and
+#link("https://github.com/rmolinari")[rmolinari] for suggesting and
 implementing the `separator: ...` feature, and to the awesome devs of
-#linkb("https://typst.app/")[typst.app] for their support.
+#link("https://typst.app/")[typst.app] for their support.

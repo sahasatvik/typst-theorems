@@ -9,8 +9,7 @@ Copy and import the [theorems.typ](theorems.typ) file to use in your own project
 - Environments can share the same counter, via same `identifier`s.
 - Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
 - The depth of a counter can be manually set, via `base_level`.
-- Environment numbers can be referenced, via `#thmref(<label>)[]`.
- Currently, the `<label>` must be placed _inside_ the environment.
+- Environments can be referenced, via `@references`.
 
 ## Manual and Examples
 Get acquainted with `typst-theorems` by checking out the minimal example below!
@@ -24,6 +23,7 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ### Preamble
 ```
 #import "theorems.typ": *
+#show: thmrules
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
 #set heading(numbering: "1.1.")
@@ -56,11 +56,10 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.
-  #thmref(<cor_largest_prime>)[Corollary] shows that this list is not
-  exhaustive!
+  @cor_largest_prime shows that this list is not exhaustive!
 ]
 
-#theorem(name: "Euclid")[
+#theorem("Euclid")[
   There are infinitely many primes.
 ]
 #proof[
@@ -72,8 +71,8 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ]
 
 #corollary[
-  There is no largest prime number. <cor_largest_prime>
-]
+  There is no largest prime number.
+] <cor_largest_prime>
 #corollary[
   There are infinitely many composite numbers.
 ]

@@ -1,4 +1,5 @@
 #import "theorems.typ": *
+#show: thmrules
 
 // Define theorem environments
 
@@ -195,7 +196,7 @@
         $
     ]
 ]
-#theorem(name: "Chain Rule")[
+#theorem("Chain Rule")[
     Let $f: RR^n -> RR^m$, $g: RR^m -> RR^k$ where $f$ is differentiable at $a
     in  RR^n$ and $g$ is differentiable at $f(a)  in  RR^m$.  Then, $g compose
     f$ is differentiable, with $D(g compose  f)(a) = Dg(f(a))  compose Df(a)$.
@@ -564,7 +565,7 @@ $
 ]
 
 = Inverse and implicit function theorems
-#theorem(name: [Inverse function theorem])[
+#theorem([Inverse function theorem])[
     Let $f: RR^n -> RR^n$ be continuously differentiable on a neighbourhood
     of $a  in  RR^n$, and let $"det" (Df(a))  !=  0$. Then, there exist neighbourhoods
     $U$ of $a$ and $W$ of $f(a)$ such that the restriction $f: U -> W$ is
@@ -615,7 +616,7 @@ $
 ]
 ]
 
-#theorem(name: [Implicit function theorem])[
+#theorem([Implicit function theorem])[
     Let $f: RR^n times RR^m -> RR^m$ be continuously differentiable in an open
     set containing $(a, b)$, with $f(a, b) = 0$. Let $"det" (diff  f^j \/ diff
     x_(n + k) (a, b))  !=  0$. Then, there exists an open set $U  subset RR^n$
@@ -649,7 +650,7 @@ $
 
 = Taylor's theorem
 
-#theorem(name: "Clairaut")[
+#theorem("Clairaut")[
     Let $f: RR^n -> RR$ have continuous second order partial derivatives.
     Then, $ 
           frac(diff ^2 f, diff  x_i diff  x_j)   = frac(diff ^2
@@ -657,7 +658,7 @@ $
     $
 ]
 
-#theorem(name: "Taylor")[
+#theorem("Taylor")[
     Let $f: RR^2 -> RR$ have continuous second order partial derivatives,
     and let $(x_0, y_0)  in  RR^2$. Then, there exists $ epsilon  > 0$ such that
     for all $norm((x - x_0, y - y_0))  <  epsilon$,

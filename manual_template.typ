@@ -1,13 +1,13 @@
-#let linkb = (..it) => underline(text(fill: blue, link(..it)))
-
 #let project(title: "", authors: (), url: "", body) = {
   set page(paper: "a4", numbering: "1", number-align: center)
   set document(author: authors, title: title)
   set text(font: "Linux Libertine", lang: "en")
   set heading(numbering: "1.1.")
-  show heading: it => pad(bottom: 0.5em, it)
   set par(justify: true)
+  set list(marker: ([•], [--]))
+  show heading: it => pad(bottom: 0.5em, it)
   show raw.where(block: true): it => pad(left: 4em, it)
+  show link: it => underline(text(fill: blue, it))
 
 
 
@@ -24,7 +24,7 @@
       gutter: 1em,
       ..authors.map(author => align(center)[
         #author \
-        #linkb(url)
+        #link(url)
       ]),
     ),
   )

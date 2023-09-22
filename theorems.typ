@@ -8,21 +8,31 @@
 )
 
 
-#let thmenv(identifier, base, base_level, fmt) = {
+#let thmenv(identifier, supplement, base, base_level, fmt) = {
 
   let global_numbering = numbering
 
   return (
+    ..name,
     body,
-    name: none,
     numbering: "1.1",
+    refnumbering: auto,
     base: base,
     base_level: base_level
   ) => {
+    if name != none and name.pos().len() > 0 {
+      name = name.pos().first()
+    } else {
+      name = none
+    }
+    if refnumbering == auto {
+      refnumbering = numbering
+    }
     let number = none
+    let result = none
     if not numbering == none {
-      locate(loc => {
-        thmcounters.update(thmpair => {
+      result = locate(loc => {
+        return thmcounters.update(thmpair => {
           let counters = thmpair.at("counters")
           // Manually update heading counter
           counters.at("heading") = counter(heading).at(loc)
@@ -67,46 +77,24 @@
         return global_numbering(numbering, ..x.at("latest"))
       })
     }
-
-    fmt(name, number, body)
+    figure(
+      result +  // hacky!
+      align(left, fmt(name, number, body)) +
+      figure(none, supplement: none, numbering: none, kind: "thmenv-counter", gap: 0em),  // even more hacky!
+      kind: "thmenv",
+      outlined: false,
+      caption: name,
+      supplement: supplement,
+      numbering: refnumbering,
+    )
   }
-}
-
-
-#let thmref(
-  label,
-  fmt: auto,
-  makelink: true,
-  ..body
-) = {
-  if fmt == auto {
-    fmt = (nums, body) => {
-      if body.pos().len() > 0 {
-        body = body.pos().join(" ")
-        return [#body #numbering("1.1", ..nums)]
-      }
-      return numbering("1.1", ..nums)
-    }
-  }
-
-  locate(loc => {
-    let elements = query(label, loc)
-    let locationreps = elements.map(x => repr(x.location().position())).join(", ")
-    assert(elements.len() > 0, message: "label <" + str(label) + "> does not exist in the document: referenced at " + repr(loc.position()))
-    assert(elements.len() == 1, message: "label <" + str(label) + "> occurs multiple times in the document: found at " + locationreps)
-    let target = elements.first().location()
-    let number = thmcounters.at(target).at("latest")
-    if makelink {
-      return link(target, fmt(number, body))
-    }
-    return fmt(number, body)
-  })
 }
 
 
 #let thmbox(
   identifier,
   head,
+  supplement: auto,
   fill: none,
   stroke: none,
   inset: 1.2em,
@@ -120,6 +108,9 @@
   base: "heading",
   base_level: none,
 ) = {
+  if supplement == auto {
+    supplement = head
+  }
   let boxfmt(name, number, body) = {
     if not name == none {
       name = [ #namefmt(name)]
@@ -145,7 +136,7 @@
       )
     )
   }
-  return thmenv(identifier, base, base_level, boxfmt)
+  return thmenv(identifier, supplement, base, base_level, boxfmt)
 }
 
 
@@ -157,3 +148,34 @@
   titlefmt: emph,
 )
 
+
+
+#let thmrules(doc) = {
+  show figure.where(kind: "thmenv"): it => it.body
+  show figure.where(kind: "thmenv-counter"): it => it.body
+
+  show ref: it => {
+    if it.element == none {
+      return it
+    }
+    if it.element.func() != figure {
+      return it
+    }
+    if it.element.kind != "thmenv" {
+      return it
+    }
+
+    let supplement = it.element.supplement
+    if it.citation.supplement != none {
+      supplement = it.citation.supplement
+    }
+
+    let loc = it.element.location()
+    let thms = query(figure.where(kind: "thmenv-counter").after(loc), loc)
+    let number = thmcounters.at(thms.first().location()).at("latest")
+    return link(it.target, [#supplement
+      #numbering(it.element.numbering, ..number)])
+  }
+
+  doc
+}

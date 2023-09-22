@@ -1,5 +1,6 @@
 #import "manual_template.typ": *
 #import "theorems.typ": *
+#show: thmrules
 
 #show: project.with(
   title: "typst-theorems",
@@ -24,9 +25,9 @@ these has been explained in full detail there.
   fill: rgb("#e8e8f8")
 )
 
-#theorem(name: "Euclid")[
-  There are infinitely many primes. <euclid>
-]
+#theorem("Euclid")[
+  There are infinitely many primes.
+] <euclid>
 
 #let lemma = thmbox(
   "theorem",
@@ -78,12 +79,12 @@ these has been explained in full detail there.
   stroke: rgb("#68ff68") + 1pt
 )
 
-#definition(name: "Prime numbers")[
+#definition("Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers. <prime>
 ]
 
-#definition(name: "Composite numbers")[
+#definition("Composite numbers")[
   A natural number is called a _composite number_ if it is greater than $1$
   and not prime.
 ]
@@ -116,6 +117,7 @@ these has been explained in full detail there.
 
 #let notation = thmenv(
   "notation",                 // identifier
+  "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body) => [   // fmt - format content using the environment name, number, and body
@@ -136,32 +138,14 @@ these has been explained in full detail there.
 #pad(
   left: 1.2em,
   [
-    Recall that there are infinitely many prime numbers via
-    #thmref(<euclid>)[Theorem].
-  ]
-)
-
-#let numfmt = (nums, body) => {
-  if body.pos().len() > 0 {
-    body = body.pos().join(" ")
-    return smallcaps([#body (#strong(numbering("1.1", ..nums)))])
-  }
-  return smallcaps(strong(numbering("1.1", ..nums)))
-}
-
-#pad(
-  left: 1.2em,
-  [
-    You can reference future environments too, like
-    #thmref(<oddprime>, fmt: numfmt)[Corollary].
+    Recall that there are infinitely many prime numbers via @euclid.
   ]
 )
 
 #pad(
   left: 1.2em,
   [
-    This reference to #thmref(<prime>, makelink: false)[Definition] is not
-    linked!
+    You can reference future environments too, like @oddprime[Cor.].
   ]
 )
 
@@ -175,8 +159,8 @@ these has been explained in full detail there.
 ]
 
 #corollary[
-  All primes greater than $2$ are odd. <oddprime>
-]
+  All primes greater than $2$ are odd.
+] <oddprime>
 
 #remark(base: "corollary")[
   Two is a _lone prime_.

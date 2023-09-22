@@ -1,4 +1,5 @@
 #import "theorems.typ": *
+#show: thmrules
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
 #set text(font: "Linux Libertine", lang: "en")
@@ -30,11 +31,10 @@
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.
-  #thmref(<cor_largest_prime>)[Corollary] shows that this list is not
-  exhaustive!
+  @cor_largest_prime shows that this list is not exhaustive!
 ]
 
-#theorem(name: "Euclid")[
+#theorem("Euclid")[
   There are infinitely many primes.
 ]
 #proof[
@@ -46,8 +46,8 @@
 ]
 
 #corollary[
-  There is no largest prime number. <cor_largest_prime>
-]
+  There is no largest prime number.
+] <cor_largest_prime>
 #corollary[
   There are infinitely many composite numbers.
 ]
