@@ -21,7 +21,7 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ![basic example](basic.png)
 
 ### Preamble
-```
+```typst
 #import "theorems.typ": *
 #show: thmrules
 
@@ -47,7 +47,7 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ```
 
 ### Document
-```
+```typst
 = Prime numbers
 
 #definition[
