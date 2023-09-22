@@ -13,24 +13,26 @@
   let global_numbering = numbering
 
   return (
-    ..name,
+    ..args,
     body,
+    number: auto,
     numbering: "1.1",
     refnumbering: auto,
     base: base,
     base_level: base_level
   ) => {
-    if name != none and name.pos().len() > 0 {
-      name = name.pos().first()
-    } else {
-      name = none
+    let name = none
+    if args != none and args.pos().len() > 0 {
+      name = args.pos().first()
     }
     if refnumbering == auto {
       refnumbering = numbering
     }
-    let number = none
     let result = none
-    if not numbering == none {
+    if number == auto and numbering == none {
+      number = []
+    }
+    if number == auto and numbering != none {
       result = locate(loc => {
         return thmcounters.update(thmpair => {
           let counters = thmpair.at("counters")
@@ -79,7 +81,7 @@
     }
     figure(
       result +  // hacky!
-      align(left, fmt(name, number, body)) +
+      align(left, fmt(name, number, body, ..args.named())) +
       figure(none, supplement: none, numbering: none, kind: "thmenv-counter", gap: 0em),  // even more hacky!
       kind: "thmenv",
       outlined: false,
@@ -111,13 +113,15 @@
   if supplement == auto {
     supplement = head
   }
-  let boxfmt(name, number, body) = {
+  let boxfmt(name, number, body, title: auto) = {
     if not name == none {
       name = [ #namefmt(name)]
     } else {
       name = []
     }
-    let title = head
+    if title == auto {
+      title = head
+    }
     if not number == none {
       title += " " + number
     }

@@ -180,6 +180,18 @@ sets some plainer defaults. You can also write
 
 Note that the last _Lemma_ is _not_ numbered 3.1.2!
 
+You can also override the automatic numbering as follows.
+```typst
+#lemma(number: "42")[
+  The square of any natural number cannot be two more than a multiple of 4.
+]
+```
+#lemma(number: "42")[
+  The square of any natural number cannot be two more than a multiple of 4.
+]
+
+Note that this does _not_ affect the counters either!
+
 
 == Limiting depth
 
@@ -286,9 +298,10 @@ You can go even further and use the `thmenv` function directly. It accepts an
   "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
-  (name, number, body) => [   // fmt - format content using the environment
-                              // name, number, and body
-    #h(1.2em) *Notation (#number) #name*:
+  (name, number, body, color: black) => [
+                              // fmt - format content using the environment
+                              // name, number, body, and an optional color
+    #text(color)[#h(1.2em) *Notation (#number) #name*]:
     #h(0.2em)
     #body
     #v(0.5em)
@@ -297,6 +310,9 @@ You can go even further and use the `thmenv` function directly. It accepts an
 
 #notation[
   The variable $p$ is reserved for prime numbers.
+]
+#notation("for Reals", color: green)[
+  The variable $x$ is reserved for real numbers.
 ]
 ```
 #let notation = thmenv(
@@ -304,8 +320,9 @@ You can go even further and use the `thmenv` function directly. It accepts an
   "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
-  (name, number, body) => [   // fmt - format content using the environment name, number, and body
-    #h(1.2em) *Notation (#number) #name*:
+  (name, number, body, color: black) => [
+                              // fmt - format content using the environment name, number, body, and an optional color
+    #text(color)[#h(1.2em) *Notation (#number) #name*]:
     #h(0.2em)
     #body
     #v(0.5em)
@@ -315,6 +332,27 @@ You can go even further and use the `thmenv` function directly. It accepts an
 #notation[
   The variable $p$ is reserved for prime numbers.
 ]
+#notation("for Reals", color: green)[
+  The variable $x$ is reserved for real numbers.
+]
+
+Note that the `color: green` named argument supplied to the theorem
+environment gets passed to the `fmt` function. In general, all extra named
+arguments supplied to the theorem will be passed to `fmt`.
+On the other hand, the positional argument `"for Reals"` will always be
+interpreted as the `name` argument in `fmt`.
+
+```typst
+#lemma(title: "Lem.")[
+  All multiples of 3 greater than 3 are composite.
+]
+```
+#lemma(title: "Lem.")[
+  All multiples of 3 greater than 3 are composite.
+]
+
+Here, we override the `title` (which defaults to the `head`) in the `fmt`
+produced by `thmbox`.
 
 
 == Labels and references <references>
@@ -392,15 +430,20 @@ The `thmenv` function produces a _theorem environment_.
   base,                   // base counter name, can be "heading" or none
   base_level,             // number of base number levels to use
   fmt                     // formatting function of the form
-                          // (name, number, body) -> content
+                          // (name, number, body, ..args) -> content
 ) = { ... }
 ```
+
+The `fmt` function must aceept a theorem `name`, `number`, `body`, and produce
+formatted content. It may also accept additional positional arguments, via
+`args`.
 
 A _theorem environment_ is itself a map of the following form.
 ```typst
 (
-  ..name,                 // name, often used in the title
+  ..args,
   body,                   // body content
+  number: auto,           // number, overrides numbering if present
   numbering: "1.1",       // numbering style, can be a function
   refnumbering: auto,     // numbering style used in references,
                           // defaults to "numbering"
@@ -409,6 +452,11 @@ A _theorem environment_ is itself a map of the following form.
 ) -> content
 ```
 
+Positional arguments in `args` are as follows
+- `name`: The name of the theorem, typically displayed after the title.
+
+All additional named arguments in `args` will be passed on to the associated
+`fmt` function supplied in `thmenv`.
 
 
 == `thmbox` and `thmplain`
@@ -452,8 +500,15 @@ defaults.
 
 = Acknowledgements
 
-Thanks to #link("https://github.com/MJHutchinson")[MJHutchinson] for
-suggesting and implementing the `base_level` and `base: none` features,
-#link("https://github.com/rmolinari")[rmolinari] for suggesting and
-implementing the `separator: ...` feature, and to the awesome devs of
-#link("https://typst.app/")[typst.app] for their support.
+Thanks to
+- #link("https://github.com/MJHutchinson")[MJHutchinson] for suggesting and
+  implementing the `base_level` and `base: none` features,
+- #link("https://github.com/rmolinari")[rmolinari] for suggesting and
+  implementing the `separator: ...` feature,
+- #link("https://github.com/DVDTSB")[DVDTSB] for contributing
+  - the idea of passing named arguments from the theorem directly to the `fmt`
+    function.
+  - the `number: ...` override feature.
+  - the `title: ...` override feature in `thmbox`.
+- The awesome devs of #link("https://typst.app/")[typst.app] for their
+  support.

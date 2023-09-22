@@ -26,8 +26,8 @@
 = Prime numbers
 
 #definition[
-  A natural number is called a _prime number_ if it is greater than 1
-  and cannot be written as the product of two smaller natural numbers.
+  A natural number is called a #highlight[_prime number_] if it is greater
+  than 1 and cannot be written as the product of two smaller natural numbers.
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.

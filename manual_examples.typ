@@ -68,7 +68,9 @@ these has been explained in full detail there.
 #lemma[
   The square of any odd number is one more than a multiple of $4$.
 ]
-
+#lemma(number: "42")[
+  The square of any natural number cannot be two more than a multiple of 4.
+]
 
 == Limiting depth
 
@@ -120,8 +122,9 @@ these has been explained in full detail there.
   "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
-  (name, number, body) => [   // fmt - format content using the environment name, number, and body
-    #h(1.2em) *Notation (#number) #name*:
+  (name, number, body, color: black) => [
+                              // fmt - format content using the environment name, number, body, and an optional color
+    #text(color)[#h(1.2em) *Notation (#number) #name*]:
     #h(0.2em)
     #body
     #v(0.5em)
@@ -131,7 +134,13 @@ these has been explained in full detail there.
 #notation[
   The variable $p$ is reserved for prime numbers.
 ]
+#notation("for Reals", color: green)[
+  The variable $x$ is reserved for real numbers.
+]
 
+#lemma(title: "Lem.")[
+  All multiples of 3 greater than 3 are composite.
+]
 
 == Labels and references <references>
 

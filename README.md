@@ -26,6 +26,7 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 #show: thmrules
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
+#set text(font: "Linux Libertine", lang: "en")
 #set heading(numbering: "1.1.")
 
 #let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
@@ -51,8 +52,8 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 = Prime numbers
 
 #definition[
-  A natural number is called a _prime number_ if it is greater than 1
-  and cannot be written as the product of two smaller natural numbers.
+  A natural number is called a #highlight[_prime number_] if it is greater
+  than 1 and cannot be written as the product of two smaller natural numbers.
 ]
 #example[
   The numbers $2$, $3$, and $17$ are prime.
@@ -76,6 +77,21 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 #corollary[
   There are infinitely many composite numbers.
 ]
-
 ```
 
+
+## Acknowledgements
+
+Thanks to
+
+- [MJHutchinson]("https://github.com/MJHutchinson") for suggesting and
+  implementing the `base_level` and `base: none` features,
+- [rmolinari]("https://github.com/rmolinari") for suggesting and
+  implementing the `separator: ...` feature,
+- [DVDTSB]("https://github.com/DVDTSB") for contributing
+  - the idea of passing named arguments from the theorem directly to the `fmt`
+    function.
+  - the `number: ...` override feature.
+  - the `title: ...` override feature in `thmbox`.
+- The awesome devs of [typst.app]("https://typst.app/") for their
+  support.
