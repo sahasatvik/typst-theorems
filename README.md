@@ -9,7 +9,7 @@ Copy and import the [theorems.typ](theorems.typ) file to use in your own project
 - Environments can share the same counter, via same `identifier`s.
 - Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
 - The depth of a counter can be manually set, via `base_level`.
-- Environments can be referenced, via `@references`.
+- Environments can be `<label>`'d and `@reference`'d.
 
 ## Manual and Examples
 Get acquainted with `typst-theorems` by checking out the minimal example below!
