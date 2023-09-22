@@ -84,14 +84,14 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 
 Thanks to
 
-- [MJHutchinson]("https://github.com/MJHutchinson") for suggesting and
+- [MJHutchinson](https://github.com/MJHutchinson) for suggesting and
   implementing the `base_level` and `base: none` features,
-- [rmolinari]("https://github.com/rmolinari") for suggesting and
+- [rmolinari](https://github.com/rmolinari) for suggesting and
   implementing the `separator: ...` feature,
-- [DVDTSB]("https://github.com/DVDTSB") for contributing
+- [DVDTSB](https://github.com/DVDTSB) for contributing
   - the idea of passing named arguments from the theorem directly to the `fmt`
     function.
   - the `number: ...` override feature.
   - the `title: ...` override feature in `thmbox`.
-- The awesome devs of [typst.app]("https://typst.app/") for their
+- The awesome devs of [typst.app](https://typst.app/) for their
   support.
