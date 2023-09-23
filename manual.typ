@@ -466,12 +466,8 @@ The `thmbox` wraps `thmenv`, supplying a box-like `fmt` function.
 #let thmbox(
   identifier,             // identifier
   head,                   // head - common name, used in the title
+  ..blockargs,            // named arguments, passed to #block
   supplement: auto,       // supplement for references, defaults to "head"
-  fill: none,             // box fill
-  stroke: none,           // box stroke
-  inset: 1.2em,           // box inset
-  radius: 0.3em,          // box corner radius
-  breakable: false,       // box breakability
   padding: (top: 0.5em, bottom: 0.5em),
                           // box padding, passed to #pad
   namefmt: x => [(#x)],   // formatting for name
@@ -482,6 +478,16 @@ The `thmbox` wraps `thmenv`, supplying a box-like `fmt` function.
   base: "heading",        // base - defaults to using headings
   base_level: none,       // base_level - defaults to using base as-is
 ) = { ... }
+```
+
+The `thmbox` function sets the following defaults for the `block`.
+```typst
+(
+  width: 100%,
+  inset: 1.2em,
+  radius: 0.3em,
+  breakable: false,
+)
 ```
 
 The `thmplain` function is identical to `thmbox`, except with plainer
