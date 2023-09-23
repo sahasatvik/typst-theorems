@@ -8,7 +8,7 @@
 )
 
 
-#let thmenv(identifier, supplement, base, base_level, fmt) = {
+#let thmenv(identifier, base, base_level, fmt) = {
 
   let global_numbering = numbering
 
@@ -18,6 +18,7 @@
     number: auto,
     numbering: "1.1",
     refnumbering: auto,
+    supplement: identifier,
     base: base,
     base_level: base_level
   ) => {
@@ -136,7 +137,14 @@
       )
     )
   }
-  return thmenv(identifier, supplement, base, base_level, boxfmt)
+  return thmenv(
+    identifier,
+    base,
+    base_level,
+    boxfmt
+  ).with(
+    supplement: supplement,
+  )
 }
 
 

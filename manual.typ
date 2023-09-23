@@ -295,7 +295,6 @@ You can go even further and use the `thmenv` function directly. It accepts an
 ```typst
 #let notation = thmenv(
   "notation",                 // identifier
-  "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
@@ -317,7 +316,6 @@ You can go even further and use the `thmenv` function directly. It accepts an
 ```
 #let notation = thmenv(
   "notation",                 // identifier
-  "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
@@ -381,9 +379,21 @@ You can reference future environments too, like @oddprime[Cor.].
   ]
 )
 
+```typst
+#lemma(supplement: "Lem.", refnumbering: "(1.1)")[
+  All primes apart from $2$ and $3$ are of the form $6k plus.minus 1$.
+] <primeform>
+
+You can modify the supplement and numbering to be used in references, like @primeform.
+```
+#lemma(supplement: "Lem.", refnumbering: "(1.1)")[
+  All primes apart from $2$ and $3$ are of the form $6k plus.minus 1$.
+] <primeform>
+
+You can modify the supplement and numbering to be used in references, like @primeform.
+
 *Caution*: Links created by references to `thmenv`s will be styled according
 to `#show link:` rules.
-
 
 
 == Overriding `base`
@@ -426,7 +436,6 @@ The `thmenv` function produces a _theorem environment_.
 ```typst
 #let thmenv(
   identifier,             // environment counter name
-  supplement,             // supplement used in references
   base,                   // base counter name, can be "heading" or none
   base_level,             // number of base number levels to use
   fmt                     // formatting function of the form
@@ -447,6 +456,7 @@ A _theorem environment_ is itself a map of the following form.
   numbering: "1.1",       // numbering style, can be a function
   refnumbering: auto,     // numbering style used in references,
                           // defaults to "numbering"
+  supplement,             // supplement used in references
   base: base,             // base counter name override
   base_level: base_level  // base_level override
 ) -> content

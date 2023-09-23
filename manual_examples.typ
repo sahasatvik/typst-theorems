@@ -119,7 +119,6 @@ these has been explained in full detail there.
 
 #let notation = thmenv(
   "notation",                 // identifier
-  "Notation",                 // supplement
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
@@ -155,6 +154,17 @@ these has been explained in full detail there.
   left: 1.2em,
   [
     You can reference future environments too, like @oddprime[Cor.].
+  ]
+)
+
+#lemma(supplement: "Lem.", refnumbering: "(1.1)")[
+  All primes apart from $2$ and $3$ are of the form $6k plus.minus 1$.
+] <primeform>
+
+#pad(
+  left: 1.2em,
+  [
+    You can modify the supplement and numbering to be used in references, like @primeform.
   ]
 )
 
