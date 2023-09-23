@@ -2,7 +2,18 @@
 
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
-Copy and import the [theorems.typ](theorems.typ) file to use in your own projects.
+Available as
+[ctheorems](https://github.com/typst/packages/tree/main/packages/preview/ctheorems/1.0.0)
+in the official Typst [packages](https://github.com/typst/packages/tree/main).
+Import with
+
+```typst
+#import "@preview/ctheorems:1.0.0": *
+#show: thmrules
+```
+
+Alternatively, copy and import the [theorems.typ](theorems.typ) file to use in
+your own projects.
 
 ### Features
 - Numbered theorem environments can be created and customized.
