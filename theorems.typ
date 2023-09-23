@@ -79,10 +79,11 @@
         return global_numbering(numbering, ..x.at("latest"))
       })
     }
-    figure(
+
+    return figure(
       result +  // hacky!
-      align(left, fmt(name, number, body, ..args.named())) +
-      figure(none, supplement: none, numbering: none, kind: "thmenv-counter", gap: 0em),  // even more hacky!
+      fmt(name, number, body, ..args.named()) +
+      [#metadata(identifier) <meta:thmenvcounter>],
       kind: "thmenv",
       outlined: false,
       caption: name,
@@ -156,7 +157,6 @@
 
 #let thmrules(doc) = {
   show figure.where(kind: "thmenv"): it => it.body
-  show figure.where(kind: "thmenv-counter"): it => it.body
 
   show ref: it => {
     if it.element == none {
@@ -175,7 +175,7 @@
     }
 
     let loc = it.element.location()
-    let thms = query(figure.where(kind: "thmenv-counter").after(loc), loc)
+    let thms = query(selector(<meta:thmenvcounter>).after(loc), loc)
     let number = thmcounters.at(thms.first().location()).at("latest")
     return link(it.target, [#supplement
       #numbering(it.element.numbering, ..number)])
