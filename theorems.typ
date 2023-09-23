@@ -97,12 +97,8 @@
 #let thmbox(
   identifier,
   head,
+  ..blockargs,
   supplement: auto,
-  fill: none,
-  stroke: none,
-  inset: 1.2em,
-  radius: 0.3em,
-  breakable: false,
   padding: (top: 0.5em, bottom: 0.5em),
   namefmt: x => [(#x)],
   titlefmt: strong,
@@ -131,12 +127,11 @@
     pad(
       ..padding,
       block(
-        fill: fill,
-        stroke: stroke,
-        inset: inset,
         width: 100%,
-        radius: radius,
-        breakable: breakable,
+        inset: 1.2em,
+        radius: 0.3em,
+        breakable: false,
+        ..blockargs.named(),
         [#title#name#separator#body]
       )
     )
@@ -177,8 +172,10 @@
     let loc = it.element.location()
     let thms = query(selector(<meta:thmenvcounter>).after(loc), loc)
     let number = thmcounters.at(thms.first().location()).at("latest")
-    return link(it.target, [#supplement
-      #numbering(it.element.numbering, ..number)])
+    return link(
+      it.target,
+      [#supplement~#numbering(it.element.numbering, ..number)]
+    )
   }
 
   doc
