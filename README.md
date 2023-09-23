@@ -25,11 +25,11 @@ your own projects.
 ## Manual and Examples
 Get acquainted with `typst-theorems` by checking out the minimal example below!
 
-You can read the [manual](docs/manual.pdf) for a full walkthrough of functionality offered by this module; flick through [manual_examples](docs/manual_examples.pdf) and its [typ file](docs/manual_examples.typ) to just see the examples.
+You can read the [manual](manual.pdf) for a full walkthrough of functionality offered by this module; flick through [manual_examples](manual_examples.pdf) and its [typ file](manual_examples.typ) to just see the examples.
 
-The [differential_calculus.typ](examples/differential_calculus.typ) ([render](examples/differential_calculus.pdf)) project provides a practical use case. _(Hastily translated from my notes written in LaTeX)_
+The [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) project provides a practical use case. _(Hastily translated from my notes written in LaTeX)_
 
-![basic example](examples/basic.png)
+![basic example](basic.png)
 
 ### Preamble
 ```typst
