@@ -456,7 +456,7 @@ A _theorem environment_ is itself a map of the following form.
   numbering: "1.1",       // numbering style, can be a function
   refnumbering: auto,     // numbering style used in references,
                           // defaults to "numbering"
-  supplement,             // supplement used in references
+  supplement: identifier, // supplement used in references
   base: base,             // base counter name override
   base_level: base_level  // base_level override
 ) -> content
