@@ -3,12 +3,12 @@
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
 Available as
-[ctheorems](https://github.com/typst/packages/tree/main/packages/preview/ctheorems/1.0.0)
+[ctheorems](https://github.com/typst/packages/tree/main/packages/preview/ctheorems/1.1.0)
 in the official Typst [packages](https://github.com/typst/packages/tree/main).
 Import with
 
 ```typst
-#import "@preview/ctheorems:1.0.0": *
+#import "@preview/ctheorems:1.1.0": *
 #show: thmrules
 ```
 
