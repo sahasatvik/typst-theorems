@@ -443,7 +443,7 @@ The `thmenv` function produces a _theorem environment_.
 ) = { ... }
 ```
 
-The `fmt` function must aceept a theorem `name`, `number`, `body`, and produce
+The `fmt` function must accept a theorem `name`, `number`, `body`, and produce
 formatted content. It may also accept additional positional arguments, via
 `args`.
 
