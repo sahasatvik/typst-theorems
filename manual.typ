@@ -45,7 +45,7 @@ The functions `thmbox` and `thmplain` provide some simple defaults for the
 appearance of `thmenv`s.
 
 
-= Feature demonstration
+= Feature demonstration <feat>
 
 Create box-like _theorem environments_ using `thmbox`, a wrapper around
 `thmenv` which provides some simple defaults.
@@ -341,16 +341,17 @@ On the other hand, the positional argument `"for Reals"` will always be
 interpreted as the `name` argument in `fmt`.
 
 ```typst
-#lemma(title: "Lem.")[
+#lemma(title: "Lem.", stroke: 1pt)[
   All multiples of 3 greater than 3 are composite.
 ]
 ```
-#lemma(title: "Lem.")[
+#lemma(title: "Lem.", stroke: 1pt)[
   All multiples of 3 greater than 3 are composite.
 ]
 
-Here, we override the `title` (which defaults to the `head`) in the `fmt`
-produced by `thmbox`.
+Here, we override the `title` (which defaults to the `head`) as well as the
+`stroke` in the `fmt` produced by `thmbox`. All `block` arguments can be
+overridden in `thmbox` environments in this way.
 
 
 == Labels and references <references>

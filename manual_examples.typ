@@ -137,7 +137,7 @@ these has been explained in full detail there.
   The variable $x$ is reserved for real numbers.
 ]
 
-#lemma(title: "Lem.")[
+#lemma(title: "Lem.", stroke: 1pt)[
   All multiples of 3 greater than 3 are composite.
 ]
 

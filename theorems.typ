@@ -111,7 +111,7 @@
   if supplement == auto {
     supplement = head
   }
-  let boxfmt(name, number, body, title: auto) = {
+  let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
     if not name == none {
       name = [ #namefmt(name)]
     } else {
@@ -133,6 +133,7 @@
         radius: 0.3em,
         breakable: false,
         ..blockargs.named(),
+        ..blockargs_individual.named(),
         [#title#name#separator#body]
       )
     )
