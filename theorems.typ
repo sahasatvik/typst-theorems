@@ -103,9 +103,9 @@
   supplement: auto,
   padding: (y: 0.1em),
   namefmt: x => [(#x)],
-  titlefmt: strong,
+  titlefmt: x => x,
   bodyfmt: x => x,
-  separator: [*.*#h(0.2em)],
+  separator: [.#h(0.2em)],
   base: "heading",
   base_level: none,
 ) = {
@@ -133,7 +133,6 @@
       ..padding,
       block(
         width: 100%,
-        breakable: false,
         ..args.named(),
         ..args_individual.named(),
         [#title#name#separator#body]
@@ -165,7 +164,6 @@
 
 #let thm-rem = thm-box.with(
   padding: (y: 0em),
-  breakable: true,
   namefmt: name => emph([(#name)]),
   titlefmt: emph,
   separator: [.#h(0.2em)],
@@ -222,11 +220,9 @@
   })
 }
 
-#let thm-proof(..args) = thm-rem(
-    ..args,
+#let thm-proof = thm-rem.with(
     namefmt: emph,
     bodyfmt: proof-bodyfmt,
-    ..args.named()
 )
 
 

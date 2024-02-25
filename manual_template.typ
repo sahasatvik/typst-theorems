@@ -1,4 +1,4 @@
-#let project(title: "", authors: (), url: "", body) = {
+#let project(title: "", authors: (), urls: (), body) = {
   set page(paper: "a4", numbering: "1", number-align: center)
   set document(author: authors, title: title)
   set text(font: "Linux Libertine", lang: "en")
@@ -6,8 +6,11 @@
   set par(justify: true)
   set list(marker: ([•], [--]))
   show heading: it => pad(bottom: 0.5em, it)
-  show raw.where(block: true): it => pad(left: 4em, it)
+  // show raw.where(block: true): it => pad(left: 4em, it)
   show link: it => underline(text(fill: blue, it))
+
+  set table(columns: (1fr, 1fr), inset: 1em, stroke: 1pt + black.lighten(70%))
+  show table: it => block(breakable: false, it)
 
 
 
@@ -24,7 +27,7 @@
       gutter: 1em,
       ..authors.map(author => align(center)[
         #author \
-        #link(url)
+        #urls.map(x => link(x)).join("\n")
       ]),
     ),
   )
