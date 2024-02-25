@@ -7,10 +7,7 @@
   authors: (
     "sahasatvik",
   ),
-  urls: (
-    "https://github.com/sahasatvik/typst-theorems",
-    "https://github.com/typst/packages/tree/main/packages/preview/ctheorems/1.1.2"
-  )
+  urls: ("https://github.com/sahasatvik/typst-theorems",)
 )
 
 
@@ -48,7 +45,7 @@ The functions `thm-plain`, `thm-def`, `thm-rem`, and `thm-proof` functions
 provide some simple defaults for the appearance of `thm-env`s.
 
 
-= Feature demonstration 
+= Feature demonstration
 
 Create box-like _theorem environments_ using `thm-plain`, a wrapper around
 `thm-env` which provides some simple defaults.
