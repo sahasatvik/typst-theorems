@@ -212,6 +212,7 @@
     ..args,
     namefmt: emph,
     bodyfmt: proof-bodyfmt,
+    ..args.named()
 ).with(numbering: none)
 
 
