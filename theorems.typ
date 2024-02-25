@@ -8,7 +8,7 @@
 )
 
 
-#let thmenv(identifier, base, base_level, fmt) = {
+#let thm-env(identifier, base, base_level, fmt) = {
 
   let global_numbering = numbering
 
@@ -84,8 +84,8 @@
     return figure(
       result +  // hacky!
       fmt(name, number, body, ..args.named()) +
-      [#metadata(identifier) <meta:thmenvcounter>],
-      kind: "thmenv",
+      [#metadata(identifier) <meta:thm-env-counter>],
+      kind: "thm-env",
       outlined: false,
       caption: name,
       supplement: supplement,
@@ -95,23 +95,27 @@
 }
 
 
-#let thmbox(
-  identifier,
+#let thm-box(
   head,
-  ..blockargs,
+  identifier: auto,
+  ..args,
+  numbering: "1.1",
   supplement: auto,
-  padding: (top: 0.5em, bottom: 0.5em),
+  padding: (y: 0.1em),
   namefmt: x => [(#x)],
   titlefmt: strong,
   bodyfmt: x => x,
-  separator: [#h(0.1em):#h(0.2em)],
+  separator: [*.*#h(0.2em)],
   base: "heading",
   base_level: none,
 ) = {
+  if identifier == auto {
+    identifier = head
+  }
   if supplement == auto {
     supplement = head
   }
-  let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
+  let boxfmt(name, number, body, title: auto, ..args_individual) = {
     if not name == none {
       name = [ #namefmt(name)]
     } else {
@@ -129,34 +133,44 @@
       ..padding,
       block(
         width: 100%,
-        inset: 1.2em,
-        radius: 0.3em,
         breakable: false,
-        ..blockargs.named(),
-        ..blockargs_individual.named(),
+        ..args.named(),
+        ..args_individual.named(),
         [#title#name#separator#body]
       )
     )
   }
-  return thmenv(
+  return thm-env(
     identifier,
     base,
     base_level,
     boxfmt
   ).with(
+    numbering: numbering,
     supplement: supplement,
   )
 }
 
 
-#let thmplain = thmbox.with(
-  padding: (top: 0em, bottom: 0em),
-  breakable: true,
-  inset: (top: 0em, left: 1.2em, right: 1.2em),
-  namefmt: name => emph([(#name)]),
-  titlefmt: emph,
+#let thm-plain = thm-box.with(
+  titlefmt: strong,
+  bodyfmt: emph,
+  separator: [*.*#h(0.2em)],
 )
 
+#let thm-def = thm-box.with(
+  titlefmt: strong,
+  separator: [*.*#h(0.2em)],
+)
+
+#let thm-rem = thm-box.with(
+  padding: (y: 0em),
+  breakable: true,
+  namefmt: name => emph([(#name)]),
+  titlefmt: emph,
+  separator: [.#h(0.2em)],
+  numbering: none
+)
 
 // Track whether the qed symbol has already been placed in a proof
 #let thm-qed-done = state("thm-qed-done", false)
@@ -208,17 +222,17 @@
   })
 }
 
-#let thmproof(..args) = thmplain(
+#let thm-proof(..args) = thm-rem(
     ..args,
     namefmt: emph,
     bodyfmt: proof-bodyfmt,
     ..args.named()
-).with(numbering: none)
+)
 
 
-#let thmrules(qed-symbol: $qed$, doc) = {
+#let thm-rules(qed-symbol: $qed$, doc) = {
 
-  show figure.where(kind: "thmenv"): it => it.body
+  show figure.where(kind: "thm-env"): it => it.body
 
   show ref: it => {
     if it.element == none {
@@ -227,7 +241,7 @@
     if it.element.func() != figure {
       return it
     }
-    if it.element.kind != "thmenv" {
+    if it.element.kind != "thm-env" {
       return it
     }
 
@@ -237,7 +251,7 @@
     }
 
     let loc = it.element.location()
-    let thms = query(selector(<meta:thmenvcounter>).after(loc), loc)
+    let thms = query(selector(<meta:thm-env-counter>).after(loc), loc)
     let number = thmcounters.at(thms.first().location()).at("latest")
     return link(
       it.target,
