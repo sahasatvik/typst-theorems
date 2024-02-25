@@ -13,7 +13,7 @@
 )
 #let corollary = thm-plain("Corollary", base: "Theorem")
 #let definition = thm-def("Definition")
-#let example = thm-rem("Example")
+#let remark = thm-rem("Remark")
 #let proof = thm-proof("Proof")
 
 
@@ -24,7 +24,7 @@
   A natural number is called a #highlight[_prime number_] if it is greater
   than 1 and cannot be written as the product of two smaller natural numbers.
 ]
-#example[
+#remark[
   The numbers $2$, $3$, and $17$ are prime.
   @cor_largest_prime shows that this list is not exhaustive!
 ]
