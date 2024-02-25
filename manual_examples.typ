@@ -17,6 +17,7 @@
 This document only includes the examples given in the manual; each one of
 these has been explained in full detail there.
 
+
 = Feature demonstration
 
 #let theorem = thmbox(
@@ -28,6 +29,7 @@ these has been explained in full detail there.
 #theorem("Euclid")[
   There are infinitely many primes.
 ] <euclid>
+
 
 #let lemma = thmbox(
   "theorem",
@@ -51,6 +53,28 @@ these has been explained in full detail there.
 ]
 
 
+== Proofs
+
+#let proof = thmproof("proof", "Proof")
+
+#proof([of @euclid])[
+  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
+  of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
+  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
+  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
+  contradiction.
+]
+
+#theorem[
+  There are arbitrarily long stretches of composite numbers.
+]
+#proof[
+  For any $n > 2$, consider $
+    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+  $
+]
+
+
 == Suppressing numbering
 
 #let example = thmplain(
@@ -68,9 +92,11 @@ these has been explained in full detail there.
 #lemma[
   The square of any odd number is one more than a multiple of $4$.
 ]
+
 #lemma(number: "42")[
   The square of any natural number cannot be two more than a multiple of 4.
 ]
+
 
 == Limiting depth
 
@@ -80,7 +106,6 @@ these has been explained in full detail there.
   base_level: 1,
   stroke: rgb("#68ff68") + 1pt
 )
-
 #definition("Prime numbers")[
   A natural number is called a _prime number_ if it is greater than $1$ and
   cannot be written as the product of two smaller natural numbers. <prime>
@@ -98,7 +123,7 @@ these has been explained in full detail there.
 
 == Custom formatting
 
-#let proof = thmplain(
+#let proof-custom = thmplain(
   "proof",
   "Proof",
   base: "theorem",
@@ -111,7 +136,7 @@ these has been explained in full detail there.
 #lemma[
   All even natural numbers greater than 2 are composite.
 ]
-#proof[
+#proof-custom[
   Every even natural number $n$ can be written as the product of the natural
   numbers $2$ and $n\/2$. When $n > 2$, both of these are smaller than $2$
   itself.
@@ -141,6 +166,7 @@ these has been explained in full detail there.
   All multiples of 3 greater than 3 are composite.
 ]
 
+
 == Labels and references <references>
 
 #pad(
@@ -149,6 +175,7 @@ these has been explained in full detail there.
     Recall that there are infinitely many prime numbers via @euclid.
   ]
 )
+
 
 #pad(
   left: 1.2em,
@@ -161,26 +188,19 @@ these has been explained in full detail there.
   All primes apart from $2$ and $3$ are of the form $6k plus.minus 1$.
 ] <primeform>
 
-#pad(
-  left: 1.2em,
-  [
-    You can modify the supplement and numbering to be used in references, like @primeform.
-  ]
-)
+You can modify the supplement and numbering to be used in references, like @primeform.
 
 
 == Overriding `base`
 
-#let remark = thmplain("remark", "Remark", base: "heading")
 
+#let remark = thmplain("remark", "Remark", base: "heading")
 #remark[
   There are infinitely many composite numbers.
 ]
-
 #corollary[
   All primes greater than $2$ are odd.
 ] <oddprime>
-
 #remark(base: "corollary")[
   Two is a _lone prime_.
 ]

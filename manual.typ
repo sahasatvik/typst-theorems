@@ -41,8 +41,8 @@ Import all functions provided by `typst-theorems` using
 The second line is crucial for displaying `thmenv`s and references correctly!
 
 The core of this module consists of `thmenv`.
-The functions `thmbox` and `thmplain` provide some simple defaults for the
-appearance of `thmenv`s.
+The functions `thmbox`, `thmplain`, and `thmproof` provide some simple
+defaults for the appearance of `thmenv`s.
 
 
 = Feature demonstration <feat>
@@ -137,6 +137,60 @@ numbering pattern as described in the
 #link("https://typst.app/docs/reference/meta/numbering/")[numbering]
 documentation.
 
+
+== Proofs
+
+The `thmproof` function gives nicer defaults for formatting proofs.
+```typst
+#let proof = thmproof("proof", "Proof")
+
+#proof([of @euclid])[
+  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
+  of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
+  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
+  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
+  contradiction.
+]
+```
+#let proof = thmproof("proof", "Proof")
+
+#proof([of @euclid])[
+  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
+  of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
+  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
+  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
+  contradiction.
+]
+
+If your proof ends in a block equation, or a list/enum, you can place
+`qedhere` to correctly position the qed symbol.
+```typst
+#theorem[
+  There are arbitrarily long stretches of composite numbers.
+]
+#proof[
+  For any $n > 2$, consider $
+    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+  $
+]
+```
+#theorem[
+  There are arbitrarily long stretches of composite numbers.
+]
+#proof[
+  For any $n > 2$, consider $
+    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+  $
+]
+
+*Caution*: The `qedhere` symbol does not play well with numbered/multiline
+equations!
+
+You can set a custom qed symbol (say $square$) by setting the appropriate
+option in `thmrules` as follows.
+```typst
+#show: thmrules.with(qed-symbol: $square$)
+```
 
 == Suppressing numbering
 Supplying `numbering: none` to an environment suppresses numbering for that
@@ -252,7 +306,7 @@ The `thmbox` function lets you specify rules for formatting the `title`, the
 and `number` together.
 
 ```typst
-#let proof = thmplain(
+#let proof-custom = thmplain(
   "proof",
   "Proof",
   base: "theorem",
@@ -265,13 +319,13 @@ and `number` together.
 #lemma[
   All even natural numbers greater than 2 are composite.
 ]
-#proof[
+#proof-custom[
   Every even natural number $n$ can be written as the product of the natural
   numbers $2$ and $n\/2$. When $n > 2$, both of these are smaller than $2$
   itself.
 ]
 ```
-#let proof = thmplain(
+#let proof-custom = thmplain(
   "proof",
   "Proof",
   base: "theorem",
@@ -284,7 +338,7 @@ and `number` together.
 #lemma[
   All even natural numbers greater than 2 are composite.
 ]
-#proof[
+#proof-custom[
   Every even natural number $n$ can be written as the product of the natural
   numbers $2$ and $n\/2$. When $n > 2$, both of these are smaller than $2$
   itself.
@@ -512,6 +566,39 @@ defaults.
   namefmt: name => emph([(#name)]),
   titlefmt: emph,
 )
+```
+
+
+== `thmproof`, `proof-bodyfmt` and `qedhere`
+
+The `thmproof` function is identical to `thmplain`, except with defaults
+appropriate for proofs.
+
+```typst
+#let thmproof(..args) = thmplain(
+    ..args,
+    namefmt: emph,
+    bodyfmt: proof-bodyfmt,
+).with(numbering: none)
+```
+
+The `proof-bodyfmt` function is a `bodyfmt` function that automatically places
+a qed symbol at the end of the body.
+
+You can place `#qedhere` inside a block equation, or at the end of a list/enum
+item to place the qed symbol on the same line.
+
+
+== `thmrules`
+
+The `thmrules` show rule sets important styling rules for theorem
+environments, references, and equations in proofs.
+
+```typst
+#let thmrules(
+  qed-symbol: $qed$,      // QED symbol used in proofs
+  doc
+) = { ... }
 ```
 
 

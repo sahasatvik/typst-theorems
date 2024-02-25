@@ -42,14 +42,11 @@
 ).with(numbering: none)
 
 // Proofs are attached to theorems, although they are not numbered
-#let proof = thmplain(
+#let proof = thmproof(
   "proof",
   "Proof",
   base: "theorem",
-  bodyfmt: body => [
-    #body #h(1fr) $square$    // Insert QED symbol
-  ]
-).with(numbering: none)
+)
 
 #let solution = thmplain(
   "solution",

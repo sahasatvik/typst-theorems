@@ -1,5 +1,5 @@
 #import "theorems.typ": *
-#show: thmrules
+#show: thmrules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
 #set text(font: "Linux Libertine", lang: "en")
@@ -15,12 +15,7 @@
 #let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
 
 #let example = thmplain("example", "Example").with(numbering: none)
-#let proof = thmplain(
-  "proof",
-  "Proof",
-  base: "theorem",
-  bodyfmt: body => [#body #h(1fr) $square$]
-).with(numbering: none)
+#let proof = thmproof("proof", "Proof")
 
 
 = Prime numbers
@@ -50,4 +45,13 @@
 ] <cor_largest_prime>
 #corollary[
   There are infinitely many composite numbers.
+]
+
+#theorem[
+  There are arbitrarily long stretches of composite numbers.
+]
+#proof[
+  For any $n > 2$, consider $
+    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+  $
 ]

@@ -158,8 +158,65 @@
 )
 
 
+// Track whether the qed symbol has already been placed in a proof
+#let thm-qed-done = state("thm-qed-done", false)
 
-#let thmrules(doc) = {
+// Show the qed symbol, update state
+#let thm-qed-show = {
+  thm-qed-done.update("thm-qed-symbol")
+  thm-qed-done.display()
+}
+
+// If placed in a block equation/enum/list, place a qed symbol to its right
+#let qedhere = metadata("thm-qedhere")
+
+// Checks if content x contains the qedhere tag
+#let thm-has-qedhere(x) = {
+  if x == "thm-qedhere" {
+    return true
+  }
+
+  if type(x) == content {
+    for (f, c) in x.fields() {
+      if thm-has-qedhere(c) {
+        return true
+      }
+    }
+  }
+
+  if type(x) == array {
+    for c in x {
+      if thm-has-qedhere(c) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+
+// bodyfmt for proofs
+#let proof-bodyfmt(body) = {
+  thm-qed-done.update(false)
+  body
+  locate(loc => {
+    if thm-qed-done.at(loc) == false {
+      h(1fr)
+      thm-qed-show
+    }
+  })
+}
+
+#let thmproof(..args) = thmplain(
+    ..args,
+    namefmt: emph,
+    bodyfmt: proof-bodyfmt,
+).with(numbering: none)
+
+
+#let thmrules(qed-symbol: $qed$, doc) = {
+
   show figure.where(kind: "thmenv"): it => it.body
 
   show ref: it => {
@@ -186,6 +243,35 @@
       [#supplement~#numbering(it.element.numbering, ..number)]
     )
   }
+
+  show math.equation.where(block: true): eq => {
+    if thm-has-qedhere(eq) and thm-qed-done.at(eq.location()) == false {
+      grid(
+        columns: (1fr, auto, 1fr),
+        [], eq, align(right + horizon)[#thm-qed-show]
+      )
+    } else {
+      eq
+    }
+  }
+
+  show enum.item: it => {
+    show metadata.where(value: "thm-qedhere"): {
+      h(1fr)
+      thm-qed-show
+    }
+    it
+  }
+
+  show list.item: it => {
+    show metadata.where(value: "thm-qedhere"): {
+      h(1fr)
+      thm-qed-show
+    }
+    it
+  }
+
+  show "thm-qed-symbol": qed-symbol
 
   doc
 }
