@@ -132,18 +132,19 @@
 
 #let thm-restate(..args) = {
   thm-stored.display(thms => {
-    if args.pos().len() > 0 and type(args.pos().first()) == function {
-      // Use filtering function
-      let filter = args.pos().first()
-      thms = thms.filter(thm => filter(thm.restate-keys))
-    } else if args.pos().len() > 0 {
-      // Use ("" and "") or ("" and "") style filter
+    if args.pos().len() > 0 {
+      // Use arg_1 or ... or arg_n style filter
       thms = thms.filter(thm =>
         args.pos().any(x => {
           if type(x) == str {
+            // keys contains x
             return thm.restate-keys.contains(x)
           } else if type(x) == array {
+            // keys contain x_1 and ... and x_n
             return x.all(key => thm.restate-keys.contains(key))
+          } else if type(x) == function {
+            // keys passes filter x
+            return x(thm.restate-keys)
           }
         })
       )
