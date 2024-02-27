@@ -1,14 +1,18 @@
 // Store theorem environment numbering
-
-#let thmcounters = state("thm",
+#let thm-counters = state("thm-counters",
   (
     "counters": ("heading": ()),
     "latest": ()
   )
 )
 
+// Store theorem data for restating/deferring
+#let thm-stored = state("thm-stored", ())
 
-#let thm-env(identifier, base, base_level, fmt) = {
+#let heading-counter = counter(heading)
+
+
+#let thm-env(counter, base, base_level, fmt) = {
 
   let global_numbering = numbering
 
@@ -18,9 +22,12 @@
     number: auto,
     numbering: "1.1",
     refnumbering: auto,
-    supplement: identifier,
+    supplement: counter,
     base: base,
-    base_level: base_level
+    base_level: base_level,
+    restate: false,
+    defer: false,
+    restate-keys: (counter, )
   ) => {
     let name = none
     if args != none and args.pos().len() > 0 {
@@ -33,17 +40,19 @@
     if number == auto and numbering == none {
       number = none
     }
+
+    let number_ = number
     if number == auto and numbering != none {
       result = locate(loc => {
-        return thmcounters.update(thmpair => {
+        return thm-counters.update(thmpair => {
           let counters = thmpair.at("counters")
           // Manually update heading counter
-          counters.at("heading") = counter(heading).at(loc)
-          if not identifier in counters.keys() {
-            counters.insert(identifier, (0, ))
+          counters.at("heading") = heading-counter.at(loc)
+          if not counter in counters.keys() {
+            counters.insert(counter, (0, ))
           }
 
-          let tc = counters.at(identifier)
+          let tc = counters.at(counter)
           if base != none {
             let bc = counters.at(base)
 
@@ -58,17 +67,17 @@
 
             // Reset counter if the base counter has updated
             if tc.slice(0, -1) == bc {
-              counters.at(identifier) = (..bc, tc.last() + 1)
+              counters.at(counter) = (..bc, tc.last() + 1)
             } else {
-              counters.at(identifier) = (..bc, 1)
+              counters.at(counter) = (..bc, 1)
             }
           } else {
             // If we have no base counter, just count one level
-            counters.at(identifier) = (tc.last() + 1,)
-            let latest = counters.at(identifier)
+            counters.at(counter) = (tc.last() + 1,)
+            let latest = counters.at(counter)
           }
 
-          let latest = counters.at(identifier)
+          let latest = counters.at(counter)
           return (
             "counters": counters,
             "latest": latest
@@ -76,15 +85,42 @@
         })
       })
 
-      number = thmcounters.display(x => {
+      number = thm-counters.display(x => {
         return global_numbering(numbering, ..x.at("latest"))
       })
+
+    }
+
+    if restate or defer {
+      result = result + locate(loc => {
+        thm-stored.update(x => {
+          let thm = (
+            restate-keys: restate-keys,
+            name: name,
+            body: body,
+            loc: loc,
+            fmt: fmt,
+            number: number_,
+            numbering: numbering,
+            args: args
+          )
+          if x == none {
+            return (thm, )
+          } else {
+            return x + (thm, )
+          }
+        })
+      })
+    }
+
+    if defer {
+      return result
     }
 
     return figure(
       result +  // hacky!
       fmt(name, number, body, ..args.named()) +
-      [#metadata(identifier) <meta:thm-env-counter>],
+      [#metadata(counter) <meta:thm-env-counter>],
       kind: "thm-env",
       outlined: false,
       caption: name,
@@ -94,10 +130,41 @@
   }
 }
 
+#let thm-restate(..args) = {
+  thm-stored.display(thms => {
+    if args.pos().len() > 0 and type(args.pos().first()) == function {
+      // Use filtering function
+      let filter = args.pos().first()
+      thms = thms.filter(thm => filter(thm.restate-keys))
+    } else if args.pos().len() > 0 {
+      // Use ("" and "") or ("" and "") style filter
+      thms = thms.filter(thm =>
+        args.pos().any(x => {
+          if type(x) == str {
+            return thm.restate-keys.contains(x)
+          } else if type(x) == array {
+            return x.all(key => thm.restate-keys.contains(key))
+          }
+        })
+      )
+    }
+
+    for thm in thms {
+      let number = thm.number
+      // Extract correct number from original location
+      if number == auto and thm.numbering != none {
+        number = thm-counters.at(thm.loc).latest
+        number = numbering(thm.numbering, ..number)
+      }
+      let fmt = thm.fmt
+      fmt(thm.name, number, thm.body, ..thm.args.named())
+    }
+  })
+}
 
 #let thm-box(
   head,
-  identifier: auto,
+  counter: auto,
   ..args,
   numbering: "1.1",
   supplement: auto,
@@ -109,8 +176,8 @@
   base: "heading",
   base_level: none,
 ) = {
-  if identifier == auto {
-    identifier = head
+  if counter == auto {
+    counter = head
   }
   if supplement == auto {
     supplement = head
@@ -140,13 +207,14 @@
     )
   }
   return thm-env(
-    identifier,
+    counter,
     base,
     base_level,
     boxfmt
   ).with(
     numbering: numbering,
     supplement: supplement,
+    restate-keys: (head, )
   )
 }
 
@@ -248,7 +316,7 @@
 
     let loc = it.element.location()
     let thms = query(selector(<meta:thm-env-counter>).after(loc), loc)
-    let number = thmcounters.at(thms.first().location()).at("latest")
+    let number = thm-counters.at(thms.first().location()).at("latest")
     return link(
       it.target,
       [#supplement~#numbering(it.element.numbering, ..number)]
