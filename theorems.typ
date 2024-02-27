@@ -92,6 +92,7 @@
       result = result + locate(loc => {
         thm-stored.update(x => {
           let thm = (
+            identifier: identifier,
             name: name,
             body: body,
             loc: loc,
@@ -126,8 +127,11 @@
   }
 }
 
-#let thm-restate() = {
+#let thm-restate(..args) = {
   thm-stored.display(thms => {
+    if args.pos().len() > 0 {
+      thms = thms.filter(thm => args.pos().contains(thm.identifier))
+    }
     for thm in thms {
       let number = thm.number
       if number == auto and thm.numbering != none {
