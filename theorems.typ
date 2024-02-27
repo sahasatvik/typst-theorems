@@ -25,6 +25,7 @@
     base_level: base_level,
     restate: false,
     defer: false,
+    restate-keys: (identifier, )
   ) => {
     let name = none
     if args != none and args.pos().len() > 0 {
@@ -92,7 +93,7 @@
       result = result + locate(loc => {
         thm-stored.update(x => {
           let thm = (
-            identifier: identifier,
+            restate-keys: restate-keys,
             name: name,
             body: body,
             loc: loc,
@@ -130,7 +131,11 @@
 #let thm-restate(..args) = {
   thm-stored.display(thms => {
     if args.pos().len() > 0 {
-      thms = thms.filter(thm => args.pos().contains(thm.identifier))
+      thms = thms.filter(thm =>
+        thm.restate-keys.any(key =>
+          args.pos().contains(key)
+        )
+      )
     }
     for thm in thms {
       let number = thm.number

@@ -37,11 +37,15 @@
 #corollary[
   There is no largest prime number.
 ]
-#corollary(restate: true)[
+#corollary(restate: true, restate-keys: ("Corollary", "Result"))[
   There are infinitely many composite numbers.
 ]
 
 #lorem(20)
+
+#theorem(restate: true, restate-keys: ("Theorem", "Result"))[
+  #lorem(7)
+]
 
 #theorem(restate: true)[
   There are arbitrarily long stretches of composite numbers.
@@ -59,3 +63,7 @@
 = Only Theorems and Corollaries
 
 #thm-restate("Theorem", "Corollary")
+
+= Only 'Results'
+
+#thm-restate("Result")
