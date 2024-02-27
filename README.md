@@ -21,6 +21,7 @@ your own projects.
 - Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
 - The depth of a counter can be manually set, via `base_level`.
 - Environments can be `<label>`'d and `@reference`'d.
+- Environments can be restated (or deferred to) later on in the document.
 
 ## Manual and Examples
 Get acquainted with `typst-theorems` by checking out the minimal example below!
