@@ -77,13 +77,13 @@ automatically updating the final index.
 The `<euclid>` label can be used to refer to this Theorem via the reference
 `@euclid`. Go to @references to read more.
 
-You can create another environment which uses the same counter (referred to as
-its identifier), say for _Lemmas_, as follows.
+You can create another environment which uses the same counter, say for
+_Lemmas_, as follows.
 
 ```typst
 #let lemma = thm-plain(
   "Lemma",                // head
-  identifier: "Theorem",  // identifier - same as that of Theorem
+  counter: "Theorem",     // same as that of Theorem
                           // options for styling the block
   fill: rgb("#e8e8f8"),
   outset: 0.7em,
@@ -92,13 +92,13 @@ its identifier), say for _Lemmas_, as follows.
 ```
 #let lemma = thm-plain(
   "Lemma",
-  identifier: "Theorem",
+  counter: "Theorem",
   fill: rgb("#e8e8f8"),
   outset: 0.7em,
   padding: (y: 0.5em)
 )
 
-Note that the identifier for `theorem` defaulted to 'Theorem'.
+Note that the counter for `theorem` defaulted to 'Theorem'.
 
 #table[
 ```typst
@@ -415,10 +415,10 @@ and `number` together.
 ]
 
 You can go even further and use the `thm-env` function directly. It accepts an
-`identifier`, a `base`, a `base_level`, and a `fmt` function.
+`counter`, a `base`, a `base_level`, and a `fmt` function.
 ```typst
 #let notation = thm-env(
-  "notation",                 // identifier
+  "notation",                 // counter
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
@@ -432,7 +432,7 @@ You can go even further and use the `thm-env` function directly. It accepts an
 ).with(numbering: "I")        // use Roman numerals
 ```
 #let notation = thm-env(
-  "notation",                 // identifier
+  "notation",                 // counter
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
@@ -576,7 +576,7 @@ to `#show link:` rules.
 ]
 
 This `remark` environment, which would normally be attached to the current
-_heading_, now uses the Theorem (which shares its identifier with the Lemma)
+_heading_, now uses the Theorem (which shares its counter with the Lemma)
 as a base.
 
 
@@ -601,7 +601,7 @@ environments, references, and equations in proofs.
 The `thm-env` function produces a _theorem environment_.
 ```typst
 #let thm-env(
-  identifier,                 // environment counter name
+  counter,                    // environment counter name
   base,                       // base counter name, can be "heading" or none
   base_level,                 // number of base number levels to use
   fmt                         // formatting function of the form
@@ -622,7 +622,7 @@ A _theorem environment_ is itself a map of the following form.
   numbering: "1.1",           // numbering style, can be a function
   refnumbering: auto,         // numbering style used in references,
                               // defaults to "numbering"
-  supplement: identifier,     // supplement used in references
+  supplement: counter,        // supplement used in references
   base: base,                 // base counter name override
   base_level: base_level      // base_level override
 ) -> content
@@ -640,7 +640,7 @@ The `thm-box` wraps `thm-env`, supplying a box-like `fmt` function.
 ```typst
 #let thm-box(
   head,                       // head - common name, used in the title
-  identifier: auto,           // identifier, defaults to "head"
+  counter: auto,              // counter, defaults to "head"
   ..args,                     // named arguments, passed to #block
   padding: (y: 0.1em),        // padding around the block, passed to #pad
   numbering: "1.1",           // numbering style, can be a function

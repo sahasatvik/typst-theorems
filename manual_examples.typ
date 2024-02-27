@@ -42,7 +42,7 @@ these has been explained in full detail there.
 ```typst
 #let lemma = thm-plain(
   "Lemma",                // head
-  identifier: "Theorem",  // identifier - same as that of Theorem
+  counter: "Theorem",     // same as that of Theorem
                           // options for styling the block
   fill: rgb("#e8e8f8"),
   outset: 0.7em,
@@ -51,7 +51,7 @@ these has been explained in full detail there.
 ```
 #let lemma = thm-plain(
   "Lemma",
-  identifier: "Theorem",
+  counter: "Theorem",
   fill: rgb("#e8e8f8"),
   outset: 0.7em,
   padding: (y: 0.5em)
@@ -333,7 +333,7 @@ these has been explained in full detail there.
 
 ```typst
 #let notation = thm-env(
-  "notation",                 // identifier
+  "notation",                 // counter
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
@@ -347,7 +347,7 @@ these has been explained in full detail there.
 ).with(numbering: "I")        // use Roman numerals
 ```
 #let notation = thm-env(
-  "notation",                 // identifier
+  "notation",                 // counter
   none,                       // base - do not attach, count globally
   none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
