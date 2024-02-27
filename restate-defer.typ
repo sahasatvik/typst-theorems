@@ -6,17 +6,17 @@
 #set heading(numbering: "1.1.")
 #show heading: set block(below: 1em)
 
-#let theorem = thm-plain("Theorem")
+#let theorem = thm-plain("Theorem", stroke: 1pt + green, outset: 0.5em)
 #let corollary = thm-plain("Corollary", base: "Theorem")
-#let definition = thm-def("Definition")
+#let definition = thm-def("Definition", counter: "Theorem")
 #let proof = thm-proof("Proof")
 
 
 = Prime numbers
 
-#definition("Prime numbers")[
-  A natural number is called a #highlight[_prime number_] if it is greater
-  than 1 and cannot be written as the product of two smaller natural numbers.
+#definition("Prime numbers", restate: true)[
+  A natural number is called a _prime number_ if it is greater than 1 and
+  cannot be written as the product of two smaller natural numbers.
 ]
 
 #theorem[
@@ -60,10 +60,18 @@
 
 #thm-restate()
 
-= Only Theorems and Corollaries
+= Only Theorem or Corollary
 
 #thm-restate("Theorem", "Corollary")
 
-= Only 'Results'
+= Only 'Result'
 
 #thm-restate("Result")
+
+= Only (Theorem and 'Result') or Definition
+
+#thm-restate(("Theorem", "Result"), "Definition")
+
+= Only if some key contains 'fi'
+
+#thm-restate(keys => keys.any(x => x.contains("fi")))
