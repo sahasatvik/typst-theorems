@@ -1,11 +1,13 @@
 // Store theorem environment numbering
-
-#let thmcounters = state("thm",
+#let thm-counters = state("thm-counters",
   (
     "counters": ("heading": ()),
     "latest": ()
   )
 )
+
+// Store theorem data for restating/deferring
+#let thm-stored = state("thm-stored", ())
 
 
 #let thm-env(identifier, base, base_level, fmt) = {
@@ -20,7 +22,9 @@
     refnumbering: auto,
     supplement: identifier,
     base: base,
-    base_level: base_level
+    base_level: base_level,
+    restate: false,
+    defer: false,
   ) => {
     let name = none
     if args != none and args.pos().len() > 0 {
@@ -33,9 +37,11 @@
     if number == auto and numbering == none {
       number = none
     }
+
+    let number_ = number
     if number == auto and numbering != none {
       result = locate(loc => {
-        return thmcounters.update(thmpair => {
+        return thm-counters.update(thmpair => {
           let counters = thmpair.at("counters")
           // Manually update heading counter
           counters.at("heading") = counter(heading).at(loc)
@@ -76,9 +82,35 @@
         })
       })
 
-      number = thmcounters.display(x => {
+      number = thm-counters.display(x => {
         return global_numbering(numbering, ..x.at("latest"))
       })
+
+    }
+
+    if restate or defer {
+      result = result + locate(loc => {
+        thm-stored.update(x => {
+          let thm = (
+            name: name,
+            body: body,
+            loc: loc,
+            fmt: fmt,
+            number: number_,
+            numbering: numbering,
+            args: args
+          )
+          if x == none {
+            return (thm, )
+          } else {
+            return x + (thm, )
+          }
+        })
+      })
+    }
+
+    if defer {
+      return result
     }
 
     return figure(
@@ -94,6 +126,19 @@
   }
 }
 
+#let thm-restate() = {
+  thm-stored.display(thms => {
+    for thm in thms {
+      let number = thm.number
+      if number == auto and thm.numbering != none {
+        number = thm-counters.at(thm.loc).latest
+        number = numbering(thm.numbering, ..number)
+      }
+      let fmt = thm.fmt
+      fmt(thm.name, number, thm.body, ..thm.args.named())
+    }
+  })
+}
 
 #let thm-box(
   head,
@@ -248,7 +293,7 @@
 
     let loc = it.element.location()
     let thms = query(selector(<meta:thm-env-counter>).after(loc), loc)
-    let number = thmcounters.at(thms.first().location()).at("latest")
+    let number = thm-counters.at(thms.first().location()).at("latest")
     return link(
       it.target,
       [#supplement~#numbering(it.element.numbering, ..number)]
