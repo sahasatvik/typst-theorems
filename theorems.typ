@@ -244,7 +244,7 @@
 
 // Show the qed symbol, update state
 #let thm-qed-show = {
-  thm-qed-done.update("thm-qed-symbol")
+  thm-qed-done.update(metadata("thm-qed-symbol"))
   thm-qed-done.display()
 }
 
@@ -253,7 +253,7 @@
 
 // Checks if content x contains the qedhere tag
 #let thm-has-qedhere(x) = {
-  if x == "thm-qedhere" {
+  if x == qedhere {
     return true
   }
 
@@ -351,7 +351,7 @@
     it
   }
 
-  show "thm-qed-symbol": qed-symbol
+  show metadata.where(value: "thm-qed-symbol"): qed-symbol
 
   doc
 }
