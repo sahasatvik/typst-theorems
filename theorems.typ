@@ -235,13 +235,18 @@
     if it.citation.supplement != none {
       supplement = it.citation.supplement
     }
+    let supplement_spaced = if (supplement == none or supplement == "") {
+      ""
+    } else {
+      [#supplement~]
+    }
 
     let loc = it.element.location()
     let thms = query(selector(<meta:thmenvcounter>).after(loc), loc)
     let number = thmcounters.at(thms.first().location()).at("latest")
     return link(
       it.target,
-      [#supplement~#numbering(it.element.numbering, ..number)]
+      [#supplement_spaced#numbering(it.element.numbering, ..number)]
     )
   }
 
