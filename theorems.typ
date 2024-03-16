@@ -328,7 +328,15 @@
     if thm-has-qedhere(eq) and thm-qed-done.at(eq.location()) == false {
       grid(
         columns: (1fr, auto, 1fr),
-        [], eq, align(right + horizon)[#thm-qed-show]
+        [], eq, align(
+          horizon + right,
+          context {
+            let pos-qedhere = query(metadata.where(value: "thm-qedhere").after(eq.location())).first().location().position()
+            let pos-here = here().position()
+            let height = measure(qed-symbol).height
+            move(dy: -pos-here.y + pos-qedhere.y - height/2, thm-qed-show)
+          }
+        )
       )
     } else {
       eq
