@@ -25,9 +25,13 @@ your own projects.
 ## Manual and Examples
 Get acquainted with `typst-theorems` by checking out the minimal example below!
 
-You can read the [manual](manual.pdf) for a full walkthrough of functionality offered by this module; flick through [manual_examples](manual_examples.pdf) and its [typ file](manual_examples.typ) to just see the examples.
+You can read the [manual](manual.pdf) for a full walkthrough of functionality
+offered by this module; flick through [manual_examples](manual_examples.pdf)
+and its [typ file](manual_examples.typ) to just see the examples.
 
-The [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) project provides a practical use case. _(Hastily translated from my notes written in LaTeX)_
+The [differential_calculus.typ](differential_calculus.typ)
+([render](differential_calculus.pdf)) project provides a practical use case.
+_(Hastily translated from my notes written in LaTeX)_
 
 ![basic example](basic.png)
 
@@ -92,6 +96,39 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
   $
 ]
 ```
+
+## Changelog
+
+### v1.1.2
+
+- Introduced the `thmproof` function for creating proof environments.
+- Inserting `#qedhere` in a block equation/list/enum item (in a proof) places
+  the qed symbol on the same line. The qed symbol can be customized via
+  `thmrules`.
+
+### v1.1.1
+
+- Extra named arguments given to a theorem environment produced by `thmbox` (or
+  `thmplain`) are passed to `block`.
+
+### v1.1.0
+
+- The `supplement` (for references) is no longer set in `thmenv`. It can be
+  passed to the theorem environment directly, along with `refnumbering` to
+  control the appearance of `@reference`s.
+- Extra named arguments given to `thmbox` are passed to `block`.
+- Fixed spacing bug for unnumbered environments.
+- Replaced dummy figure with labelled metadata.
+
+### v1.0.0
+
+- Extra named arguments given to a theorem environment are passed to its
+  formatting function `fmt`.
+- Removed `thmref`, introduced normal `<label>`s and `@reference`s.
+- Import must be followed by `show: thmrules`.
+- Removed `name: ...` from theorem environments; use `#theorem("Euclid")[]`
+  instead of `#theorem(name: "Euclid")[]`.
+- Theorems are now wrapped in `figure`s.
 
 
 ## Acknowledgements
