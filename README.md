@@ -2,9 +2,8 @@
 
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
-Available as
-[ctheorems](https://github.com/typst/packages/tree/main/packages/preview/ctheorems/2.0.0)
-in the official Typst [packages](https://github.com/typst/packages/tree/main).
+Available as [ctheorems](https://typst.app/universe/package/ctheorems) in the
+official Typst [universe](https://typst.app/universe).
 Import with
 
 ```typst
