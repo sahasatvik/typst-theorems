@@ -16,8 +16,9 @@ your own projects.
 
 ### Features
 - Numbered theorem environments can be created and customized.
-- Environments can share the same counter, via same `identifier`s.
-- Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
+- Environments can share the same `counter`.
+- Environment counters can be _attached_ (just as subheadings are attached to
+  headings) to other environments, headings, or keep a global count via `base`.
 - The depth of a counter can be manually set, via `base_level`.
 - Environments can be `<label>`'d and `@reference`'d.
 - Environments can be restated (or deferred to) later on in the document.
