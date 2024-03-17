@@ -235,7 +235,7 @@
     if it.citation.supplement != none {
       supplement = it.citation.supplement
     }
-    let supplement_spaced = if (supplement == none or supplement == "") {
+    let supplement_spaced = if (supplement == none or supplement == [] or (supplement.has("text") and supplement.text == "")) {
       ""
     } else {
       [#supplement~]
