@@ -11,7 +11,7 @@
 )
 #let lemma = thm-plain(
   "Lemma",
-  identifier: "Theorem",  // Lemmas use the same counter as Theorems
+  counter: "Theorem",  // Lemmas use the same counter as Theorems
   fill: rgb("#efe6ff"),
   outset: 1em,
   padding: (y: 1em),
@@ -498,7 +498,7 @@
 = Mean value theorem
 Consider a differentiable function $f: RR^n -> RR$, and fix $a  in  RR^n$.
 Define the functions $ 
-    g_i: RR -> RR,  quad  g_i(x) = f(a_1,  dots , a_(i - 1), x, a_(i + 1),
+    g_i: RR -> RR,  quad  g_i (x) = f(a_1,  dots , a_(i - 1), x, a_(i + 1),
      dots , a_n).
 $  Then, each $g_i$ is differentiable, with $ 
     g_i'(x) =  pp(f, x_i) (a_1,  dots , a_(i - 1), x, a_(i + 1),  dots , a_n).
@@ -602,15 +602,13 @@ $
     $  whence the surface $M$ is locally represented by the graph of $h$.
 ]
 
-#block(inset: 1em)[
-#remark()[
-    Note that by using $ 
-        f(x_1,  dots , x_(n - 1), h(x_1,  dots , x_(n - 1))) = 0
-    $  on the surface, we can use the chain rule to conclude that for all $1  <= 
-    i < n$, we have $ 
-         pp(f, x_i) (a) +  pp(f, x_n) (a) pp(h, x_i) (a_1,  dots , a_(n - 1)) = 0.
-    $  
-]
+#remark[
+  Note that by using $ 
+      f(x_1,  dots , x_(n - 1), h(x_1,  dots , x_(n - 1))) = 0
+  $  on the surface, we can use the chain rule to conclude that for all $1  <= 
+  i < n$, we have $ 
+       pp(f, x_i) (a) +  pp(f, x_n) (a) pp(h, x_i) (a_1,  dots , a_(n - 1)) = 0.
+  $  
 ]
 
 #theorem([Implicit function theorem])[
