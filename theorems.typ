@@ -6,7 +6,7 @@
   )
 )
 
-// Store theorem data for restating/deferring
+// Store theorem data
 #let thm-stored = state("thm-stored", ())
 
 #let heading-counter = counter(heading)
@@ -43,7 +43,8 @@
 
     let number_ = number
     if number == auto and numbering != none {
-      result = locate(loc => {
+      result = context {
+        let loc = here()
         return thm-counters.update(thmpair => {
           let counters = thmpair.at("counters")
           // Manually update heading counter
@@ -83,33 +84,42 @@
             "latest": latest
           )
         })
-      })
+      }
 
       number = thm-counters.display(x => {
         return global_numbering(numbering, ..x.at("latest"))
       })
-
     }
 
-    if restate or defer {
-      result = result + locate(loc => {
-        thm-stored.update(x => {
-          let thm = (
-            restate-keys: restate-keys,
-            name: name,
-            body: body,
-            loc: loc,
-            fmt: fmt,
-            number: number_,
-            numbering: numbering,
-            args: args
-          )
-          if x == none {
-            return (thm, )
-          } else {
-            return x + (thm, )
-          }
-        })
+    result = result + context {
+      let loc = here()
+      let number__ = number_
+      if number__ == auto and numbering != none {
+        number__ = thm-counters.at(loc).latest
+        number__ = global_numbering(numbering, ..number__)
+      }
+      thm-stored.update(x => {
+        let thm = (
+          args: args,
+          name: name,
+          body: body,
+          supplement: supplement,
+          fmt: fmt,
+          number: number__,
+          numbering: numbering,
+          restate: restate,
+          defer: defer,
+          restate-keys: restate-keys,
+          loc: loc,
+          counter: counter,
+          base: base,
+          base_level: base_level
+        )
+        if x == none {
+          return (thm, )
+        } else {
+          return x + (thm, )
+        }
       })
     }
 
@@ -130,8 +140,42 @@
   }
 }
 
-#let thm-restate(..args) = {
-  thm-stored.display(thms => {
+#let thm-display(..args, fmt: auto, at: auto, final: false) = {
+  context {
+    let thms = thm-stored.get()
+    if at != auto {
+      thms = thm-stored.at(at)
+    }
+    if final {
+      thms = thm-stored.final()
+    }
+    if args.pos().len() > 0 {
+      // Use arg_1 or ... or arg_n style filter
+      thms = thms.filter(thm =>
+        args.pos().any(x => x(thm))
+      )
+    }
+
+    for thm in thms {
+      if fmt == auto {
+        (thm.fmt)(thm.name, thm.number, thm.body, ..thm.args.named())
+      } else {
+        fmt(thm)
+      }
+    }
+  }
+}
+
+#let thm-restate(..args, fmt: auto, at: auto, final: false) = {
+  context {
+    let thms = thm-stored.get()
+    if at != auto {
+      thms = thm-stored.at(at)
+    }
+    if final {
+      thms = thm-stored.final()
+    }
+    thms = thms.filter(thm => (thm.restate or thm.defer))
     if args.pos().len() > 0 {
       // Use arg_1 or ... or arg_n style filter
       thms = thms.filter(thm =>
@@ -151,16 +195,13 @@
     }
 
     for thm in thms {
-      let number = thm.number
-      // Extract correct number from original location
-      if number == auto and thm.numbering != none {
-        number = thm-counters.at(thm.loc).latest
-        number = numbering(thm.numbering, ..number)
+      if fmt == auto {
+        (thm.fmt)(thm.name, thm.number, thm.body, ..thm.args.named())
+      } else {
+        fmt(thm)
       }
-      let fmt = thm.fmt
-      fmt(thm.name, number, thm.body, ..thm.args.named())
     }
-  })
+  }
 }
 
 #let thm-box(
@@ -281,12 +322,12 @@
 #let proof-bodyfmt(body) = {
   thm-qed-done.update(false)
   body
-  locate(loc => {
-    if thm-qed-done.at(loc) == false {
+  context {
+    if thm-qed-done.get() == false {
       h(1fr)
       thm-qed-show
     }
-  })
+  }
 }
 
 #let thm-proof = thm-rem.with(
