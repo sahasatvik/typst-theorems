@@ -1,7 +1,7 @@
 #import "theorems.typ": *
 #show: thm-rules.with(qed-symbol: $square$)
 
-#set page(width: 16cm, height: auto, margin: 1.5cm)
+#set page(width: 16cm, height: auto, margin: 1.5cm, numbering: "1")
 #set text(font: "Linux Libertine", lang: "en")
 #set heading(numbering: "1.1.")
 #show heading: set block(below: 1em)
@@ -11,6 +11,26 @@
 #let definition = thm-def("Definition", counter: "Theorem")
 #let proof = thm-proof("Proof")
 
+
+= List of Theorems and Definitions
+
+#thm-display(
+  thm => ("Theorem", "Definition").contains(thm.supplement),
+  final: true,    // List matches up to the end of the document
+                  // (default is to list matches which have appeared so far)
+  fmt: thm => {
+    let head = [*#thm.supplement~#thm.number*]
+    if thm.name != none {
+      head = head + [~(#thm.name)]
+    }
+    head = link(thm.loc, head)
+    let page = thm.loc.position().page
+    let page = link(thm.loc, [#page])
+    [#head~#box(width: 1fr, repeat[.])~#page\ ]
+  }
+)
+
+#pagebreak()
 
 = Prime numbers
 
@@ -34,12 +54,18 @@
   contradiction.
 ]
 
+// Hack - since the proof is deferred to the end, the label must be attached
+// to something appearing in the document here.
+#metadata("") <euclid_proof>
+
 #corollary[
   There is no largest prime number.
 ]
 #corollary(restate: true, restate-keys: ("Corollary", "Result"))[
   There are infinitely many composite numbers.
 ]
+
+#pagebreak()
 
 #lorem(20)
 
@@ -56,22 +82,48 @@
   $
 ]
 
-= Restated or deferred
+
+#pagebreak()
+
+= Appendix (restated or deferred)
 
 #thm-restate()
 
-= Only Theorem or Corollary
+#pagebreak()
+
+= Only restate Theorem or Corollary
 
 #thm-restate("Theorem", "Corollary")
 
-= Only 'Result'
+#pagebreak()
+
+= Only restate 'Result'
 
 #thm-restate("Result")
 
-= Only (Theorem and 'Result') or Definition
+#pagebreak()
+
+= Only restate (Theorem and 'Result') or Definition
 
 #thm-restate(("Theorem", "Result"), "Definition")
 
-= Only if some key contains 'fi'
+#pagebreak()
+
+= Only restate if some key contains 'fi'
 
 #thm-restate(keys => keys.any(x => x.contains("fi")))
+
+#pagebreak()
+
+= Only display if (`name` is not `none`) or is 'Result'
+
+#thm-display(
+  thm => thm.name != none,
+  thm => thm.restate-keys.contains("Result")
+)
+
+#pagebreak()
+
+= Only restate up to `<euclid_proof>`
+
+#thm-restate(at: <euclid_proof>)
