@@ -2,13 +2,12 @@
 
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
-Available as
-[ctheorems](https://github.com/typst/packages/tree/main/packages/preview/ctheorems/1.1.2)
-in the official Typst [packages](https://github.com/typst/packages/tree/main).
+Available as [ctheorems](https://typst.app/universe/package/ctheorems) in the
+official Typst [universe](https://typst.app/universe).
 Import with
 
 ```typst
-#import "@preview/ctheorems:1.1.2": *
+#import "@preview/ctheorems:2.0.0": *
 #show: thmrules
 ```
 
@@ -17,51 +16,56 @@ your own projects.
 
 ### Features
 - Numbered theorem environments can be created and customized.
-- Environments can share the same counter, via same `identifier`s.
-- Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
+- Environments can share the same `counter`.
+- Environment counters can be _attached_ (just as subheadings are attached to
+  headings) to other environments, headings, or keep a global count via `base`.
 - The depth of a counter can be manually set, via `base_level`.
 - Environments can be `<label>`'d and `@reference`'d.
+- Environments can be restated (or deferred to) later on in the document.
 
 ## Manual and Examples
 Get acquainted with `typst-theorems` by checking out the minimal example below!
 
-You can read the [manual](manual.pdf) for a full walkthrough of functionality offered by this module; flick through [manual_examples](manual_examples.pdf) and its [typ file](manual_examples.typ) to just see the examples.
+You can read the [manual](manual.pdf) for a full walkthrough of functionality
+offered by this module; flick through [manual_examples](manual_examples.pdf)
+and its [typ file](manual_examples.typ) to just see the examples.
 
-The [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) project provides a practical use case. _(Hastily translated from my notes written in LaTeX)_
+The [differential_calculus.typ](differential_calculus.typ)
+([render](differential_calculus.pdf)) project provides a practical use case.
+_(Hastily translated from my notes written in LaTeX)_
 
 ![basic example](basic.png)
 
 ### Preamble
 ```typst
 #import "theorems.typ": *
-#show: thmrules.with(qed-symbol: $square$)
+#show: thm-rules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
 #set text(font: "Linux Libertine", lang: "en")
 #set heading(numbering: "1.1.")
 
-#let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
-#let corollary = thmplain(
-  "corollary",
-  "Corollary",
-  base: "theorem",
-  titlefmt: strong
+#let theorem = thm-plain(
+  "Theorem",
+  outset: 1em,
+  padding: (y: 0.6em),
+  fill: rgb("#eeffee"),
 )
-#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
-
-#let example = thmplain("example", "Example").with(numbering: none)
-#let proof = thmproof("proof", "Proof")
+#let corollary = thm-plain("Corollary", base: "Theorem")
+#let definition = thm-def("Definition")
+#let remark = thm-rem("Remark")
+#let proof = thm-proof("Proof")
 ```
 
 ### Document
 ```typst
 = Prime numbers
 
-#definition[
+#definition("Prime numbers")[
   A natural number is called a #highlight[_prime number_] if it is greater
   than 1 and cannot be written as the product of two smaller natural numbers.
 ]
-#example[
+#remark[
   The numbers $2$, $3$, and $17$ are prime.
   @cor_largest_prime shows that this list is not exhaustive!
 ]
@@ -89,10 +93,43 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 ]
 #proof[
   For any $n > 2$, consider $
-    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+    n! + 2, quad n! + 3, quad ..., quad n! + n. #qedhere
   $
 ]
 ```
+
+## Changelog
+
+### v1.1.2
+
+- Introduced the `thmproof` function for creating proof environments.
+- Inserting `#qedhere` in a block equation/list/enum item (in a proof) places
+  the qed symbol on the same line. The qed symbol can be customized via
+  `thmrules`.
+
+### v1.1.1
+
+- Extra named arguments given to a theorem environment produced by `thmbox` (or
+  `thmplain`) are passed to `block`.
+
+### v1.1.0
+
+- The `supplement` (for references) is no longer set in `thmenv`. It can be
+  passed to the theorem environment directly, along with `refnumbering` to
+  control the appearance of `@reference`s.
+- Extra named arguments given to `thmbox` are passed to `block`.
+- Fixed spacing bug for unnumbered environments.
+- Replaced dummy figure with labelled metadata.
+
+### v1.0.0
+
+- Extra named arguments given to a theorem environment are passed to its
+  formatting function `fmt`.
+- Removed `thmref`, introduced normal `<label>`s and `@reference`s.
+- Import must be followed by `show: thmrules`.
+- Removed `name: ...` from theorem environments; use `#theorem("Euclid")[]`
+  instead of `#theorem(name: "Euclid")[]`.
+- Theorems are now wrapped in `figure`s.
 
 
 ## Acknowledgements

@@ -1,30 +1,30 @@
 #import "theorems.typ": *
-#show: thmrules.with(qed-symbol: $square$)
+#show: thm-rules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
 #set text(font: "Linux Libertine", lang: "en")
 #set heading(numbering: "1.1.")
 
-#let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
-#let corollary = thmplain(
-  "corollary",
-  "Corollary",
-  base: "theorem",
-  titlefmt: strong
+#let theorem = thm-plain(
+  "Theorem",
+  outset: 1em,
+  padding: (y: 0.6em),
+  fill: rgb("#eeffee"),
 )
-#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
-
-#let example = thmplain("example", "Example").with(numbering: none)
-#let proof = thmproof("proof", "Proof")
+#let corollary = thm-plain("Corollary", base: "Theorem")
+#let definition = thm-def("Definition")
+#let remark = thm-rem("Remark")
+#let proof = thm-proof("Proof")
 
 
 = Prime numbers
+#v(1em)
 
-#definition[
+#definition("Prime numbers")[
   A natural number is called a #highlight[_prime number_] if it is greater
   than 1 and cannot be written as the product of two smaller natural numbers.
 ]
-#example[
+#remark[
   The numbers $2$, $3$, and $17$ are prime.
   @cor_largest_prime shows that this list is not exhaustive!
 ]
@@ -52,6 +52,6 @@
 ]
 #proof[
   For any $n > 2$, consider $
-    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+    n! + 2, quad n! + 3, quad ..., quad n! + n. #qedhere
   $
 ]

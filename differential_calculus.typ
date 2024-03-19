@@ -1,59 +1,59 @@
 #import "theorems.typ": *
-#show: thmrules
+#show: thm-rules
 
 // Define theorem environments
 
-#let theorem = thmbox(
-  "theorem",
+#let theorem = thm-plain(
   "Theorem",
-  fill: rgb("#e8e8f8")
+  fill: rgb("#e8e8f8"),
+  outset: 1em,
+  padding: (y: 1em)
 )
-#let lemma = thmbox(
-  "theorem",            // Lemmas use the same counter as Theorems
+#let lemma = thm-plain(
   "Lemma",
-  fill: rgb("#efe6ff")
+  counter: "Theorem",  // Lemmas use the same counter as Theorems
+  fill: rgb("#efe6ff"),
+  outset: 1em,
+  padding: (y: 1em),
 )
-#let corollary = thmbox(
-  "corollary",
+#let corollary = thm-plain(
   "Corollary",
-  base: "theorem",      // Corollaries are 'attached' to Theorems
-  fill: rgb("#f8e8e8")
+  base: "Theorem",        // Corollaries are 'attached' to Theorems
+  fill: rgb("#f8e8e8"),
+  outset: 1em,
+  padding: (y: 1em),
 )
 
-#let definition = thmbox(
-  "definition",         // Definitions use their own counter
+#let definition = thm-def(
   "Definition",
-  fill: rgb("#e8f8e8")
+  fill: rgb("#e8f8e8"),
+  outset: 1em,
+  padding: (y: 1em),
 )
 
-#let exercise = thmbox(
-  "exercise",
+#let exercise = thm-rem(
   "Exercise",
   stroke: rgb("#ffaaaa") + 1pt,
+  outset: 1em,
+  padding: (y: 1em),
   base: none,           // Unattached: count globally
 ).with(numbering: "I")  // Use Roman numerals
 
 // Examples and remarks are not numbered
-#let example = thmplain("example", "Example").with(numbering: none)
-#let remark = thmplain(
-  "remark",
-  "Remark",
-  inset: 0em
-).with(numbering: none)
+#let example = thm-rem("Example")
+#let remark = thm-rem("Remark")
 
 // Proofs are attached to theorems, although they are not numbered
-#let proof = thmproof(
-  "proof",
+#let proof = thm-proof(
   "Proof",
-  base: "theorem",
+  base: "Theorem",
 )
 
-#let solution = thmplain(
-  "solution",
+#let solution = thm-rem(
   "Solution",
-  base: "exercise",
-  inset: 0em,
-).with(numbering: none)
+  base: "Exercise",
+  numbering: none,
+)
 
 
 // Template
@@ -498,7 +498,7 @@
 = Mean value theorem
 Consider a differentiable function $f: RR^n -> RR$, and fix $a  in  RR^n$.
 Define the functions $ 
-    g_i: RR -> RR,  quad  g_i(x) = f(a_1,  dots , a_(i - 1), x, a_(i + 1),
+    g_i: RR -> RR,  quad  g_i (x) = f(a_1,  dots , a_(i - 1), x, a_(i + 1),
      dots , a_n).
 $  Then, each $g_i$ is differentiable, with $ 
     g_i'(x) =  pp(f, x_i) (a_1,  dots , a_(i - 1), x, a_(i + 1),  dots , a_n).
@@ -602,15 +602,13 @@ $
     $  whence the surface $M$ is locally represented by the graph of $h$.
 ]
 
-#block(inset: 1em)[
-#remark()[
-    Note that by using $ 
-        f(x_1,  dots , x_(n - 1), h(x_1,  dots , x_(n - 1))) = 0
-    $  on the surface, we can use the chain rule to conclude that for all $1  <= 
-    i < n$, we have $ 
-         pp(f, x_i) (a) +  pp(f, x_n) (a) pp(h, x_i) (a_1,  dots , a_(n - 1)) = 0.
-    $  
-]
+#remark[
+  Note that by using $ 
+      f(x_1,  dots , x_(n - 1), h(x_1,  dots , x_(n - 1))) = 0
+  $  on the surface, we can use the chain rule to conclude that for all $1  <= 
+  i < n$, we have $ 
+       pp(f, x_i) (a) +  pp(f, x_n) (a) pp(h, x_i) (a_1,  dots , a_(n - 1)) = 0.
+  $  
 ]
 
 #theorem([Implicit function theorem])[

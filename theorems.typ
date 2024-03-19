@@ -1,14 +1,18 @@
 // Store theorem environment numbering
-
-#let thmcounters = state("thm",
+#let thm-counters = state("thm-counters",
   (
     "counters": ("heading": ()),
     "latest": ()
   )
 )
 
+// Store theorem data
+#let thm-stored = state("thm-stored", ())
 
-#let thmenv(identifier, base, base_level, fmt) = {
+#let heading-counter = counter(heading)
+
+
+#let thm-env(counter, base, base_level, fmt) = {
 
   let global_numbering = numbering
 
@@ -18,9 +22,12 @@
     number: auto,
     numbering: "1.1",
     refnumbering: auto,
-    supplement: identifier,
+    supplement: counter,
     base: base,
-    base_level: base_level
+    base_level: base_level,
+    restate: false,
+    defer: false,
+    restate-keys: (counter, )
   ) => {
     let name = none
     if args != none and args.pos().len() > 0 {
@@ -33,17 +40,20 @@
     if number == auto and numbering == none {
       number = none
     }
+
+    let number_ = number
     if number == auto and numbering != none {
-      result = locate(loc => {
-        return thmcounters.update(thmpair => {
+      result = context {
+        let loc = here()
+        return thm-counters.update(thmpair => {
           let counters = thmpair.at("counters")
           // Manually update heading counter
-          counters.at("heading") = counter(heading).at(loc)
-          if not identifier in counters.keys() {
-            counters.insert(identifier, (0, ))
+          counters.at("heading") = heading-counter.at(loc)
+          if not counter in counters.keys() {
+            counters.insert(counter, (0, ))
           }
 
-          let tc = counters.at(identifier)
+          let tc = counters.at(counter)
           if base != none {
             let bc = counters.at(base)
 
@@ -58,34 +68,70 @@
 
             // Reset counter if the base counter has updated
             if tc.slice(0, -1) == bc {
-              counters.at(identifier) = (..bc, tc.last() + 1)
+              counters.at(counter) = (..bc, tc.last() + 1)
             } else {
-              counters.at(identifier) = (..bc, 1)
+              counters.at(counter) = (..bc, 1)
             }
           } else {
             // If we have no base counter, just count one level
-            counters.at(identifier) = (tc.last() + 1,)
-            let latest = counters.at(identifier)
+            counters.at(counter) = (tc.last() + 1,)
+            let latest = counters.at(counter)
           }
 
-          let latest = counters.at(identifier)
+          let latest = counters.at(counter)
           return (
             "counters": counters,
             "latest": latest
           )
         })
-      })
+      }
 
-      number = thmcounters.display(x => {
+      number = thm-counters.display(x => {
         return global_numbering(numbering, ..x.at("latest"))
       })
+    }
+
+    result = result + context {
+      let loc = here()
+      let number__ = number_
+      if number__ == auto and numbering != none {
+        number__ = thm-counters.at(loc).latest
+        number__ = global_numbering(numbering, ..number__)
+      }
+      thm-stored.update(x => {
+        let thm = (
+          args: args,
+          name: name,
+          body: body,
+          supplement: supplement,
+          fmt: fmt,
+          number: number__,
+          numbering: numbering,
+          restate: restate,
+          defer: defer,
+          restate-keys: restate-keys,
+          loc: loc,
+          counter: counter,
+          base: base,
+          base_level: base_level
+        )
+        if x == none {
+          return (thm, )
+        } else {
+          return x + (thm, )
+        }
+      })
+    }
+
+    if defer {
+      return result
     }
 
     return figure(
       result +  // hacky!
       fmt(name, number, body, ..args.named()) +
-      [#metadata(identifier) <meta:thmenvcounter>],
-      kind: "thmenv",
+      [#metadata(counter) <meta:thm-env-counter>],
+      kind: "thm-env",
       outlined: false,
       caption: name,
       supplement: supplement,
@@ -94,24 +140,91 @@
   }
 }
 
+#let thm-display(..args, fmt: auto, at: auto, final: false) = {
+  context {
+    let thms = thm-stored.get()
+    if at != auto {
+      thms = thm-stored.at(at)
+    }
+    if final {
+      thms = thm-stored.final()
+    }
+    if args.pos().len() > 0 {
+      // Use arg_1 or ... or arg_n style filter
+      thms = thms.filter(thm =>
+        args.pos().any(x => x(thm))
+      )
+    }
 
-#let thmbox(
-  identifier,
+    for thm in thms {
+      if fmt == auto {
+        (thm.fmt)(thm.name, thm.number, thm.body, ..thm.args.named())
+      } else {
+        fmt(thm)
+      }
+    }
+  }
+}
+
+#let thm-restate(..args, fmt: auto, at: auto, final: false) = {
+  context {
+    let thms = thm-stored.get()
+    if at != auto {
+      thms = thm-stored.at(at)
+    }
+    if final {
+      thms = thm-stored.final()
+    }
+    thms = thms.filter(thm => (thm.restate or thm.defer))
+    if args.pos().len() > 0 {
+      // Use arg_1 or ... or arg_n style filter
+      thms = thms.filter(thm =>
+        args.pos().any(x => {
+          if type(x) == str {
+            // keys contains x
+            return thm.restate-keys.contains(x)
+          } else if type(x) == array {
+            // keys contain x_1 and ... and x_n
+            return x.all(key => thm.restate-keys.contains(key))
+          } else if type(x) == function {
+            // keys passes filter x
+            return x(thm.restate-keys)
+          }
+        })
+      )
+    }
+
+    for thm in thms {
+      if fmt == auto {
+        (thm.fmt)(thm.name, thm.number, thm.body, ..thm.args.named())
+      } else {
+        fmt(thm)
+      }
+    }
+  }
+}
+
+#let thm-box(
   head,
-  ..blockargs,
+  counter: auto,
+  ..args,
+  numbering: "1.1",
   supplement: auto,
-  padding: (top: 0.5em, bottom: 0.5em),
+  padding: (y: 0.1em),
   namefmt: x => [(#x)],
-  titlefmt: strong,
+  titlefmt: x => x,
   bodyfmt: x => x,
-  separator: [#h(0.1em):#h(0.2em)],
+  separator: [.#h(0.2em)],
   base: "heading",
   base_level: none,
 ) = {
+  if counter == auto {
+    counter = head
+  }
   if supplement == auto {
     supplement = head
   }
-  let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
+  let boxfmt(name, number, body, title: auto, ..args_individual) = {
     if not name == none {
       name = [ #namefmt(name)]
     } else {
@@ -129,41 +242,50 @@
       ..padding,
       block(
         width: 100%,
-        inset: 1.2em,
-        radius: 0.3em,
-        breakable: false,
-        ..blockargs.named(),
-        ..blockargs_individual.named(),
+        ..args.named(),
+        ..args_individual.named(),
         [#title#name#separator#body]
       )
     )
   }
-  return thmenv(
-    identifier,
+  return thm-env(
+    counter,
     base,
     base_level,
     boxfmt
   ).with(
+    numbering: numbering,
     supplement: supplement,
+    restate-keys: (head, )
   )
 }
 
 
-#let thmplain = thmbox.with(
-  padding: (top: 0em, bottom: 0em),
-  breakable: true,
-  inset: (top: 0em, left: 1.2em, right: 1.2em),
-  namefmt: name => emph([(#name)]),
-  titlefmt: emph,
+#let thm-plain = thm-box.with(
+  titlefmt: strong,
+  bodyfmt: emph,
+  separator: [*.*#h(0.2em)],
 )
 
+#let thm-def = thm-box.with(
+  titlefmt: strong,
+  separator: [*.*#h(0.2em)],
+)
+
+#let thm-rem = thm-box.with(
+  padding: (y: 0em),
+  namefmt: name => emph([(#name)]),
+  titlefmt: emph,
+  separator: [.#h(0.2em)],
+  numbering: none
+)
 
 // Track whether the qed symbol has already been placed in a proof
 #let thm-qed-done = state("thm-qed-done", false)
 
 // Show the qed symbol, update state
 #let thm-qed-show = {
-  thm-qed-done.update("thm-qed-symbol")
+  thm-qed-done.update(metadata("thm-qed-symbol"))
   thm-qed-done.display()
 }
 
@@ -172,7 +294,7 @@
 
 // Checks if content x contains the qedhere tag
 #let thm-has-qedhere(x) = {
-  if x == "thm-qedhere" {
+  if x == qedhere {
     return true
   }
 
@@ -200,25 +322,23 @@
 #let proof-bodyfmt(body) = {
   thm-qed-done.update(false)
   body
-  locate(loc => {
-    if thm-qed-done.at(loc) == false {
+  context {
+    if thm-qed-done.get() == false {
       h(1fr)
       thm-qed-show
     }
-  })
+  }
 }
 
-#let thmproof(..args) = thmplain(
-    ..args,
+#let thm-proof = thm-rem.with(
     namefmt: emph,
     bodyfmt: proof-bodyfmt,
-    ..args.named()
-).with(numbering: none)
+)
 
 
-#let thmrules(qed-symbol: $qed$, doc) = {
+#let thm-rules(qed-symbol: $qed$, doc) = {
 
-  show figure.where(kind: "thmenv"): it => it.body
+  show figure.where(kind: "thm-env"): it => it.body
 
   show ref: it => {
     if it.element == none {
@@ -227,7 +347,7 @@
     if it.element.func() != figure {
       return it
     }
-    if it.element.kind != "thmenv" {
+    if it.element.kind != "thm-env" {
       return it
     }
 
@@ -235,13 +355,18 @@
     if it.citation.supplement != none {
       supplement = it.citation.supplement
     }
+    let supplement_spaced = if (supplement == none or supplement == [] or (supplement.has("text") and supplement.text == "")) {
+      ""
+    } else {
+      [#supplement~]
+    }
 
     let loc = it.element.location()
-    let thms = query(selector(<meta:thmenvcounter>).after(loc), loc)
-    let number = thmcounters.at(thms.first().location()).at("latest")
+    let thms = query(selector(<meta:thm-env-counter>).after(loc), loc)
+    let number = thm-counters.at(thms.first().location()).at("latest")
     return link(
       it.target,
-      [#supplement~#numbering(it.element.numbering, ..number)]
+      [#supplement_spaced#numbering(it.element.numbering, ..number)]
     )
   }
 
@@ -249,7 +374,15 @@
     if thm-has-qedhere(eq) and thm-qed-done.at(eq.location()) == false {
       grid(
         columns: (1fr, auto, 1fr),
-        [], eq, align(right + horizon)[#thm-qed-show]
+        [], eq, align(
+          horizon + right,
+          context {
+            let pos-qedhere = query(metadata.where(value: "thm-qedhere").after(eq.location())).first().location().position()
+            let pos-here = here().position()
+            let height = measure(qed-symbol).height
+            move(dy: -pos-here.y + pos-qedhere.y - height/2, thm-qed-show)
+          }
+        )
       )
     } else {
       eq
@@ -272,7 +405,7 @@
     it
   }
 
-  show "thm-qed-symbol": qed-symbol
+  show metadata.where(value: "thm-qed-symbol"): qed-symbol
 
   doc
 }
