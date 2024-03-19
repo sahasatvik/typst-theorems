@@ -370,19 +370,21 @@
     )
   }
 
-  show math.equation.where(block: true): eq => {
-    if thm-has-qedhere(eq) and thm-qed-done.at(eq.location()) == false {
-      grid(
-        columns: (1fr, auto, 1fr),
-        [], eq, align(
-          horizon + right,
+  show math.equation: eq => {
+    if eq.numbering == none and thm-has-qedhere(eq) and thm-qed-done.at(eq.location()) == false {
+      math.equation(
+        block: eq.block,
+        numbering: x => {
           context {
             let pos-qedhere = query(metadata.where(value: "thm-qedhere").after(eq.location())).first().location().position()
             let pos-here = here().position()
             let height = measure(qed-symbol).height
             move(dy: -pos-here.y + pos-qedhere.y - height/2, thm-qed-show)
           }
-        )
+        },
+        number-align: eq.number-align,
+        supplement: eq.supplement,
+        eq.body
       )
     } else {
       eq
