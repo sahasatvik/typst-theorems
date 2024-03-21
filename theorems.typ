@@ -21,7 +21,6 @@
     body,
     number: auto,
     numbering: "1.1",
-    refnumbering: auto,
     supplement: counter,
     base: base,
     base_level: base_level,
@@ -33,9 +32,7 @@
     if args != none and args.pos().len() > 0 {
       name = args.pos().first()
     }
-    if refnumbering == auto {
-      refnumbering = numbering
-    }
+
     let result = none
     if number == auto and numbering == none {
       number = none
@@ -135,7 +132,7 @@
       outlined: false,
       caption: name,
       supplement: supplement,
-      numbering: refnumbering,
+      numbering: numbering,
     )
   }
 }
@@ -363,10 +360,11 @@
 
     let loc = it.element.location()
     let thms = query(selector(<meta:thm-env-counter>).after(loc), loc)
-    let number = thm-counters.at(thms.first().location()).at("latest")
+    let thmloc = thms.first().location()
+    let number = thm-stored.at(thmloc).last().number
     return link(
       it.target,
-      [#supplement_spaced#numbering(it.element.numbering, ..number)]
+      [#supplement_spaced#number]
     )
   }
 
