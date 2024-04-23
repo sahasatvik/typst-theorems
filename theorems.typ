@@ -276,3 +276,22 @@
 
   doc
 }
+
+
+// Reprint theorems
+#let thmreprint(label) = context {
+  let current_thmcounters = thmcounters.get()
+  for result in query(label) {
+    
+    let loc = result.location()
+    let thms = query(selector(<meta:thmenvcounter>).after(loc))
+    thmcounters.update(thmcounters.at(thms.first().location()))
+    
+    figure(
+      result.body.children.at(1),
+      kind: "thmenv",
+      supplement: none
+    )
+  }
+  thmcounters.update(current_thmcounters)
+}
