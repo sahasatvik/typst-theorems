@@ -998,7 +998,7 @@
     }
 
     let loc = it.element.location()
-    let thms = query(selector(<meta:thm-env-counter>).after(loc), loc)
+    let thms = query(selector(<meta:thm-env-counter>).after(loc))
     let thmloc = thms.first().location()
     let thm = thm-stored.at(thmloc).last()
     return (thm.ref-fmt)(supplement, thm)
