@@ -83,7 +83,8 @@
 
     return figure(
       result +  // hacky!
-      fmt(name, number, body, ..args.named()) +
+      [ ] +
+      [#fmt(name, number, body, ..args.named()) <meta:thmbody>]+
       [#metadata(identifier) <meta:thmenvcounter>],
       kind: "thmenv",
       outlined: false,
@@ -284,11 +285,13 @@
   for result in query(label) {
     
     let loc = result.location()
-    let thms = query(selector(<meta:thmenvcounter>).after(loc))
-    thmcounters.update(thmcounters.at(thms.first().location()))
+    let thm_state = query(selector(<meta:thmenvcounter>).after(loc))
+    thmcounters.update(thmcounters.at(thm_state.first().location()))
     
+    let thm_body = query(selector(<meta:thmbody>).after(loc))
+
     figure(
-      result.body.children.at(1),
+      thm_body.first(),
       kind: "thmenv",
       supplement: none
     )
