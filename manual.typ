@@ -2,6 +2,7 @@
 #import "theorems.typ": *
 #show: thm-rules
 
+
 #show: project.with(
   title: "typst-theorems",
   authors: (
@@ -11,12 +12,11 @@
 )
 
 
-
 = Introduction
 
 The `typst-theorems` package provides `Typst` functions that help create
-numbered `theorem` environments. This is heavily inspired by the `\newtheorem`
-functionality of `LaTeX`.
+numbered `theorem` environments. This is heavily inspired by the #LATEX
+packages `amsthm` and `thmtools`.
 
 A _theorem environment_ lets you wrap content together with automatically
 updating _numbering_ information. Such environments use internal `state`
@@ -290,12 +290,12 @@ You can limit the number of levels of the `base` numbering used as follows.
 ```typst
 #let definition = thm-def(
   "Definition",
-  base_level: 1           // take only the first level from the base
+  base-level: 1           // take only the first level from the base
 )
 ```
 #let definition = thm-def(
   "Definition",
-  base_level: 1
+  base-level: 1
 )
 
 #table[
@@ -332,7 +332,7 @@ Note that this environment is _not_ numbered 3.3.1! Here we have used the
 ]
 ]
 
-Setting a `base_level` higher than what `base` provides will introduce padded
+Setting a `base-level` higher than what `base` provides will introduce padded
 zeroes.
 
 ```typst
@@ -349,13 +349,13 @@ zeroes.
 
 #table[
 ```typst
-#example(base_level: 4)[
+#example(base-level: 4)[
   The numbers $4$, $6$, and $42$
   are composite.
 ]
 ```
 ][
-#example(base_level: 4)[
+#example(base-level: 4)[
   The numbers $4$, $6$, and $42$ are composite.
 ]
 ]
@@ -373,8 +373,8 @@ and `number` together.
 ```typst
 #let proof-custom = thm-box(
   "Proof",
-  titlefmt: smallcaps,
-  bodyfmt: body => [
+  title-fmt: smallcaps,
+  body-fmt: body => [
     #body #h(1fr) $square$    // float a QED symbol to the right
   ],
   numbering: none
@@ -382,8 +382,8 @@ and `number` together.
 ```
 #let proof-custom = thm-box(
   "Proof",
-  titlefmt: smallcaps,
-  bodyfmt: body => [
+  title-fmt: smallcaps,
+  body-fmt: body => [
     #body #h(1fr) $square$
   ],
   numbering: none
@@ -415,12 +415,10 @@ and `number` together.
 ]
 
 You can go even further and use the `thm-env` function directly. It accepts an
-`counter`, a `base`, a `base_level`, and a `fmt` function.
+`counter`, a `base`, a `base-level`, and a `fmt` function.
 ```typst
 #let notation = thm-env(
   "notation",                 // counter
-  none,                       // base - do not attach, count globally
-  none,                       // base_level - use the base as-is
   (name, number, body, color: black) => [
                               // fmt - format content using the environment
                               // name, number, body, and an optional color
@@ -433,8 +431,8 @@ You can go even further and use the `thm-env` function directly. It accepts an
 ```
 #let notation = thm-env(
   "notation",                 // counter
-  none,                       // base - do not attach, count globally
-  none,                       // base_level - use the base as-is
+  // none,                       // base - do not attach, count globally
+  // none,                       // base-level - use the base as-is
   (name, number, body, color: black) => [
                               // fmt - format content using the environment name, number, body, and an optional color
     #text(color)[*Notation (#number) #name*]:
@@ -501,29 +499,26 @@ Recall that there are infinitely many prime numbers via @euclid.
 Recall that there are infinitely many prime numbers via @euclid.
 ][
 ```typst
-You can reference future environments too, like @oddprime[Cor.].
+You can reference future environments too, like @oddprime[Lem.].
 ```
 ][
-You can reference future environments too, like @oddprime[Cor.].
+You can reference future environments too, like @oddprime[Lem.].
 ][
 ```typst
-#lemma(
-  supplement: "Lem.",
-  refnumbering: "(1.1)"
-)[
+#lemma(supplement: "Lem.")[
   All primes apart from $2$ and $3$ are
   of the form $6k plus.minus 1$.
 ] <primeform>
 
-You can modify the supplement and numbering to be used in references, like @primeform.
+You can modify the supplement to be used in references, like @primeform.
 ```
 ][
-#lemma(supplement: "Lem.", refnumbering: "(1.1)")[
+#lemma(supplement: "Lem.")[
   All primes apart from $2$ and $3$ are of the form $6k plus.minus 1$.
 ] <primeform>
 
-#v(4.5em)
-You can modify the supplement and numbering to be used in references, like @primeform.
+#v(1.2em)
+You can modify the supplement to be used in references, like @primeform.
 ]
 
 *Caution*: Links created by references to `thm-env`s will be styled according
@@ -582,7 +577,7 @@ as a base.
 
 #v(2em)
 
-= Function reference
+= Function reference -- Deprecated!
 
 == `thm-rules`
 
@@ -602,10 +597,10 @@ The `thm-env` function produces a _theorem environment_.
 ```typst
 #let thm-env(
   counter,                    // environment counter name
-  base,                       // base counter name, can be "heading" or none
-  base_level,                 // number of base number levels to use
   fmt                         // formatting function of the form
                               // (name, number, body, ..args) -> content
+  base: none,                 // base counter name, can be "heading" or none
+  base-level: none,           // number of base number levels to use
 ) = { ... }
 ```
 
@@ -620,11 +615,9 @@ A _theorem environment_ is itself a map of the following form.
   body,                       // body content
   number: auto,               // number, overrides numbering if present
   numbering: "1.1",           // numbering style, can be a function
-  refnumbering: auto,         // numbering style used in references,
-                              // defaults to "numbering"
   supplement: counter,        // supplement used in references
   base: base,                 // base counter name override
-  base_level: base_level      // base_level override
+  base-level: base-level      // base-level override
 ) -> content
 ```
 
@@ -645,12 +638,12 @@ The `thm-box` wraps `thm-env`, supplying a box-like `fmt` function.
   padding: (y: 0.1em),        // padding around the block, passed to #pad
   numbering: "1.1",           // numbering style, can be a function
   supplement: auto,           // supplement for references, defaults to "head"
-  namefmt: x => [(#x)],       // formatting for name
-  titlefmt: x => x,           // formatting for title (head + number)
-  bodyfmt: x => x,            // formatting for body
+  name-fmt: x => [(#x)],      // formatting for name
+  title-fmt: x => x,          // formatting for title (head + number)
+  body-fmt: x => x,           // formatting for body
   separator: [.#h(0.2em)],    // separator inserted between name and body
   base: "heading",            // base - defaults to using headings
-  base_level: none,           // base_level - defaults to using base as-is
+  base-level: none,           // base-level - defaults to using base as-is
 ) = { ... }
 ```
 
@@ -659,54 +652,54 @@ The `thm-box` function sets a default `width: 100%` for the `block`.
 
 == `thm-plain`, `thm-def`, and `thm-rem`
 
-These functions are identical to `thm-box`, with default styles mimicking the
-`plain`, `definition`, and `remark` styles from `amsthm` respectively.
+These functions are identical to `thm-box`, with default styling options
+mimicking the `plain`, `definition`, and `remark` styles from `amsthm`.
 
 The 'plain' style has a bold title and italicized body. This is typically used
 for Theorems, Lemmas, Corollaries, Propositions, etc.
 ```typst
 #let thm-plain = thm-box.with(
-  titlefmt: strong,
-  bodyfmt: emph,
+  title-fmt: strong,
+  body-fmt: emph,
   separator: [*.*#h(0.2em)],
 )
 ```
 
 The 'definition' style has a bold title and upright body. This is typically
-appropriate for Definitions, Problems, Exercises, etc.
+used for Definitions, Problems, Exercises, etc.
 ```typst
 #let thm-def = thm-box.with(
-  titlefmt: strong,
+  title-fmt: strong,
   separator: [*.*#h(0.2em)],
 )
 ```
 
 The 'remark' style has an italicized title and upright body, with numbering
-suppressed by default. This is typically appropriate for Remarks, Notes,
-Notation, etc.
+suppressed by default. This is typically used for Remarks, Notes, Notation,
+etc.
 ```typst
 #let thm-rem = thm-box.with(
   padding: (y: 0em),
-  namefmt: name => emph([(#name)]),
-  titlefmt: emph,
+  name-fmt: name => emph([(#name)]),
+  title-fmt: emph,
   separator: [.#h(0.2em)],
   numbering: none
 )
 ```
 
-== `thm-proof`, `proof-bodyfmt` and `qedhere`
+== `thm-proof`, `proof-body-fmt` and `qedhere`
 
 The `thm-proof` function is identical to `thm-rem`, except with defaults
 appropriate for proofs.
 
 ```typst
 #let thm-proof = thm-rem.with(
-    namefmt: emph,
-    bodyfmt: proof-bodyfmt,
+    name-fmt: emph,
+    body-fmt: proof-body-fmt,
 )
 ```
 
-The `proof-bodyfmt` function is a `bodyfmt` function that automatically places
+The `proof-body-fmt` function is a `body-fmt` function that automatically places
 a qed symbol at the end of the body.
 
 You can use `#qedhere` inside a block equation, or at the end of a list/enum
@@ -718,7 +711,7 @@ item to place the qed symbol on the same line.
 
 Thanks to
 - #link("https://github.com/MJHutchinson")[MJHutchinson] for suggesting and
-  implementing the `base_level` and `base: none` features,
+  implementing the `base-level` and `base: none` features,
 - #link("https://github.com/rmolinari")[rmolinari] for suggesting and
   implementing the `separator: ...` feature,
 - #link("https://github.com/DVDTSB")[DVDTSB] for contributing

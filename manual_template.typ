@@ -38,3 +38,21 @@
 
   body
 }
+
+
+#let LATEX = {
+  set text(font: "New Computer Modern")
+  [L];box(move(
+    dx: -5.2pt, dy: -1.2pt,
+    box(scale(65%)[A])
+  ));box(move(
+    dx: -7.8pt, dy: 0pt,
+    [T]
+  ));box(move(
+    dx: -9.6pt, dy: 2.7pt,
+    box(scale(100%)[E])
+  ));box(move(
+    dx: -11.2pt, dy: 0pt,
+    [X]
+  ));h(-10.6pt)
+}

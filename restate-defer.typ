@@ -45,7 +45,7 @@
 
 #theorem("Euclid", restate: true)[
   There are infinitely many primes.
-]
+] <euclid>
 #proof(defer: true)[
   Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
   of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
