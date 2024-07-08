@@ -131,7 +131,7 @@
         width: 100%,
         inset: 1.2em,
         radius: 0.3em,
-        breakable: false,
+        breakable: true,
         ..blockargs.named(),
         ..blockargs_individual.named(),
         [#title#name#separator#body]
