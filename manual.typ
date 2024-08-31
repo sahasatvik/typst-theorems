@@ -522,7 +522,17 @@ You can modify the supplement to be used in references, like @primeform.
 ]
 
 *Caution*: Links created by references to `thm-env`s will be styled according
-to `#show link:` rules.
+to `#show link:` rules. To avoid this, use the following workaround:
+
+```typst
+show link: it => {
+  // Keep default styling for label links.
+  if type(it.dest) == label {
+    return it
+  }
+  // Your custom link styling goes here.
+}
+```
 
 
 == Overriding `base`
