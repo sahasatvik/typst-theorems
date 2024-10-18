@@ -222,6 +222,7 @@
 
 #let thmrules(qed-symbol: $qed$, doc) = {
 
+  show figure.where(kind: "thmenv"): set block(breakable: true)
   show figure.where(kind: "thmenv"): set align(start)
   show figure.where(kind: "thmenv"): it => it.body
 
