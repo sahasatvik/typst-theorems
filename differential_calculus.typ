@@ -60,7 +60,7 @@
 
 #let project(title: "", authors: (), body) = {
   set document(author: authors, title: title)
-  set text(font: "Linux Libertine", lang: "en")
+  set text(font: "Libertinus Serif", lang: "en")
   set heading(numbering: "1.1.", )
   set par(justify: true)
 
