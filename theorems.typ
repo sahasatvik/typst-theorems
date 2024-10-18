@@ -163,7 +163,7 @@
 #let thm-qed-done = state("thm-qed-done", false)
 
 // The configured QED symbol
-#let thm-qed-symbol = state("thm-qed-symbol", "a")
+#let thm-qed-symbol = state("thm-qed-symbol", $qed$)
 
 // Show the qed symbol, update state
 #let thm-qed-show = {
