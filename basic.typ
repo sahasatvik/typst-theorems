@@ -2,7 +2,7 @@
 #show: thmrules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
-#set text(font: "Linux Libertine", lang: "en")
+#set text(font: "Libertinus Serif", lang: "en")
 #set heading(numbering: "1.1.")
 
 #let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
