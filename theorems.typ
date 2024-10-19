@@ -976,7 +976,11 @@
   doc
 ) = {
 
-  show figure.where(kind: "thm-env"): it => it.body
+  show figure.where(kind: "thm-env"): it => {
+    set block(breakable: true)
+    set align(left)
+    it.body
+  }
 
   show ref: it => {
     if it.element == none {

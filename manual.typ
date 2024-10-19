@@ -525,7 +525,7 @@ You can modify the supplement to be used in references, like @primeform.
 to `#show link:` rules. To avoid this, use the following workaround:
 
 ```typst
-show link: it => {
+#show link: it => {
   // Keep default styling for label links.
   if type(it.dest) == label {
     return it

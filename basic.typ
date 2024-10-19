@@ -2,7 +2,6 @@
 #show: thm-rules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
-#set text(font: "Linux Libertine", lang: "en")
 #set heading(numbering: "1.1.")
 
 #let theorem = thm-plain(

@@ -60,7 +60,6 @@
 
 #let project(title: "", authors: (), body) = {
   set document(author: authors, title: title)
-  set text(font: "Linux Libertine", lang: "en")
   set heading(numbering: "1.1.", )
   set par(justify: true)
 
@@ -503,7 +502,7 @@ Define the functions $
 $  Then, each $g_i$ is differentiable, with $ 
     g_i'(x) =  pp(f, x_i) (a_1,  dots , a_(i - 1), x, a_(i + 1),  dots , a_n).
 $  By applying the Mean Value Theorem on some interval $[c, d]$, we can find
-$ alpha  in  (c, d)$ such that $g_i(d) - g_i(c) = g_i'( alpha )(d - c)$. In other
+$ alpha  in  (c, d)$ such that $g_i (d) - g_i (c) = g_i'( alpha )(d - c)$. In other
 words,
 $ 
     f( dots , d,  dots ) - f( dots , c,  dots ) =  pp(f, x_i) ( dots ,  alpha ,  dots )(d
@@ -639,8 +638,8 @@ $
          dd(, t) lr(f( gamma (t))  \|)_ (t = 0) = Df( gamma (0))( gamma '(0))
          = Df(a)(v).
     $  On the other hand, we have $f( gamma (t)) = 0$ identically. Thus, $ 
-        v dot.c   grad(f) (a) = Df(a)(v) = 0
-    $ as claimed.
+        v dot.c   grad(f) (a) = Df(a)(v) = 0 #qedhere
+    $
 ]
 
 = Taylor's theorem
