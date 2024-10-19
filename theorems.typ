@@ -228,7 +228,7 @@
       outlined: false,
       caption: name,
       supplement: supplement,
-      numbering: numbering,
+      numbering: if number == auto and numbering != none { numbering } else { (..nums) => number },
     )
   }
 }
