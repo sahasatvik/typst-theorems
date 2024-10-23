@@ -2,13 +2,12 @@
 
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
-Available as
-[ctheorems](https://github.com/typst/packages/tree/main/packages/preview/ctheorems/1.1.2)
-in the official Typst [packages](https://github.com/typst/packages/tree/main).
+Available as [ctheorems](https://typst.app/universe/package/ctheorems) in the
+official Typst Universe.
 Import with
 
 ```typst
-#import "@preview/ctheorems:1.1.2": *
+#import "@preview/ctheorems:1.1.3": *
 #show: thmrules
 ```
 
@@ -37,7 +36,7 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 #show: thmrules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
-#set text(font: "Linux Libertine", lang: "en")
+#set text(font: "Libertinus Serif", lang: "en")
 #set heading(numbering: "1.1.")
 
 #let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
@@ -108,5 +107,7 @@ Thanks to
     function.
   - the `number: ...` override feature.
   - the `title: ...` override feature in `thmbox`.
+- [PgBiel](https://github.com/PgBiel) for fixing breaking changes in version
+  updates.
 - The awesome devs of [typst.app](https://typst.app/) for their
   support.
