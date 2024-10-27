@@ -450,6 +450,13 @@ You can modify the supplement and numbering to be used in references, like @prim
 *Caution*: Links created by references to `thmenv`s will be styled according
 to `#show link:` rules.
 
+If you need to re-display a theorem exactly as it was displayed previously, use the following.
+
+```typst
+#thmreprint(<euclid>)
+```
+
+#thmreprint(<euclid>)
 
 == Overriding `base`
 
@@ -602,6 +609,17 @@ environments, references, and equations in proofs.
 ) = { ... }
 ```
 
+== `thmreprint`
+
+The `thmreprint` function reprints a theorem exactly as it was previously displayed.
+
+```typst
+#let thmreprint(
+  label
+) = { ... }
+```
+
+Although `label` has no type annotations because of an issue with the typst `query` function, it can accept anything that can be passed to the `query` parameter `target`: a `label`, `selector`, `location`, or `function`.
 
 = Acknowledgements
 

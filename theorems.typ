@@ -84,7 +84,8 @@
 
     return figure(
       result +  // hacky!
-      fmt(name, number, body, ..args.named()) +
+      [ ] +
+      [#fmt(name, number, body, ..args.named()) <meta:thmbody>]+
       [#metadata(identifier) <meta:thmenvcounter>],
       kind: "thmenv",
       outlined: false,
@@ -281,4 +282,25 @@
   thm-qed-symbol.update(qed-symbol)
 
   doc
+}
+
+
+// Reprint theorems
+#let thmreprint(label) = context {
+  let current_thmcounters = thmcounters.get()
+  for result in query(label) {
+    
+    let loc = result.location()
+    let thm_state = query(selector(<meta:thmenvcounter>).after(loc))
+    thmcounters.update(thmcounters.at(thm_state.first().location()))
+    
+    let thm_body = query(selector(<meta:thmbody>).after(loc))
+
+    figure(
+      thm_body.first(),
+      kind: "thmenv",
+      supplement: none
+    )
+  }
+  thmcounters.update(current_thmcounters)
 }
