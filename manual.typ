@@ -729,5 +729,7 @@ Thanks to
     function.
   - the `number: ...` override feature.
   - the `title: ...` override feature in `thm-plain`.
+- #link("https://github.com/PgBiel")[PgBiel] for fixing breaking changes in
+  version updates.
 - The awesome devs of #link("https://typst.app/")[typst.app] for their
   support.

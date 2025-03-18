@@ -73,7 +73,7 @@
     #v(2em)
   ]
 
-  outline(fill: none, indent: true)
+  outline(indent: 1em)
 
   body
 }

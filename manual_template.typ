@@ -1,7 +1,7 @@
 #let project(title: "", authors: (), urls: (), body) = {
   set page(paper: "a4", numbering: "1", number-align: center)
   set document(author: authors, title: title)
-  set text(font: "Linux Libertine", lang: "en")
+  // set text(font: "Libertinus", lang: "en")
   set heading(numbering: "1.1.")
   set par(justify: true)
   set list(marker: ([•], [--]))
@@ -32,7 +32,7 @@
     ),
   )
 
-  outline(indent: true)
+  outline(indent: 2em)
 
   v(2em)
 
