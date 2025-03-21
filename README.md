@@ -8,11 +8,14 @@ Import with
 
 ```typst
 #import "@preview/ctheorems:2.0.0": *
-#show: thmrules
+#show: thm-rules        // Must include!
 ```
 
-Alternatively, copy and import the [lib.typ](lib.typ) file to use in your own
-projects.
+A standard set of theorem environments in the AMS style is available using
+```typst
+#import thm-themes.ams: *
+```
+
 
 ### Features
 A _theorem environment_ combines content with automatically updated _numbering_
@@ -40,7 +43,7 @@ offered by this module.
 
 ### Preamble
 ```typst
-#import "lib.typ": *
+#import "@preview/ctheorems:2.0.0": *
 #import thm-state: thm-restate
 #import thm-themes.ams: *
 #show: thm-rules.with(qed-symbol: $square$)
