@@ -19,11 +19,11 @@
   environments, taking heavy inspiration from the #LATEX packages `amsthm`,
   `thmtools`, `apxproof`.
 
-  A _theorem environment_ lets you combine content with automatically updated
+  A _theorem environment_ combines content with automatically updated
   _numbering_ information.
-  Environments can
+  Theorem environments can
   - share the same counter (_Theorems_ and _Lemmas_ often do so)
-  - have their counter be attached to headings or other environments
+  - have their counters attached to headings or other environments
     (_Corollaries_ are often numbered based upon the parent _Theorem_)
   - be ```typ <label>```-ed and ```typ @reference```-d
   - be restated or deferred to later in the document.
@@ -72,7 +72,7 @@ dir: ltr,
 )
 
 #definition[Expectation][
-  The expectation of a random variable $X$ on a probabilty space $(Omega, cal(E), PP)$ is $
+  The expectation of a random variable $X$ on a probability space $(Omega, cal(E), PP)$ is $
     EE[X] = integral X thin d PP,
   $ whenever well-defined.
 ] <expectation>
