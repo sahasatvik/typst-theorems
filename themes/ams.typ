@@ -35,12 +35,12 @@
   supplement: "Theorem",
   counter: "Theorem"
 )
-#let lemma = thm.with(
-  supplement: "Lemma",
-  counter: "Theorem"
-)
 #let proposition = thm.with(
   supplement: "Proposition",
+  counter: "Theorem"
+)
+#let lemma = thm.with(
+  supplement: "Lemma",
   counter: "Theorem"
 )
 

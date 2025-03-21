@@ -182,10 +182,10 @@
 ///
 /// -> content
 #let thm-restate(
-  /// String keys, array of keys, or functions used to filter theorem environments.
+  /// String/content keys, array of keys, or functions used to filter theorem environments.
   /// A theorem environment is displayed if it passes _any_ of the filters.
   ///
-  /// If `k` in `keys` is a `string`, theorem environments containing `k` in its array of `restate-keys` will be matched.
+  /// If `k` in `keys` is a `string`/`content`, theorem environments containing `k` in its array of `restate-keys` will be matched.
   /// #example(```
   /// >>> #show: thm-rules
   /// >>> #set heading(numbering: "1.1")
@@ -209,7 +209,7 @@
   /// scope: (thm-rules: thm-rules-1),
   /// )
   ///
-  /// If `k` in `keys` is an array of `string`s, theorem environments containing _all_ keys from `k` in its array of `restate-keys` will be matched.
+  /// If `k` in `keys` is an array of `string`s/`content`, theorem environments containing _all_ keys from `k` in its array of `restate-keys` will be matched.
   /// #example(```
   /// >>> #show: thm-rules
   /// >>> #set heading(numbering: "1.1")
@@ -278,7 +278,7 @@
   /// mode: "markup",
   /// scope: (thm-rules: thm-rules-2)
   /// )
-  /// -> str | array | function
+  /// -> str | content | array | function
   ..keys,
   /// Formatting function, with the same form as @thm.fmt.
   /// The default ```typc auto``` uses the originally supplied formatting function @thm.fmt.
@@ -290,7 +290,8 @@
   /// See @thm-display.at.
   /// -> label | selector | location | function | auto
   at: auto,
-  /// If `true`, display environments up to the end of the document.
+  /// If ```typc true```, display environments up to the end of the document.
+  /// Overrides @thm-restate.at.
   /// See @thm-display.final.
   /// -> bool
   final: false,
@@ -315,15 +316,15 @@
       // Use arg_1 or ... or arg_n style filter
       thms = thms.filter(thm =>
         keys.pos().any(x => {
-          if type(x) == str {
-            // keys contains x
-            return thm.restate-keys.contains(x)
-          } else if type(x) == array {
+          if type(x) == array {
             // keys contain x_1 and ... and x_n
             return x.all(key => thm.restate-keys.contains(key))
           } else if type(x) == function {
             // keys passes filter x
             return x(thm.restate-keys)
+          } else {
+            // keys contains x
+            return thm.restate-keys.contains(x)
           }
         })
       )

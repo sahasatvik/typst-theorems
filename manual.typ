@@ -10,10 +10,12 @@
 
 
 #grid(
-  columns: 2,
+  columns: (1fr, 1fr),
   gutter: 1.5em,
 )[
-  #outline(indent: 2em)
+  #outline(indent: 2em, target: heading.where(numbering: "1."))
+  #v(0.7em)
+  #outline(indent: 2em, target: heading.where(numbering: "A.1."), title: none)
 ][
   This package provides functions that help create numbered theorem
   environments, taking heavy inspiration from the #LATEX packages `amsthm`,
@@ -26,17 +28,16 @@
   - have their counters attached to headings or other environments
     (_Corollaries_ are often numbered based upon the parent _Theorem_)
   - be ```typ <label>```-ed and ```typ @reference```-d
-  - be restated or deferred to later in the document.
+  - be restated or deferred to appear later in the document.
 
   This package also introduces a few miscellaneous features related to
   mathematical writing.
   - Proof environments, with _QED_ symbols.
-  - Equation tags (in the manner of #LATEX's `\tag`).
+  - Equation tags.
   - Predefined sets of commonly used theorem environments, and a few themes.
 ]
 
 
-// #pagebreak()
 
 = Setup
 
@@ -56,6 +57,9 @@ A standard set of theorem environments in the AMS style is available using
 #import thm-themes.ams: *
 ```
 )
+This lets you immediately use `theorem`, `proof`, `proposition`, `lemma`,
+`corollary`, `definition`, `example`, `remark`, `claim`.
+See @thm-themes-ams for more details.
 
 
 #pagebreak()
@@ -73,7 +77,7 @@ dir: ltr,
 
 #definition[Expectation][
   The expectation of a random variable $X$ on a probability space $(Omega, cal(E), PP)$ is $
-    EE[X] = integral X thin d PP,
+    EE[X] = integral X dif PP,
   $ whenever well-defined.
 ] <expectation>
 
@@ -132,8 +136,8 @@ dir: ltr,
 ```
 )
 
-Note that `theorem` inherits its numbering from the current heading, the
-default #var("thm.base").
+Note that `theorem` inherits its numbering from the current heading (the
+default #var("thm.base")).
 By setting #var("thm.base-level") to ```typc 1```, this theorem only uses the
 first level count from its base.
 
@@ -278,8 +282,21 @@ setting #var("thm.restate"), #var("thm.defer") as in the example in
 )
 
 This is often useful for pushing content to the appendix.
-For finer control, consider setting #var("thm.restate-keys"), or even using
-#fn("thm-display").
+For finer control, consider using #var("thm.restate-keys").
+#example(
+```
+>>>#import thm-state: thm-restate, thm-display
+Euclid's Theorem states:
+#thm-restate(
+  "Euclid",
+  all: true,
+  fmt: thm => thm.body
+)
+```
+)
+
+The #fn("thm-display") function is the most powerful method for manipulating
+theorem environments.
 The following produces a crude outline of named theorem environments (so far),
 excluding proofs; see #var("thm.fmt") for more information about the formatting
 function `fmt`.
@@ -577,11 +594,14 @@ Import all functions using
 
 
 
+#pagebreak()
+
+
 #counter(heading).update((1, 0))
 #heading(level: 1, outlined: true, numbering: "A.1.")[Themes]
 
 #counter(heading).update((2, 0))
-#heading(level: 2, outlined: true, numbering: "A.1.")[thm-themes.ams]
+#heading(level: 2, outlined: true, numbering: "A.1.")[thm-themes.ams] <thm-themes-ams>
 
 #let ams = tidy.parse-module(
   read("themes/ams.typ"),

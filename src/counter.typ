@@ -7,6 +7,7 @@
 #let _heading-counter = counter(heading)
 
 /// Update theorem counter
+/// See @thm.counter.
 #let thm-counter-update(
   /// -> str
   counter,
@@ -27,7 +28,7 @@
 
 /// Get theorem counter.
 /// Must be wrapped in context.
-/// See @thm.base, @thm.base-level.
+/// See @thm.counter.
 /// -> array
 #let thm-counter-get(
   /// -> str
@@ -44,6 +45,7 @@
 
 /// Step theorem counter forward, relative to a `base` and `base-level`.
 /// Must be wrapped in context.
+/// See @thm.counter, @thm.base, @thm.base-level.
 #let thm-counter-step(
   /// -> str
   counter,

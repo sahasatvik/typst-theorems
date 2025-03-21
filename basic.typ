@@ -19,7 +19,7 @@
 
 #definition[Expectation][
   The expectation of a random variable $X$ on a probability space $(Omega, cal(E), PP)$ is $
-    EE[X] = integral X thin d PP,
+    EE[X] = integral X dif PP,
   $ whenever well-defined.
 ] <expectation>
 

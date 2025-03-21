@@ -7,6 +7,7 @@
 /// Intended for use in @thm.fmt.
 /// Named arguments from @thm.args can override all of the arguments below;
 /// any remaining named arguments are passed to the block.
+/// Blocks have ```typc width: 100%``` set by default.
 ///
 /// -> content
 #let thm-fmt-block(
@@ -58,7 +59,21 @@
 
 
 
-/// Theorem environment.
+/// Numbered theorem environment.
+/// #example(
+/// ```
+/// >>>#show: thm-rules
+/// #thm(base: none)[Name][
+///   #lorem(10)
+/// ]
+///
+/// #thm(supplement: "Corollary", base: "Theorem")[
+///   #lorem(7)
+/// ]
+/// ```,
+/// mode: "markup",
+/// scope: (thm-rules: thm-rules-1)
+/// )
 /// -> figure | context
 #let thm(
   /// Extra arguments.
@@ -75,14 +90,16 @@
   /// If ```typc auto```, defaults to @thm.supplement.
   /// -> str | auto
   counter: auto,
-  /// Formatting function, of the form ```typc thm => content```, where `thm` is a
-  /// dictionary whose keys are essentially the arguments of @thm, with a
-  /// couple of additions/exceptions.
+  /// Formatting function controlling the appearance of the theorem
+  /// environment, of the form ```typc thm => content```.
+  /// `thm` is a dictionary whose keys are essentially the arguments of @thm,
+  /// with a couple of additions/exceptions.
   /// - The keys `name`, `counter`, `number`, `restate-keys` contain their
-  ///   finally computed values.
+  ///   finally inferred/computed values.
   /// - The key `loc` contains the theorem's location.
   /// - The key `args` contains a dictionary of only the named arguments from
   ///   @thm.args.
+  /// It is often useful to use @thm.args to control formatting functions.
   /// -> function
   fmt: thm-fmt-block,
   /// Base counter name, whose numbering prefixes the theorem environment
@@ -106,7 +123,7 @@
   /// Theorem number.
   /// If ```typc auto``` (and @thm.numbering is not ```typc none```), the
   /// number is computed based on @thm.counter, @thm.base, @thm.base-level.
-  /// -> content | auto
+  /// -> content | auto | none
   number: auto,
   /// Theorem numbering style.
   /// If ```typc none```, numbering is suppressed.
@@ -340,13 +357,12 @@
 /// @proof-body-fmt (for @thm-fmt-block.body-fmt).
 /// #example(```
 /// >>> #show: thm-rules
-/// #let theorem = thm.with(
-///   supplement: "Theorem",
-///   base: none
-/// )
-///
-/// #theorem[#lorem(6)]
-/// #proof[#lorem(3)]
+/// #thm(base: none)[
+///   #lorem(6)
+/// ]
+/// #proof[
+///   #lorem(3)
+/// ]
 /// ```,
 /// mode: "markup",
 /// scope: (thm-rules: thm-rules-2)

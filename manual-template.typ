@@ -10,7 +10,7 @@
   set text(font: "Libertinus Serif", lang: "en")
   set heading(numbering: "1.")
   set par(justify: true)
-  set list(marker: ([•], [--]))
+  set list(marker: ([•], [--]), indent: 1em)
   show heading.where(level: 1): it => pad(bottom: 0.5em, it)
   show heading.where(level: 2): it => pad(bottom: 0.5em, it)
   // show link: it => underline(text(fill: blue, it))
