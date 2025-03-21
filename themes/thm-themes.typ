@@ -1,1 +1,1 @@
-#import "standard.typ"
+#import "ams.typ"

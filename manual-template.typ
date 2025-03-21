@@ -1,10 +1,13 @@
 #import "@preview/tidy:0.4.2"
-#import "theorems.typ": *
+#import "lib.typ": *
+#import thm-counter: *
+#import thm-state: *
+#import thm-themes.ams: *
 
 #let project(title: "", author: "", url: "", body) = {
   set page(paper: "a4", margin: 1in, numbering: "1", number-align: center)
   set document(author: author, title: title)
-  set text(font: "libertinus serif", lang: "en")
+  set text(font: "Libertinus Serif", lang: "en")
   set heading(numbering: "1.")
   set par(justify: true)
   set list(marker: ([•], [--]))
@@ -15,24 +18,28 @@
   show raw: set text(font: "Cascadia Code")
 
 
-
-
   block(below: 1.5em, text(weight: 500, 2.7em, title))
 
-  block(below: 2em)[
-    #set text(1.1em)
+  block(below: 2.5em)[
+    #set text(1.1em, style: "italic")
     #author \
     #link(url)
   ]
 
-  outline(indent: 2em)
+  v(2em)
 
+  body
+}
+
+#let appendix(body) = {
+  set heading(numbering: "A.1.", supplement: [Appendix])
+  counter(heading).update(0)
   body
 }
 
 
 
-#let LATEX = {
+#let LATEX = box({
   set text(font: "New Computer Modern")
   [L];box(move(
     dx: -5.2pt, dy: -1.2pt,
@@ -47,7 +54,7 @@
     dx: -11.2pt, dy: 0pt,
     [X]
   ));h(-10.6pt)
-}
+})
 
 
 
@@ -94,9 +101,10 @@
 
     let arrangement(width: 100%, height: auto) = block(width: width, inset: 0pt, stack(dir: dir, spacing: col-spacing,
       code-block(
-        width: code-width, 
+        breakable: dir.axis() == "vertical",
+        width: code-width,
         height: height,
-        inset: 5pt, 
+        inset: 5pt,
         {
           set text(size: .9em)
           set raw(block: true)
@@ -132,18 +140,16 @@
 
 
 #let scope = (
+  thm-themes: thm-themes,
+  thm-state: thm-state,
   thm-rules: thm-rules,
-  thm-env: thm-env,
-  thm-box: thm-box,
-  thm-plain: thm-plain,
-  thm-def: thm-def,
-  thm-rem: thm-rem,
-  thm-proof: thm-proof,
+  thm: thm,
+  proof: proof,
   proof-body-fmt: proof-body-fmt,
   tag: tag,
   qedhere: qedhere,
-  thm-display: thm-display,
-  thm-restate: thm-restate,
+  // thm-display: thm-display,
+  // thm-restate: thm-restate,
 )
 
 #let example = tidy.show-example.show-example.with(
@@ -157,7 +163,7 @@
   code-block: block.with(
     radius: 3pt,
     stroke: .5pt + luma(200),
-    breakable: false
+    // breakable: false
   )
 )
 

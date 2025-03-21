@@ -1,720 +1,331 @@
-#import "manual_template.typ": *
-#import "theorems.typ": *
+#import "@preview/tidy:0.4.2"
+#import "manual-template.typ": *
+
 #show: thm-rules
-
-
 #show: project.with(
-  title: "typst-theorems",
-  authors: (
-    "sahasatvik",
-  ),
-  urls: ("https://github.com/sahasatvik/typst-theorems",)
+  title: "cTheorems",
+  author: "sahasatvik",
+  url: "https://github.com/sahasatvik/typst-theorems",
 )
 
 
-= Introduction
+#grid(
+  columns: 2,
+  gutter: 1.5em,
+)[
+  #outline(indent: 2em)
+][
+  This package provides functions that help create numbered theorem
+  environments, taking heavy inspiration from the #LATEX packages `amsthm`,
+  `thmtools`, `apxproof`.
 
-The `typst-theorems` package provides `Typst` functions that help create
-numbered `theorem` environments. This is heavily inspired by the #LATEX
-packages `amsthm` and `thmtools`.
+  A _theorem environment_ lets you combine content with automatically updated
+  _numbering_ information.
+  Environments can
+  - share the same counter (_Theorems_ and _Lemmas_ often do so)
+  - have their counter be attached to headings or other environments
+    (_Corollaries_ are often numbered based upon the parent _Theorem_)
+  - be ```typ <label>```-ed and ```typ @reference```-d
+  - be restated or deferred to later in the document.
 
-A _theorem environment_ lets you wrap content together with automatically
-updating _numbering_ information. Such environments use internal `state`
-counters for this purpose. Environments can
-
-- share the same counter (_Theorems_ and _Lemmas_ often do so)
-- keep a global count, or be attached to
-  - other environments (_Corollaries_ are often numbered based upon the parent _Theorem_)
-  - headings
-- have a numbering level depth fixed (for instance, use only top level heading
-  numbers)
-- be referenced elsewhere in the document, via `label`s
+  This package also introduces a few miscellaneous features related to
+  mathematical writing.
+  - Proof environments, with _QED_ symbols.
+  - Equation tags (in the manner of #LATEX's `\tag`).
+  - Predefined sets of commonly used theorem environments, and a few themes.
+]
 
 
-= Using `typst-theorems`
+// #pagebreak()
 
-Import all functions provided by `typst-theorems` using
+= Setup
+
+#example-code(
 ```typst
-#import "theorems.typ": *
-#show: thm-rules
+#import "@preview/ctheorems:2.0.0": *
+#show: thm-rules    // Must include!
 ```
-The second line is crucial for displaying `thm-env`s and references correctly!
+)
+_Applying the #fn("thm-rules") show rule --- in the same `.typ` file where
+`ctheorems` functions have been used --- is *essential* for displaying theorem
+environments, references, and equations correctly!_
 
-The core of this module consists of `thm-env`.
-The functions `thm-plain`, `thm-def`, `thm-rem`, and `thm-proof` functions
-provide some simple defaults for the appearance of `thm-env`s.
-
-
-= Feature demonstration
-
-Create box-like _theorem environments_ using `thm-plain`, a wrapper around
-`thm-env` which provides some simple defaults.
-
+A standard set of theorem environments in the AMS style is available using
+#example-code(
 ```typst
-#let theorem = thm-plain("Theorem")
+#import thm-themes.ams: *
 ```
-#let theorem = thm-plain(
-  "Theorem",
 )
 
-Such definitions are convenient to place in the preamble or a template; use
-the environment in your document via
-#table[
-```typst
+
+#pagebreak()
+
+= Demonstration
+
+#example(
+dir: ltr,
+```
+<<<#import "@preview/ctheorems:2.0.0": *
+#import thm-themes.ams: *
+#show: thm-rules.with(
+  qed-symbol: $square$
+)
+
+#definition[Expectation][
+  The expectation of a random variable $X$ on a probabilty space $(Omega, cal(E), PP)$ is $
+    EE[X] = integral X thin d PP,
+  $ whenever well-defined.
+] <expectation>
+
+#remark[
+  We require at least one of $EE[X^+], EE[X^-]$ to be finite.
+]
+
+#proposition[
+  For any $A in cal(E)$, $
+    PP(X in A) = EE[bold(1)_A (X)].
+  $
+] <prob-exp>
+
+#theorem[Markov][
+  Let $X >= 0$. For all $a > 0$, $
+    PP(X > a) <= EE[X] / a.
+  $
+] <markov>
+
+#corollary[Chebyshev][
+  Let $EE[X] = mu$, $"var"[X] = sigma^2$. Then, $
+    PP(|X - mu| >= k sigma) <= 1 / k^2.
+  $
+] <chebyshev>
+
+#proof[of @markov][
+  $
+    PP(X &> a) \
+      &= EE[bold(1)_((a, oo))(X)]
+        #tag[(@prob-exp[Prop.])] \
+      &<= EE[(X / a) bold(1)_((a, oo))(X)] \
+      &<= EE[X] / a. #qedhere
+  $
+]
+```
+)
+
+
+
+// #pagebreak()
+
+= Features
+
+== Numbered theorems
+
+#example(
+```
+#let theorem = thm.with(
+  supplement: "Theorem",
+  base-level: 1
+)
+
 #theorem("Euclid")[
   There are infinitely many primes.
 ] <euclid>
 ```
-][
-  #theorem("Euclid")[
-    There are infinitely many primes.
-  ] <euclid>
-]
-Note that the `name` is optional. This `theorem` environment will be numbered
-based on its parent `heading` counter, with successive `theorem`s
-automatically updating the final index.
-
-The `<euclid>` label can be used to refer to this Theorem via the reference
-`@euclid`. Go to @references to read more.
-
-You can create another environment which uses the same counter, say for
-_Lemmas_, as follows.
-
-```typst
-#let lemma = thm-plain(
-  "Lemma",                // head
-  counter: "Theorem",     // same as that of Theorem
-                          // options for styling the block
-  fill: rgb("#e8e8f8"),
-  outset: 0.7em,
-  padding: (y: 0.5em)
 )
+
+Note that `theorem` inherits its numbering from the current heading, the
+default #var("thm.base").
+By setting #var("thm.base-level") to ```typc 1```, this theorem only uses the
+first level count from its base.
+
+
+== References
+
+Since our theorem has been labeled ```typ <euclid>```, we can reference it
+elsewhere in the document via ```typ @euclid```.
+
+#example(
 ```
-#let lemma = thm-plain(
-  "Lemma",
+We will supply a proof of @euclid later.
+```
+)
+
+== Chained numbering <chained-numbering>
+
+Theorem environments can be attached together by setting the child's
+#var("thm.base") to the parent's #var("thm.counter").
+
+#example(
+```
+>>>#let theorem = thm.with(supplement: "Theorem", base-level: 1)
+#let corollary = thm.with(
+  supplement: "Corollary",
+  base: "Theorem"
+)
+
+#corollary(restate: true)[
+  There is no largest prime number.
+] <largest-prime>
+
+#proof([of @largest-prime], defer: true)[
+  The existence of a largest prime would imply the finitude of the set of primes.
+]
+```
+)
+
+We have set #var("thm.restate") and #var("thm.defer") --- go to @defer-restate
+to find out more!
+
+// Setting #var("thm.base") to ```typc none``` produces an unattached, global
+// numbering.
+
+== Shared numbering
+
+Theorem environments can share the same numbering by setting a common
+#var("thm.counter").
+#example(
+```
+>>>#let theorem = thm.with(supplement: "Theorem", base-level: 1)
+#let proposition = thm.with(
+  supplement: "Proposition",
   counter: "Theorem",
-  fill: rgb("#e8e8f8"),
-  outset: 0.7em,
-  padding: (y: 0.5em)
-)
-
-Note that the counter for `theorem` defaulted to 'Theorem'.
-
-#table[
-```typst
-#lemma[
-  If $n$ divides both $x$ and $y$, it
-  also divides $x - y$.
-]
-```
-][
-#lemma[
-  If $n$ divides both $x$ and $y$, it also divides $x - y$.
-]
-]
-
-You can _attach_ other environments to ones defined earlier. For instance,
-_Corollaries_ can be created as follows.
-
-```typst
-#let corollary = thm-plain(
-  "Corollary",            // head
-  base: "Theorem",        // base - use the theorem counter
-)
-```
-#let corollary = thm-plain(
-  "Corollary",
-  base: "Theorem",
-)
-
-
-#table[
-```typst
-#corollary(numbering: "1.1")[
-  If $n$ divides two consecutive natural
-  numbers, then $n = 1$.
-]
-```
-][
-#corollary(numbering: "1.1")[
-  If $n$ divides two consecutive natural numbers, then $n = 1$.
-]
-]
-
-Note that we have provided a `numbering` string; this can be any valid
-numbering pattern as described in the
-#link("https://typst.app/docs/reference/meta/numbering/")[numbering]
-documentation.
-
-
-== Proofs
-
-The `thm-proof` function gives nicer defaults for formatting proofs.
-```typst
-#let proof = thm-proof("Proof")
-```
-#let proof = thm-proof("Proof")
-
-#table[
-```typst
-#proof([of @euclid])[
-  Suppose to the contrary that $p_1,
-  p_2, dots, p_n$ is a finite
-  enumeration of all primes. Set $P
-  = p_1 p_2 dots p_n$. Since $P + 1$
-  is not in our list, it cannot be
-  prime. Thus, some prime factor
-  $p_j$ divides $P + 1$. Since $p_j$
-  also divides $P$, it must divide
-  the difference $(P + 1) - P = 1$, a
-  contradiction.
-]
-```
-][
-#proof([of @euclid])[
-  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
-  of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
-  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
-  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
-  contradiction.
-]
-]
-If your proof ends in a block equation, or a list/enum, you can place
-`qedhere` to correctly position the qed symbol.
-
-#table[
-```typst
-#theorem[
-  There are arbitrarily long stretches
-  of composite numbers.
-]
-#proof[
-  For any $n > 2$, consider $
-    n! + 2, quad n! + 3, quad ...,
-    quad n! + n #qedhere
-  $
-]
-```
-][
-#theorem[
-  There are arbitrarily long stretches of composite numbers.
-]
-#v(1em)
-#proof[
-  For any $n > 2$, consider $
-    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
-  $
-]
-]
-
-*Caution*: The `qedhere` symbol does not play well with numbered/multiline
-equations!
-
-You can set a custom qed symbol (say $square$) by setting the appropriate
-option in `thm-rules` as follows.
-```typst
-#show: thm-rules.with(qed-symbol: $square$)
-```
-
-== Suppressing numbering
-Supplying `numbering: none` suppresses numbering for that environment, and
-prevents it from updating its counter.
-
-```typst
-#let conjecture = thm-plain(
-  "Conjecture",
-  numbering: none
-)
-```
-#let conjecture = thm-plain(
-  "Conjecture",
-  numbering: none
-)
-
-#table[
-```typst
-#conjecture[
-  The numbers $2$, $3$, and $17$ are
-  prime.
-]
-```
-][
-#conjecture[
-  The numbers $2$, $3$, and $17$ are prime.
-]
-]
-
-You can also suppress numbering individually, as follows.
-#table[
-```typst
-#lemma(numbering: none)[
-  The square of any even number is
-  divisible by $4$.
-]
-#lemma[
-  The square of any odd number is one
-  more than a multiple of $4$.
-]
-```
-][
-#lemma(numbering: none)[
-  The square of any even number is divisible by $4$.
-]
-#v(1em)
-#lemma[
-  The square of any odd number is one more than a multiple of $4$.
-]
-]
-
-Note that the last _Lemma_ is _not_ numbered 3.2.2!
-
-You can also override the automatic numbering as follows.
-#table[
-```typst
-#lemma(number: "42")[
-  The square of any natural number cannot be two more than a multiple of 4.
-]
-```
-][
-#lemma(number: "42")[
-  The square of any natural number cannot be two more than a multiple of 4.
-]
-]
-
-Note that this does _not_ affect the counters either!
-
-
-== Limiting depth
-
-You can limit the number of levels of the `base` numbering used as follows.
-```typst
-#let definition = thm-def(
-  "Definition",
-  base-level: 1           // take only the first level from the base
-)
-```
-#let definition = thm-def(
-  "Definition",
   base-level: 1
 )
 
-#table[
-```typst
-#definition("Prime numbers")[
-  A natural number is called a _prime
-  number_ if it is greater than $1$ and
-  cannot be written as the product of
-  two smaller natural numbers.
-] <prime>
-```
-][
-#definition("Prime numbers")[
-  A natural number is called a _prime number_ if it is greater than $1$ and
-  cannot be written as the product of two smaller natural numbers.
-] <prime>
-]
-
-Note that this environment is _not_ numbered 3.3.1! Here we have used the
-`thm-def` function which is typically used for styling definitions.
-
-#table[
-```typst
-#definition("Composite numbers")[
-  A natural number is called a
-  _composite number_ if it is greater
-  than $1$ and not prime.
+#proposition[
+  If a natural number divides $a$ and $b$, it also divides $a - b$.
 ]
 ```
-][
-#definition("Composite numbers")[
-  A natural number is called a _composite number_ if it is greater than $1$
-  and not prime.
-]
-]
-
-Setting a `base-level` higher than what `base` provides will introduce padded
-zeroes.
-
-```typst
-#let example = thm-rem(
-  "Example",
-  numbering: "1.1"
-)
-```
-#let example = thm-rem(
-  "Example",
-  numbering: "1.1"
 )
 
+For directly  manipulating theorem counters, see #fn("thm-counter-get"),
+#fn("thm-counter-step"), #fn("thm-counter-update").
 
-#table[
-```typst
-#example(base-level: 4)[
-  The numbers $4$, $6$, and $42$
-  are composite.
+== Proofs
+
+Theorems go hand in hand with proofs, which are available using #fn("proof").
+#example(
+```
+>>>#let theorem = thm.with(supplement: "Theorem", base-level: 1)
+#proof[of @euclid][
+  Suppose to the contrary that $p_1, p_2,
+  dots, p_n$ is a finite enumeration of
+  all primes. Set $P = p_1 p_2 dots p_n$.
+  Since $P + 1$ is not in our list, it cannot
+  be prime. Thus, some prime factor $p_j$
+  divides $P + 1$. Since $p_j$ also divides
+  $P$, it must divide the difference $(P + 1)
+  - P = 1$, a contradiction.
 ]
 ```
-][
-#example(base-level: 4)[
-  The numbers $4$, $6$, and $42$ are composite.
-]
-]
+)
 
-Here, we have used the `thm-rem` function which suppresses numbering by
+Proof environments will float a _QED_ symbol ($qed$) at the bottom right by
 default.
-
-
-== Custom formatting
-The `thm-box` function (and its derivatives: `thm-plain`, `thm-def`,
-`thm-rem`, `thm-proof`) lets you specify rules for formatting the `title`, the
-`name`, and the `body` individually. Here, the `title` refers to the `head`
-and `number` together.
-
-```typst
-#let proof-custom = thm-box(
-  "Proof",
-  title-fmt: smallcaps,
-  body-fmt: body => [
-    #body #h(1fr) $square$    // float a QED symbol to the right
-  ],
-  numbering: none
-)
+The symbol can be customized by setting #var("thm-rules.qed-symbol").
+If your proof ends in a block equation, or a list/enum, you can place
+#var("qedhere") to correctly position the _QED_ symbol.
+#example(
 ```
-#let proof-custom = thm-box(
-  "Proof",
-  title-fmt: smallcaps,
-  body-fmt: body => [
-    #body #h(1fr) $square$
-  ],
-  numbering: none
+>>>#let theorem = thm.with(supplement: "Theorem", base-level: 1)
+#show: thm-rules.with(qed-symbol: $square$)
+
+#theorem[Prime gaps][
+  There are arbitrarily long stretches of composite numbers.
+]
+#proof[
+  For any $n > 2$, consider $
+    n! + 2, quad
+    n! + 3, quad ..., quad
+    n! + n. #qedhere
+  $
+]
+```
 )
 
-#table[
-```typst
-#lemma[
-  All even natural numbers greater than
-  2 are composite.
-]
-#proof-custom[
-  Every even natural number $n$ can be
-  written as the product of the natural
-  numbers $2$ and $n\/2$. When $n > 2$,
-  both of these are smaller than $2$
-  itself.
-]
+*Caution*: #var("qedhere") does not play well with numbered equations!
+
+
+== Equation tags
+
+Tags can be inserted into equations using #fn("tag").
+These float to the right, mimicking `\tag` in #LATEX.
+#example(
 ```
-][
-#lemma[
-  All even natural numbers greater than 2 are composite.
-]
-#proof-custom[
-  Every even natural number $n$ can be written as the product of the natural
-  numbers $2$ and $n\/2$. When $n > 2$, both of these are smaller than $2$
-  itself.
-]
-]
-
-You can go even further and use the `thm-env` function directly. It accepts an
-`counter`, a `base`, a `base-level`, and a `fmt` function.
-```typst
-#let notation = thm-env(
-  "notation",                 // counter
-  (name, number, body, color: black) => [
-                              // fmt - format content using the environment
-                              // name, number, body, and an optional color
-    #text(color)[#h(1.2em) *Notation (#number) #name*]:
-    #h(0.2em)
-    #body
-    #v(0.5em)
-  ]
-).with(numbering: "I")        // use Roman numerals
+$
+  (a + b)^2
+    &= a^2 + 2 a b + b^2 \
+    &<= 2a^2 + 2b^2 #tag[(AM-GM)] \
+    &<= 2 thin max{a, b}^2.
+$
 ```
-#let notation = thm-env(
-  "notation",                 // counter
-  // none,                       // base - do not attach, count globally
-  // none,                       // base-level - use the base as-is
-  (name, number, body, color: black) => [
-                              // fmt - format content using the environment name, number, body, and an optional color
-    #text(color)[*Notation (#number) #name*]:
-    #h(0.2em)
-    #body
-    #v(0.5em)
-  ]
-).with(numbering: "I")        // use Roman numerals
+)
 
-#table[
-```typst
-#notation[
-  The variable $p$ is reserved for
-  prime numbers.
-]
-#notation("for Reals", color: green)[
-  The variable $x$ is reserved for
-  real numbers.
-]
+// _Remark._ This is essentially how the _QED_ symbol is placed inside equations
+// by #var("qedhere").
+
+== Defer, restate, and display <defer-restate>
+
+Theorem environments can be restated, or deferred to later in the document by
+setting #var("thm.restate"), #var("thm.defer") as in the example in
+@chained-numbering, then calling #fn("thm-restate").
+
+#example(
 ```
-][
-#notation[
-  The variable $p$ is reserved for prime numbers.
-]
-#notation("for Reals", color: green)[
-  The variable $x$ is reserved for real numbers.
-]
-]
+#import thm-state: thm-restate, thm-display
 
-Note that the `color: green` named argument supplied to the `notation`
-environment gets passed to the `fmt` function. In general, all extra named
-arguments supplied to the theorem will be passed to `fmt`.
-On the other hand, the positional argument `"for Reals"` will always be
-interpreted as the `name` argument in `fmt`.
-
-#table[
-```typst
-#lemma(title: "Lem.", stroke: 1pt)[
-  All multiples of 3 greater than 3
-  are composite.
-]
+#thm-restate()
 ```
-][
-#lemma(title: "Lem.", stroke: 1pt, outset: 0.7em)[
-  All multiples of 3 greater than 3 are composite.
-]
-]
+)
 
-Here, we override the `title` (which defaults to the `head`) as well as the
-`stroke` in the `fmt` produced by `thm-plain`. All `block` arguments can be
-overridden in `thm-plain` environments in this way.
-
-
-== Labels and references <references>
-
-You can place a `<label>` outside a theorem environment, and reference it
-later via `@label`. For example, go back to @euclid.
-
-#table[
-```typst
-Recall that there are infinitely many prime numbers via @euclid.
+This is often useful for pushing content to the appendix.
+For finer control, consider setting #var("thm.restate-keys"), or even using
+#fn("thm-display").
+The following produces a crude outline of named theorem environments (so far),
+excluding proofs; see #var("thm.fmt") for more information about the formatting
+function `fmt`.
+#example(
+dir: ttb,
 ```
-][
-Recall that there are infinitely many prime numbers via @euclid.
-][
-```typst
-You can reference future environments too, like @oddprime[Lem.].
-```
-][
-You can reference future environments too, like @oddprime[Lem.].
-][
-```typst
-#lemma(supplement: "Lem.")[
-  All primes apart from $2$ and $3$ are
-  of the form $6k plus.minus 1$.
-] <primeform>
-
-You can modify the supplement to be used in references, like @primeform.
-```
-][
-#lemma(supplement: "Lem.")[
-  All primes apart from $2$ and $3$ are of the form $6k plus.minus 1$.
-] <primeform>
-
-#v(1.2em)
-You can modify the supplement to be used in references, like @primeform.
-]
-
-*Caution*: Links created by references to `thm-env`s will be styled according
-to `#show link:` rules. To avoid this, use the following workaround:
-
-```typst
-#show link: it => {
-  // Keep default styling for label links.
-  if type(it.dest) == label {
-    return it
+>>>#import thm-state: thm-restate, thm-display
+#thm-display(
+  thm => thm.name != none and thm.supplement != "Proof",    // Filter
+  fmt: thm => {                                             // Format
+    let head =[*#thm.supplement~#thm.number*]
+    if thm.name != none { head = head + [~(#thm.name)] }
+    let page = link(thm.loc, [#thm.loc.position().page])    // Get page number
+    [#head~#box(width: 1fr, repeat[.])~#page\ ]
   }
-  // Your custom link styling goes here.
-}
-```
-
-
-== Overriding `base`
-
-```typst
-#let remark = thm-rem(
-  "Remark",
-  base: "heading",
-  numbering: "1.1"
 )
 ```
-#let remark = thm-rem(
-  "Remark",
-  base: "heading",
-  numbering: "1.1"
+)
+Setting #var("thm-display.final") to ```typc true``` would extend this search
+to the entire document.
+
+== Formatting
+
+The default theorem formatting function, #fn("thm-fmt-block") helps with basic
+customization of the theorem title and body, along with the surrounding block.
+
+#example(
+```
+>>>#let theorem = thm.with(supplement: "Theorem", base-level: 1)
+#let theorem-standout = theorem.with(
+  stroke: 1pt + green,
+  fill: green.lighten(95%),
+  outset: 0.7em,
+  spacing: 1.5em
 )
 
-#table[
-```typst
-#remark[
-  There are infinitely many composite
-  numbers.
-]
-```
-][
-#remark[
+#theorem-standout(
+  title-fmt: x => smallcaps(strong(x))
+)[
   There are infinitely many composite numbers.
 ]
-][
-```typst
-#lemma[
-  All primes greater than $2$ are odd.
-] <oddprime>
-
-#remark(base: "Theorem")[
-  Two is a _lone prime_.
-]
 ```
-][
-#lemma[
-  All primes greater than $2$ are odd.
-] <oddprime>
-#remark(base: "Theorem")[
-  Two is a _lone prime_.
-]
-]
-
-This `remark` environment, which would normally be attached to the current
-_heading_, now uses the Theorem (which shares its counter with the Lemma)
-as a base.
-
-
-#v(2em)
-
-= Function reference -- Deprecated!
-
-== `thm-rules`
-
-The `thm-rules` show rule sets important styling rules for theorem
-environments, references, and equations in proofs.
-
-```typst
-#let thm-rules(
-  qed-symbol: $qed$,          // QED symbol used in proofs
-  doc
-) = { ... }
-```
-
-== `thm-env`
-
-The `thm-env` function produces a _theorem environment_.
-```typst
-#let thm-env(
-  counter,                    // environment counter name
-  fmt                         // formatting function of the form
-                              // (name, number, body, ..args) -> content
-  base: none,                 // base counter name, can be "heading" or none
-  base-level: none,           // number of base number levels to use
-) = { ... }
-```
-
-The `fmt` function must accept a theorem `name`, `number`, `body`, and produce
-formatted content. It may also accept additional positional arguments, via
-`args`.
-
-A _theorem environment_ is itself a map of the following form.
-```typst
-(
-  ..args,
-  body,                       // body content
-  number: auto,               // number, overrides numbering if present
-  numbering: "1.1",           // numbering style, can be a function
-  supplement: counter,        // supplement used in references
-  base: base,                 // base counter name override
-  base-level: base-level      // base-level override
-) -> content
-```
-
-The only positional argument accepted in `args` is the `name`, which is the
-optional name of the theorem typically displayed after the title.
-All additional named arguments in `args` will be passed on to the associated
-`fmt` function supplied in `thm-env`.
-
-
-== `thm-box`
-
-The `thm-box` wraps `thm-env`, supplying a box-like `fmt` function.
-```typst
-#let thm-box(
-  head,                       // head - common name, used in the title
-  counter: auto,              // counter, defaults to "head"
-  ..args,                     // named arguments, passed to #block
-  padding: (y: 0.1em),        // padding around the block, passed to #pad
-  numbering: "1.1",           // numbering style, can be a function
-  supplement: auto,           // supplement for references, defaults to "head"
-  name-fmt: x => [(#x)],      // formatting for name
-  title-fmt: x => x,          // formatting for title (head + number)
-  body-fmt: x => x,           // formatting for body
-  separator: [.#h(0.2em)],    // separator inserted between name and body
-  base: "heading",            // base - defaults to using headings
-  base-level: none,           // base-level - defaults to using base as-is
-) = { ... }
-```
-
-The `thm-box` function sets a default `width: 100%` for the `block`.
-
-
-== `thm-plain`, `thm-def`, and `thm-rem`
-
-These functions are identical to `thm-box`, with default styling options
-mimicking the `plain`, `definition`, and `remark` styles from `amsthm`.
-
-The 'plain' style has a bold title and italicized body. This is typically used
-for Theorems, Lemmas, Corollaries, Propositions, etc.
-```typst
-#let thm-plain = thm-box.with(
-  title-fmt: strong,
-  body-fmt: emph,
-  separator: [*.*#h(0.2em)],
 )
-```
 
-The 'definition' style has a bold title and upright body. This is typically
-used for Definitions, Problems, Exercises, etc.
-```typst
-#let thm-def = thm-box.with(
-  title-fmt: strong,
-  separator: [*.*#h(0.2em)],
-)
-```
-
-The 'remark' style has an italicized title and upright body, with numbering
-suppressed by default. This is typically used for Remarks, Notes, Notation,
-etc.
-```typst
-#let thm-rem = thm-box.with(
-  padding: (y: 0em),
-  name-fmt: name => emph([(#name)]),
-  title-fmt: emph,
-  separator: [.#h(0.2em)],
-  numbering: none
-)
-```
-
-== `thm-proof`, `proof-body-fmt` and `qedhere`
-
-The `thm-proof` function is identical to `thm-rem`, except with defaults
-appropriate for proofs.
-
-```typst
-#let thm-proof = thm-rem.with(
-    name-fmt: emph,
-    body-fmt: proof-body-fmt,
-)
-```
-
-The `proof-body-fmt` function is a `body-fmt` function that automatically places
-a qed symbol at the end of the body.
-
-You can use `#qedhere` inside a block equation, or at the end of a list/enum
-item to place the qed symbol on the same line.
-
+See #var("thm.fmt") for more information on how to write your own custom
+formatting function.
 
 
 = Acknowledgements
@@ -731,5 +342,289 @@ Thanks to
   - the `title: ...` override feature in `thm-plain`.
 - #link("https://github.com/PgBiel")[PgBiel] for fixing breaking changes in
   version updates.
+- The authors of the  #LATEX packages `amsthm`, `thmtools`, `apxproof`.
 - The awesome devs of #link("https://typst.app/")[typst.app] for their
   support.
+
+
+#pagebreak()
+#show: appendix
+#set page(margin: 0.7in)
+
+
+= Function documentation
+
+#counter(heading).update((1, 0))
+#set heading(numbering: none, outlined: false)
+
+#heading(level: 2, outlined: true, numbering: "A.1.")[ctheorems]
+
+#let ctheorems = tidy.parse-module(
+  read("src/thm.typ"),
+  name: "ctheorems",
+  enable-curried-functions: false,
+  preamble: "#set heading(outlined: false);",
+  scope: (
+    thm-rules-1: (..args, doc) => {
+      counter(heading).update(0)
+      thm-stored.update(())
+      thm-counters.update((:))
+      thm-rules(
+        ..args.named(),
+        doc
+      )
+    },
+    thm-rules-2: (..args, doc) => {
+      thm-rules(
+        ..args.named(),
+        doc
+      )
+    },
+    thm: thm,
+    proof: proof,
+    proof-body-fmt: proof-body-fmt,
+    tag: tag,
+    qedhere: qedhere,
+  ),
+)
+
+
+#tidy.show-module(
+  ctheorems,
+  style: (
+    show-outline: tidy.styles.default.show-outline,
+    show-type: tidy.styles.default.show-type,
+    show-function: tidy.styles.default.show-function,
+    show-parameter-list: tidy.styles.default.show-parameter-list,
+    show-parameter-block: tidy.styles.default.show-parameter-block,
+    show-reference: tidy.styles.default.show-reference,
+    show-variable: tidy.styles.default.show-variable,
+    show-example: tidy.show-example.show-example.with(
+      scale-preview: 100%,
+      layout: layout-example,
+      preview-block: block.with(
+        radius: 3pt,
+        fill: rgb("#e4e5ea"),
+      ),
+      code-block: block.with(
+        radius: 3pt,
+        stroke: .5pt + luma(200),
+        breakable: false
+      )
+    ),
+  ),
+  sort-functions: f => {
+    (
+      "thm",
+      "proof",
+      "tag",
+      "thm-rules",
+      "thm-fmt-block",
+      "proof-body-fmt",
+    ).position(
+      x => (f.name == x)
+    )
+  },
+  show-outline: true,
+  first-heading-level: 2,
+  show-module-name: false,
+  break-param-descriptions: true,
+)
+
+
+#counter(heading).update((1, 1))
+#heading(level: 2, outlined: true, numbering: "A.1.")[thm-state]
+
+Methods for restating, reformatting, filtering, and manipulating theorem
+environments from elsewhere in the document.
+Every call to #fn("thm") appends a `thm` data dictionary to the state
+#var("thm-stored"), where the keys of `thm` are as described in #var("thm.fmt").
+
+Import all functions using
+#example-code(
+```typ
+#import thm-state: *
+```
+)
+
+
+#let thm-state = tidy.parse-module(
+  read("src/state.typ"),
+  name: "ctheorems",
+  enable-curried-functions: false,
+  preamble: "#set heading(outlined: false);",
+  scope: (
+    thm-rules-1: (..args, doc) => {
+      counter(heading).update(0)
+      thm-stored.update(())
+      thm-counters.update((:))
+      thm-rules(
+        ..args.named(),
+        doc
+      )
+    },
+    thm-rules-2: (..args, doc) => {
+      thm-rules(
+        ..args.named(),
+        doc
+      )
+    },
+    thm: thm,
+    proof: proof,
+    proof-body-fmt: proof-body-fmt,
+    tag: tag,
+    qedhere: qedhere,
+    thm-display-1: thm-display,
+    thm-restate: thm-restate,
+  ),
+)
+
+
+#tidy.show-module(
+  thm-state,
+  style: (
+    show-outline: tidy.styles.default.show-outline,
+    show-type: tidy.styles.default.show-type,
+    show-function: tidy.styles.default.show-function,
+    show-parameter-list: tidy.styles.default.show-parameter-list,
+    show-parameter-block: tidy.styles.default.show-parameter-block,
+    show-reference: tidy.styles.default.show-reference,
+    show-variable: tidy.styles.default.show-variable,
+    show-example: tidy.show-example.show-example.with(
+      scale-preview: 100%,
+      layout: layout-example,
+      preview-block: block.with(
+        radius: 3pt,
+        fill: rgb("#e4e5ea"),
+      ),
+      code-block: block.with(
+        radius: 3pt,
+        stroke: .5pt + luma(200),
+        breakable: false
+      )
+    ),
+  ),
+  sort-functions: f => {
+    (
+      "thm-restate",
+      "thm-display",
+    ).position(
+      x => (f.name == x)
+    )
+  },
+  show-outline: true,
+  first-heading-level: 2,
+  show-module-name: false,
+  break-param-descriptions: true,
+)
+
+
+#counter(heading).update((1, 2))
+#heading(level: 2, outlined: true, numbering: "A.1.")[thm-counter]
+
+Exposes methods for manipulating counters used by theorem environments.
+Import all functions using
+#example-code(
+```typ
+#import thm-counter: *
+```
+)
+
+#let thm-counter = tidy.parse-module(
+  read("src/counter.typ"),
+  name: "ctheorems",
+  enable-curried-functions: false,
+  preamble: "#set heading(outlined: false);",
+)
+
+
+#tidy.show-module(
+  thm-counter,
+  style: (
+    show-outline: tidy.styles.default.show-outline,
+    show-type: tidy.styles.default.show-type,
+    show-function: tidy.styles.default.show-function,
+    show-parameter-list: tidy.styles.default.show-parameter-list,
+    show-parameter-block: tidy.styles.default.show-parameter-block,
+    show-reference: tidy.styles.default.show-reference,
+    show-variable: tidy.styles.default.show-variable,
+    show-example: tidy.show-example.show-example.with(
+      scale-preview: 100%,
+      layout: layout-example,
+      preview-block: block.with(
+        radius: 3pt,
+        fill: rgb("#e4e5ea"),
+      ),
+      code-block: block.with(
+        radius: 3pt,
+        stroke: .5pt + luma(200),
+        breakable: false
+      )
+    ),
+  ),
+  show-outline: true,
+  first-heading-level: 2,
+  show-module-name: false,
+  break-param-descriptions: true,
+)
+
+
+#let ams = tidy.parse-module(
+  read("themes/ams.typ"),
+  name: "ams",
+  enable-curried-functions: false,
+)
+
+
+
+#counter(heading).update((1, 0))
+#heading(level: 1, outlined: true, numbering: "A.1.")[Themes]
+
+#counter(heading).update((2, 0))
+#heading(level: 2, outlined: true, numbering: "A.1.")[thm-themes.ams]
+
+#let ams = tidy.parse-module(
+  read("themes/ams.typ"),
+  name: "ams",
+  enable-curried-functions: false,
+  preamble: "#set heading(outlined: false);",
+)
+
+#tidy.show-module(
+  ams,
+  style: (
+    show-outline: tidy.styles.default.show-outline,
+    show-type: tidy.styles.default.show-type,
+    show-function: tidy.styles.default.show-function,
+    show-parameter-list: tidy.styles.default.show-parameter-list,
+    show-parameter-block: tidy.styles.default.show-parameter-block,
+    show-reference: tidy.styles.default.show-reference,
+    show-variable: tidy.styles.default.show-variable,
+    show-example: tidy.show-example.show-example.with(
+      scale-preview: 100%,
+      layout: layout-example,
+      preview-block: block.with(
+        radius: 3pt,
+        fill: rgb("#e4e5ea"),
+      ),
+      code-block: block.with(
+        radius: 3pt,
+        stroke: .5pt + luma(200),
+        breakable: false
+      )
+    ),
+  ),
+  sort-functions: f => {
+    (
+      "thm-counter-get",
+      "thm-counter-step",
+      "thm-counter-update",
+    ).position(
+      x => (f.name == x)
+    )
+  },
+  show-outline: true,
+  first-heading-level: 2,
+  show-module-name: false,
+  break-param-descriptions: true,
+)
