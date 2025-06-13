@@ -27,7 +27,11 @@
       name = args.pos().first()
     }
     if refnumbering == auto {
-      refnumbering = numbering
+      if number == auto {
+        refnumbering = numbering
+      } else {
+        refnumbering = (..nums) => number
+      }
     }
     let result = none
     if number == auto and numbering == none {
