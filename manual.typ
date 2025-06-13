@@ -234,15 +234,15 @@ sets some plainer defaults. You can also write
 
 Note that the last _Lemma_ is _not_ numbered 3.1.2!
 
-You can also override the automatic numbering as follows.
+You can also override the automatic numbering as follows and reference it like @number.
 ```typst
 #lemma(number: "42")[
   The square of any natural number cannot be two more than a multiple of 4.
-]
+] <number>
 ```
 #lemma(number: "42")[
   The square of any natural number cannot be two more than a multiple of 4.
-]
+] <number>
 
 Note that this does _not_ affect the counters either!
 
