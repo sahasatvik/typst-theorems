@@ -8,6 +8,23 @@
 /// Named arguments from @thm.args can override all of the arguments below;
 /// any remaining named arguments are passed to the block.
 /// Blocks have ```typc width: 100%``` set by default.
+/// #example(
+/// ```
+/// >>>#show: thm-rules
+/// #thm(
+///   base: none,
+///   fmt: thm-fmt-block,
+///   title-fmt: x => strong(smallcaps(x)),
+///   separator: [\ ],
+///   stroke: (left: 1pt),
+///   inset: (x: 0.7em, y: 0.2em)
+/// )[Special][
+///   #lorem(16)
+/// ]
+/// ```,
+/// mode: "markup",
+/// scope: (thm-rules: thm-rules-2)
+/// )
 ///
 /// -> content
 #let thm-fmt-block(
@@ -26,7 +43,7 @@
   title-fmt: strong,
   /// Formatting for the environment body.
   /// -> function
-  body-fmt: x => x,
+  body-fmt: emph,
   /// Separator between title and body.
   /// -> content
   separator: [*.* ],
@@ -88,8 +105,119 @@
   supplement: "Theorem",
   /// Environment counter name.
   /// If ```typc auto```, defaults to @thm.supplement.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #thm(
+  ///   supplement: "Proposition",
+  ///   counter: "Theorem",
+  ///   base: none
+  /// )[
+  ///   #lorem(7)
+  /// ]
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
   /// -> str | auto
   counter: auto,
+  /// Base counter name, whose numbering prefixes the theorem environment
+  /// numbering.
+  /// If ```typc "heading"```, use the heading counter.
+  /// If ```typc none```, the theorem environment maintains a global count with no
+  /// prefix.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #thm(supplement: "Example", base: "Theorem")[
+  ///   #lorem(4)
+  /// ]
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  /// -> str | none
+  base: "heading",
+  /// Base level, determining the number of levels of the `base` numbering to
+  /// use for the theorem environment numbering.
+  /// If ```typc none```, all levels from the `base` numbering are used.
+  /// Setting a base level higher than what the `base` provides will introduce zeros for padding.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #thm(
+  ///   supplement: "Sub-Sub-Theorem",
+  ///   base: "Theorem", 
+  ///   base-level: 2
+  /// )[
+  ///   #lorem(12)
+  /// ]
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  /// -> int | none
+  base-level: none,
+  /// Theorem name.
+  /// If ```typc auto```, the first positional argument from
+  /// @thm.args (if present) is chosen as the theorem environment's name.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #thm(name: "Named", base: none)[
+  ///   #lorem(4)
+  /// ]
+  /// #thm(base: none)[Also Named][
+  ///   #lorem(8)
+  /// ]
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  /// -> content
+  name: auto,
+  /// Theorem number.
+  /// If ```typc auto``` (and @thm.numbering is not ```typc none```), the
+  /// number is computed based on @thm.counter, @thm.base, @thm.base-level.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #thm(number: $dagger dagger$, base: none)[
+  ///   #lorem(5)
+  /// ] <d-dag>
+  ///
+  /// Recall @d-dag.
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  /// -> content | auto | none
+  number: auto,
+  /// Theorem numbering style.
+  /// If ```typc none```, numbering is suppressed.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #thm(supplement: "Remark", numbering: none)[
+  ///   #lorem(5)
+  /// ]
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  /// -> str | function | none
+  numbering: "1.1",
+  /// Mark for being restated later. See @thm-restate.
+  /// -> bool
+  restate: false,
+  /// Mark for being deferred to later, without appearing in the current position.
+  /// See @thm-restate.
+  /// -> bool
+  defer: false,
+  /// Keys used by @thm-restate.keys for filtering.
+  /// If ```typc auto```, defaults to an array containing @thm.supplement and @thm.name (if present).
+  /// -> array
+  restate-keys: auto,
   /// Formatting function controlling the appearance of the theorem
   /// environment, of the form ```typc thm => content```.
   /// `thm` is a dictionary whose keys are essentially the arguments of @thm,
@@ -100,54 +228,51 @@
   /// - The key `args` contains a dictionary of only the named arguments from
   ///   @thm.args.
   /// It is often useful to use @thm.args to control formatting functions.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #let thm-color = thm.with(
+  ///   base: none,
+  ///   fmt: thm => {
+  ///     let color = thm.args.at("color", default: black)
+  ///     [*#thm.supplement~#thm.number.* #text(color, thm.body)]
+  ///   }
+  /// )
+  ///
+  /// #thm-color[#lorem(15)]
+  /// #thm-color(color: blue)[#lorem(7)]
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
   /// -> function
   fmt: thm-fmt-block,
-  /// Base counter name, whose numbering prefixes the theorem environment
-  /// numbering.
-  /// If ```typc "heading"```, use the heading counter.
-  /// If ```typc none```, the theorem environment maintains a global count with no
-  /// prefix.
-  /// -> str | none
-  base: "heading",
-  /// Base level, determining the number of levels of the `base` numbering to
-  /// use for the theorem environment numbering.
-  /// If ```typc none```, all levels from the `base` numbering are used.
-  /// Setting a base level higher than what the `base` provides will introduce zeros for padding.
-  /// -> int | none
-  base-level: none,
-  /// Theorem name.
-  /// If ```typc auto```, the first positional argument from
-  /// @thm.args (if present) is chosen as the theorem environment's name.
-  /// -> content
-  name: auto,
-  /// Theorem number.
-  /// If ```typc auto``` (and @thm.numbering is not ```typc none```), the
-  /// number is computed based on @thm.counter, @thm.base, @thm.base-level.
-  /// -> content | auto | none
-  number: auto,
-  /// Theorem numbering style.
-  /// If ```typc none```, numbering is suppressed.
-  /// -> str | function | none
-  numbering: "1.1",
-  /// Restate flag. See @thm-restate.
-  /// -> bool
-  restate: false,
-  /// Defer flag. See @thm-restate.
-  /// -> bool
-  defer: false,
-  /// Keys used by @thm-restate.keys for filtering.
-  /// If ```typc auto```, defaults to an array containing @thm.supplement and @thm.name (if present).
-  /// -> array
-  restate-keys: auto,
   /// Formatting function for references, with the same form as @thm.fmt.
   /// The `thm` dictionary carries an additional `ref-supplement` key containing
   /// the supplement used in the ```typ @cite[ref-supplement]``` call.
+  /// #example(
+  /// ```
+  /// >>>#show: thm-rules
+  /// #let thm-ref-name = thm.with(
+  ///   base: none,
+  ///   ref-fmt: thm => {
+  ///     [#thm.name~(#thm.supplement~#link(thm.loc, thm.number))]
+  ///   }
+  /// )
+  ///
+  /// #thm-ref-name[Gauss][#lorem(17)] <gauss>
+  ///
+  /// By @gauss, ...
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
   /// -> function
   ref-fmt: thm => {
     let supplement = thm.supplement
     if thm.ref-supplement != none { supplement = thm.ref-supplement }
     if supplement != none and supplement != [] { supplement = [#supplement~] }
-    [#supplement#link(thm.loc, (thm.number))]
+    [#supplement#link(thm.loc, thm.number)]
   },
 ) = {
   if name == auto {
@@ -312,11 +437,11 @@
 
 
 
-/// Used as the `body-fmt` in @proof, for properly styling proofs
-/// by inserting a `qed` symbol at the end of the body.
+/// Used as @thm-fmt-block.body-fmt by @proof, for properly styling proofs
+/// with a `qed` symbol inserted at the end of the body.
 /// Also see @qedhere.
 /// #example(```
-/// #show: thm-rules.with(qed-symbol: $"Q.E.D."$)
+/// #show: thm-rules.with(qed-symbol: $"QED"$)
 ///
 /// #proof-body-fmt[#lorem(3)]
 ///

@@ -1,4 +1,4 @@
-# typst-theorems
+# ctheorems / typst-theorems
 
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
@@ -34,7 +34,7 @@ mathematical writing.
 - Predefined sets of commonly used theorem environments, and a few themes.
 
 ## Manual and Examples
-Get acquainted with `typst-theorems` by checking out the minimal example below!
+Get acquainted with `ctheorems` by checking out the minimal example below!
 
 You can read the [manual](manual.pdf) for a full walkthrough of functionality
 offered by this module.

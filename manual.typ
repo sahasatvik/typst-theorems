@@ -398,6 +398,7 @@ Thanks to
       )
     },
     thm: thm,
+    thm-fmt-block: thm-fmt-block,
     proof: proof,
     proof-body-fmt: proof-body-fmt,
     tag: tag,
@@ -603,9 +604,61 @@ Import all functions using
 #counter(heading).update((2, 0))
 #heading(level: 2, outlined: true, numbering: "A.1.")[thm-themes.ams] <thm-themes-ams>
 
+This theme defines the following versions of #fn("thm") in the AMS style.
+  - `thm` in the `plain` style, intended for theorems, lemmas, corollaries,
+    propositions, conjectures.
+  - `thm-def` in the `definition` style, intended for definitions, conditions,
+    problems, examples.
+  - `thm-rem` in the `remark` style, intended for remarks, notes, annotations,
+    claims, cases, acknowledgments, conclusions.
+
+These styles have been used to provide the following environments.
+  - `theorem`, `proposition`, `lemma`, `conjecture`, `definition` sharing the
+    counter ```typc "Theorem"```, with the default `base` ```typc "heading"```.
+  - `corollary`, `example` sharing the counter ```typc "Sub-Theorem"```, with
+    `base` ```typc "Thoerem"```.
+  - `problem` with its own counter ```typc "Problem"```, with the default
+    `base`.
+  - `remark`, `claim`, `proof` (un-numbered).
+
+
+#example(
+// dir: btt,
+```
+>>>#counter(heading).update(0)
+<<<#import "@preview/ctheorems:2.0.0": *
+#import thm-themes.ams: *
+#show: thm-rules
+
+#set heading(numbering: "1.")
+
+= Convergence in Probability
+
+#definition[
+  We say that $\{X_n\}$ converges to $X$ in probability if for every $epsilon > 0$, $
+    PP(|X_n - X| > epsilon) -> 0
+  $ as $n -> oo$.
+]
+#remark[
+  This is denoted $X_n ->^p X$.
+]
+
+#example[
+  Let $EE[X_n] = 0$ and $EE[X_n^2] -> 0$.
+  Then, $X_n ->^p 0$.
+]
+
+#theorem[Weak Law of Large Numbers][
+  Let $\{X_n\}$ be i.i.d. with $EE[X_1] = mu$, $E[X_1^2] < oo$. Then $
+    1/n sum_(i = 1)^n X_i ->^p mu.
+  $
+]
+```
+)
+
 #let ams = tidy.parse-module(
   read("themes/ams.typ"),
-  name: "ams",
+  name: "ctheorems",
   enable-curried-functions: false,
   preamble: "#set heading(outlined: false);",
 )
@@ -634,16 +687,94 @@ Import all functions using
       )
     ),
   ),
-  sort-functions: f => {
-    (
-      "thm-counter-get",
-      "thm-counter-step",
-      "thm-counter-update",
-    ).position(
-      x => (f.name == x)
-    )
-  },
-  show-outline: true,
+  show-outline: false,
+  first-heading-level: 2,
+  show-module-name: false,
+  break-param-descriptions: true,
+)
+
+
+
+#pagebreak()
+
+#counter(heading).update((2, 1))
+#heading(level: 2, outlined: true, numbering: "A.1.")[thm-themes.stripe] <thm-themes-stripe>
+
+
+This theme creates theorem styles and environments just like `thm-themes.ams`,
+but with a formatting function #fn("thm-fmt-stripe") which produces colorful
+stripes on the left sides of theorems.
+
+#example(
+// dir: btt,
+```
+>>>#counter(heading).update(0)
+<<<#import "@preview/ctheorems:2.0.0": *
+#import thm-themes.stripe: *
+#show: thm-rules
+
+#set heading(numbering: "1.")
+
+= Convergence in Probability
+
+#definition[
+  We say that $\{X_n\}$ converges to $X$ in probability if for every $epsilon > 0$, $
+    PP(|X_n - X| > epsilon) -> 0
+  $ as $n -> oo$.
+]
+#remark[
+  This is denoted $X_n ->^p X$.
+]
+
+#example[
+  Let $EE[X_n] = 0$ and $EE[X_n^2] -> 0$.
+  Then, $X_n ->^p 0$.
+]
+
+#theorem[Weak Law of Large Numbers][
+  Let $\{X_n\}$ be i.i.d. with $EE[X_1] = mu$, $E[X_1^2] < oo$. Then $
+    1/n sum_(i = 1)^n X_i ->^p mu.
+  $
+]
+
+#proof[
+  #lorem(14)
+]
+```
+)
+
+#let stripe = tidy.parse-module(
+  read("themes/stripe.typ"),
+  name: "ctheorems",
+  enable-curried-functions: false,
+  preamble: "#set heading(outlined: false);",
+)
+
+#tidy.show-module(
+  stripe,
+  style: (
+    show-outline: tidy.styles.default.show-outline,
+    show-type: tidy.styles.default.show-type,
+    show-function: tidy.styles.default.show-function,
+    show-parameter-list: tidy.styles.default.show-parameter-list,
+    show-parameter-block: tidy.styles.default.show-parameter-block,
+    show-reference: tidy.styles.default.show-reference,
+    show-variable: tidy.styles.default.show-variable,
+    show-example: tidy.show-example.show-example.with(
+      scale-preview: 100%,
+      layout: layout-example,
+      preview-block: block.with(
+        radius: 3pt,
+        fill: rgb("#e4e5ea"),
+      ),
+      code-block: block.with(
+        radius: 3pt,
+        stroke: .5pt + luma(200),
+        breakable: false
+      )
+    ),
+  ),
+  show-outline: false,
   first-heading-level: 2,
   show-module-name: false,
   break-param-descriptions: true,
