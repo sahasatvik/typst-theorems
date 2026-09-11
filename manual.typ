@@ -105,7 +105,7 @@ dir: ltr,
 
 #proof[of @markov][
   $
-    PP(X &> a) \
+    PP(X >& a) \
       &= EE[bold(1)_((a, oo))(X)]
         #tag[(@prob-exp[Prop.])] \
       &<= EE[(X / a) bold(1)_((a, oo))(X)] \
@@ -649,9 +649,13 @@ These styles have been used to provide the following environments.
 ]
 
 #theorem[Weak Law of Large Numbers][
-  Let $\{X_n\}$ be i.i.d. with $EE[X_1] = mu$, $E[X_1^2] < oo$. Then $
+  Let $\{X_n\}$ be i.i.d. with $EE[X_1] = mu$, $EE[X_1^2] < oo$. Then $
     1/n sum_(i = 1)^n X_i ->^p mu.
   $
+]
+
+#proof[
+  #lorem(14)
 ]
 ```
 )
@@ -732,7 +736,7 @@ stripes on the left sides of theorems.
 ]
 
 #theorem[Weak Law of Large Numbers][
-  Let $\{X_n\}$ be i.i.d. with $EE[X_1] = mu$, $E[X_1^2] < oo$. Then $
+  Let $\{X_n\}$ be i.i.d. with $EE[X_1] = mu$, $EE[X_1^2] < oo$. Then $
     1/n sum_(i = 1)^n X_i ->^p mu.
   $
 ]
