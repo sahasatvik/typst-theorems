@@ -11,7 +11,7 @@
 #let thm-counter-update(
   /// -> str
   counter,
-  /// -> function
+  /// -> int | array | function
   update
 ) = {
   return thm-counters.update(x => {
