@@ -94,7 +94,7 @@
 /// -> figure | context
 #let thm(
   /// Extra arguments.
-  /// See @thm.name.
+  /// See @thm.name, @thm.fmt.
   /// -> arguments
   ..args,
   /// Theorem body.
@@ -271,6 +271,10 @@
   ref-fmt: thm => {
     let supplement = thm.supplement
     if thm.ref-supplement != none { supplement = thm.ref-supplement }
+    if thm.ref-supplement == [!] and thm.name != none {
+      [#link(thm.loc, thm.name)]
+      return
+    }
     if supplement != none and supplement != [] { supplement = [#supplement~] }
     [#supplement#link(thm.loc, thm.number)]
   },
@@ -426,6 +430,22 @@
   /// Set this to ```typc true``` if equation content overlaps the tag.
   /// This will have the minor disadvantage of moving the equation off-center
   /// to accommodate the tag.
+  /// #example(```
+  /// >>> #show: thm-rules
+  /// Bad:
+  /// $
+  ///   a^2 + 2 a b + b^2
+  ///     <= 2a^2 + 2b^2 #tag[(AM-GM)]
+  /// $
+  /// Moved:
+  /// $
+  ///   a^2 + 2 a b + b^2
+  ///     <= 2a^2 + 2b^2 #tag(move: true)[(AM-GM)]
+  /// $
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
   ///
   /// *Note:* Trying to determine this option automatically currently causes
   /// layout convergence issues in some cases.
@@ -571,7 +591,7 @@
           if data.value.move {
             move(dx: dx, data.value.eq-tag)
           } else {
-            place(horizon, dx: dx, data.value.eq-tag)
+            place(horizon, dx: dx, dy: 0pt, data.value.eq-tag)
           }
         }
       } else {
@@ -582,9 +602,7 @@
     if eq.numbering == none {
       math.equation(
         block: eq.block,
-        numbering: x => {
-          metadata("thm-equation-numbering")
-        },
+        numbering: x => metadata("thm-equation-numbering"),
         number-align: eq.number-align,
         supplement: eq.supplement,
         eq.body
@@ -594,20 +612,9 @@
     }
   }
 
-  show enum.item: it => {
-    show metadata.where(value: "thm-qedhere"): {
-      h(1fr)
-      thm-qed-show
-    }
-    it
-  }
-
-  show list.item: it => {
-    show metadata.where(value: "thm-qedhere"): {
-      h(1fr)
-      thm-qed-show
-    }
-    it
+  show metadata.where(value: "thm-qedhere"): {
+    h(1fr)
+    thm-qed-show
   }
 
   show metadata.where(value: "thm-qed-symbol"): qed-symbol
