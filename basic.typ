@@ -28,7 +28,7 @@
 ]
 
 #proposition[
-  For any $A in cal(E)$, $
+  For any $A in cal(B)(RR)$, $
     PP(X in A) = EE[bold(1)_A (X)].
   $
 ] <prob-exp>
