@@ -105,7 +105,7 @@ dir: ltr,
 
 #proof[of @markov][
   $
-    PP(X >& a) \
+    PP(X thin&> a) \
       &= EE[bold(1)_((a, oo))(X)]
         #tag[(@prob-exp[Prop.])] \
       &<= EE[(X / a) bold(1)_((a, oo))(X)] \
@@ -130,7 +130,7 @@ dir: ltr,
   base-level: 1
 )
 
-#theorem("Euclid")[
+#theorem[Euclid][
   There are infinitely many primes.
 ] <euclid>
 ```
@@ -150,6 +150,15 @@ elsewhere in the document via ```typ @euclid```.
 #example(
 ```
 We will supply a proof of @euclid later.
+```
+)
+
+References can be fully customized through #var("thm.ref-fmt").
+The special supplement `[!]` exposes the `name` of the theorem environment.
+
+#example(
+```
+Item @euclid[] is named '@euclid[!]'.
 ```
 )
 
@@ -288,7 +297,7 @@ For finer control, consider using #var("thm.restate-keys").
 >>>#import thm-state: thm-restate, thm-display
 Euclid's Theorem states:
 #thm-restate(
-  "Euclid",
+  [Euclid],
   all: true,
   fmt: thm => thm.body
 )
@@ -331,7 +340,7 @@ customization of the theorem title and body, along with the surrounding block.
   fill: green.lighten(95%),
   outset: 0.7em,
   spacing: 1.5em
-)
+) // All four arguments are passed to `block`
 
 #theorem-standout(
   title-fmt: x => smallcaps(strong(x))
@@ -626,6 +635,7 @@ These styles have been used to provide the following environments.
 // dir: btt,
 ```
 >>>#counter(heading).update(0)
+>>>#thm-counter.thm-counters.update(x => (:))
 <<<#import "@preview/ctheorems:2.0.0": *
 #import thm-themes.ams: *
 #show: thm-rules
@@ -713,6 +723,7 @@ stripes on the left sides of theorems.
 // dir: btt,
 ```
 >>>#counter(heading).update(0)
+>>>#thm-counter.thm-counters.update(x => (:))
 <<<#import "@preview/ctheorems:2.0.0": *
 #import thm-themes.stripe: *
 #show: thm-rules
@@ -743,6 +754,13 @@ stripes on the left sides of theorems.
 
 #proof[
   #lorem(14)
+]
+
+// Customize stripe
+#theorem(stripe: 2pt + red)[Strong Law of Large Numbers][
+  Let $\{X_n\}$ be i.i.d. with finite $EE[X_1] = mu$. Then $
+    1/n sum_(i = 1)^n X_i ->^"a.s." mu.
+  $
 ]
 ```
 )

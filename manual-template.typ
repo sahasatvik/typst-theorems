@@ -142,6 +142,7 @@
 #let scope = (
   thm-themes: thm-themes,
   thm-state: thm-state,
+  thm-counter: thm-counter,
   thm-rules: thm-rules,
   thm: thm,
   proof: proof,
