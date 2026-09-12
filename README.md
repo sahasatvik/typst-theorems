@@ -17,7 +17,7 @@ A standard set of theorem environments in the AMS style is available using
 ```
 
 
-### Features
+### Features 
 A _theorem environment_ combines content with automatically updated _numbering_
 information.
 Theorem environments can
@@ -108,6 +108,15 @@ offered by this module.
 ```
 
 ## Changelog
+
+### v1.1.3
+
+- **Breaking changes**: complete overhaul of names and syntax.
+- Added 'themes' with commonly used theorem environments predefined.
+- Introduced equation tagging.
+- Added commands for restating theorem environments, useful for creating
+  outlines and deferring proofs to later sections.
+- Separated counter handling into `thm-counter`.
 
 ### v1.1.3
 
