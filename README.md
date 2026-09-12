@@ -109,7 +109,7 @@ offered by this module.
 
 ## Changelog
 
-### v1.1.3
+### v2.0.0
 
 - **Breaking changes**: complete overhaul of names and syntax.
 - Added 'themes' with commonly used theorem environments predefined.
