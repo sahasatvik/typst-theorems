@@ -182,7 +182,7 @@
   /// #example(
   /// ```
   /// >>>#show: thm-rules
-  /// #thm(number: $dagger dagger$, base: none)[
+  /// #thm(number: $dagger dagger$)[
   ///   #lorem(5)
   /// ] <d-dag>
   ///
@@ -452,7 +452,7 @@
   ///
   /// -> bool
   move: false,
-) = metadata((eq-tag: t, move: move))
+) = box(metadata((eq-tag: t, move: move)))
 
 
 
@@ -591,7 +591,7 @@
           if data.value.move {
             move(dx: dx, data.value.eq-tag)
           } else {
-            place(horizon, dx: dx, dy: 0pt, data.value.eq-tag)
+            place(bottom, dx: dx, data.value.eq-tag)
           }
         }
       } else {
