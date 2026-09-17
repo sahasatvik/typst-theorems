@@ -272,8 +272,7 @@
     let supplement = thm.supplement
     if thm.ref-supplement != none { supplement = thm.ref-supplement }
     if thm.ref-supplement == [!] and thm.name != none {
-      [#link(thm.loc, thm.name)]
-      return
+      return [#link(thm.loc, thm.name)]
     }
     if supplement != none and supplement != [] { supplement = [#supplement~] }
     [#supplement#link(thm.loc, thm.number)]
@@ -452,7 +451,38 @@
   ///
   /// -> bool
   move: false,
-) = box(metadata((eq-tag: t, move: move)))
+  /// Tags float to the right by default.
+  /// Set ```typc true``` to float tag to the left.
+  /// #example(```
+  /// >>> #show: thm-rules
+  /// $
+  ///   (a + b)^2
+  ///     &= a^2 + 2a b + b^2 \
+  ///     &<= 2a^2 + 2b^2
+  ///       #tag(left: true)[(AM-GM)]
+  /// $
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  /// For combining with @tag.move, make sure to place @tag before the equation
+  /// content.
+  /// #example(```
+  /// >>> #show: thm-rules
+  /// $
+  ///   (a + b)^2
+  ///     &= a^2 + 2a b + b^2 \
+  ///     #tag(left: true, move: true)[(AM-GM)]
+  ///     &<= 2a^2 + 2b^2
+  /// $
+  /// ```,
+  /// mode: "markup",
+  /// scope: (thm-rules: thm-rules-2)
+  /// )
+  ///
+  /// -> bool
+  left: false,
+) = box(metadata((eq-tag: t, move: move, left: left)))
 
 
 
@@ -578,16 +608,24 @@
     return (thm.ref-fmt)(thm + (ref-supplement: ref-supplement))
   }
 
+
   show math.equation: eq => {
     show metadata.where(value: "thm-qedhere"): tag(thm-qed-show)
     show metadata: data => {
       if type(data.value) == dictionary and data.value.keys().contains("eq-tag") {
         context{
-          let pos-numbering = query(metadata.where(value: "thm-equation-numbering").after(eq.location())).first().location().position()
+          let pos-eq = eq.location().position()
+          let numbering-meta = query(metadata.where(value: "thm-equation-numbering").after(eq.location()))
+          // let numbering-meta = query(metadata.where(value: "thm-equation-numbering").after(here()))
+          if numbering-meta.len() == 0 { return data.value.eq-tag }
+          let pos-numbering = numbering-meta.first().location().position()
           let pos-here = here().position()
           let height = measure(data.value.eq-tag).height
           let width = measure(data.value.eq-tag).width
           let dx = -pos-here.x + pos-numbering.x - width
+          if data.value.left {
+            dx = -pos-here.x + pos-eq.x
+          }
           if data.value.move {
             move(dx: dx, data.value.eq-tag)
           } else {
@@ -603,7 +641,7 @@
       math.equation(
         block: eq.block,
         numbering: x => metadata("thm-equation-numbering"),
-        number-align: eq.number-align,
+        number-align: end + horizon,
         supplement: eq.supplement,
         eq.body
       )

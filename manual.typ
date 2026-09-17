@@ -261,7 +261,7 @@ If your proof ends in a block equation, or a list/enum, you can place
 == Equation tags
 
 Tags can be inserted into equations using #fn("tag").
-These float to the right, mimicking `\tag` in #LATEX.
+These mimic `\tag` in #LATEX, floating to the right by default.
 #example(
 ```
 $
