@@ -1,97 +1,158 @@
-# typst-theorems
+# ctheorems / typst-theorems
 
 An implementation of numbered theorem environments in
 [typst](https://github.com/typst/typst).
 Available as [ctheorems](https://typst.app/universe/package/ctheorems) in the
-official Typst Universe.
+official Typst [universe](https://typst.app/universe).
 Import with
 
 ```typst
-#import "@preview/ctheorems:1.1.3": *
-#show: thmrules
+#import "@preview/ctheorems:2.0.0": *
+#show: thm-rules        // Must include!
 ```
 
-Alternatively, copy and import the [theorems.typ](theorems.typ) file to use in
-your own projects.
+A standard set of theorem environments in the AMS style is available using
+```typst
+#import thm-themes.ams: *
+```
 
-### Features
-- Numbered theorem environments can be created and customized.
-- Environments can share the same counter, via same `identifier`s.
-- Environment counters can be _attached_ (just as subheadings are attached to headings) to other environments, headings, or keep a global count via `base`.
-- The depth of a counter can be manually set, via `base_level`.
-- Environments can be `<label>`'d and `@reference`'d.
+
+### Features 
+A _theorem environment_ combines content with automatically updated _numbering_
+information.
+Theorem environments can
+- share the same counter (_Theorems_ and _Lemmas_ often do so)
+- have their counters attached to headings or other environments (_Corollaries_
+  are often numbered based upon the parent _Theorem_)
+- be `<label>`-ed and `@reference`-d
+- be restated or deferred to later in the document.
+
+This package also introduces a few miscellaneous features related to
+mathematical writing.
+- Proof environments, with _QED_ symbols.
+- Equation tags (in the manner of #LATEX's `\tag`).
+- Predefined sets of commonly used theorem environments, and a few themes.
 
 ## Manual and Examples
-Get acquainted with `typst-theorems` by checking out the minimal example below!
+Get acquainted with `ctheorems` by checking out the minimal example below!
 
-You can read the [manual](manual.pdf) for a full walkthrough of functionality offered by this module; flick through [manual_examples](manual_examples.pdf) and its [typ file](manual_examples.typ) to just see the examples.
-
-The [differential_calculus.typ](differential_calculus.typ) ([render](differential_calculus.pdf)) project provides a practical use case. _(Hastily translated from my notes written in LaTeX)_
+You can read the [manual](manual.pdf) for a full walkthrough of functionality
+offered by this module.
 
 ![basic example](basic.png)
 
 ### Preamble
 ```typst
-#import "theorems.typ": *
-#show: thmrules.with(qed-symbol: $square$)
+#import "@preview/ctheorems:2.0.0": *
+#import thm-state: thm-restate
+#import thm-themes.ams: *
+#show: thm-rules.with(qed-symbol: $square$)
 
 #set page(width: 16cm, height: auto, margin: 1.5cm)
-#set text(font: "Libertinus Serif", lang: "en")
-#set heading(numbering: "1.1.")
+#set heading(numbering: "1.")
+#show heading: set block(below: 1em)
 
-#let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
-#let corollary = thmplain(
-  "corollary",
-  "Corollary",
-  base: "theorem",
-  titlefmt: strong
+#let theorem = theorem.with(
+  outset: 1em,
+  spacing: 2em,
+  fill: rgb("#eeffee"),
 )
-#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
-
-#let example = thmplain("example", "Example").with(numbering: none)
-#let proof = thmproof("proof", "Proof")
 ```
 
 ### Document
 ```typst
-= Prime numbers
+= Random variables
 
-#definition[
-  A natural number is called a #highlight[_prime number_] if it is greater
-  than 1 and cannot be written as the product of two smaller natural numbers.
-]
-#example[
-  The numbers $2$, $3$, and $17$ are prime.
-  @cor_largest_prime shows that this list is not exhaustive!
-]
+#definition[Expectation][
+  The expectation of a random variable $X$ on a probability space $(Omega, cal(E), PP)$ is $
+    EE[X] = integral X dif PP,
+  $ whenever well-defined.
+] <expectation>
 
-#theorem("Euclid")[
-  There are infinitely many primes.
-]
-#proof[
-  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
-  of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
-  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
-  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
-  contradiction.
+#remark[
+  We require at least one of $EE[X^+], EE[X^-]$ to be finite.
 ]
 
-#corollary[
-  There is no largest prime number.
-] <cor_largest_prime>
-#corollary[
-  There are infinitely many composite numbers.
-]
+#proposition[
+  For any $A in cal(E)$, $
+    PP(X in A) = EE[bold(1)_A (X)].
+  $
+] <prob-exp>
 
-#theorem[
-  There are arbitrarily long stretches of composite numbers.
-]
-#proof[
-  For any $n > 2$, consider $
-    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+#theorem[Markov][
+  Let $X >= 0$. For all $a > 0$, $
+    PP(X > a) <= EE[X] / a.
+  $
+] <markov>
+#proof([of @markov], defer: true)[
+  $
+    PP(X > a)
+      &= EE[bold(1)_((a, oo))(X)]   #tag[(@prob-exp)] \
+      &<= EE[(X / a) bold(1)_((a, oo))(X)] \
+      &<= EE[X] / a. #qedhere
   $
 ]
+
+#corollary[Chebyshev][
+  Let $EE[X] = mu$, $"var"[X] = sigma^2$. Then, $
+    PP(|X - mu| >= k sigma) <= 1 / k^2.
+  $
+] <chebyshev>
+
+
+#counter(heading).update(0)
+#set heading(numbering: "A.")
+= Appendix
+
+#thm-restate()
 ```
+
+## Changelog
+
+### v2.0.0
+
+- **Breaking changes**: complete overhaul of names and syntax.
+- Added 'themes' with commonly used theorem environments predefined.
+- Introduced equation tagging.
+- Added commands for restating theorem environments, useful for creating
+  outlines and deferring proofs to later sections.
+- Separated counter handling into `thm-counter`.
+
+### v1.1.3
+
+- Fixed alignment and block-breaking issues resulting from breaking changes in
+  Typst 0.12.
+
+### v1.1.2
+
+- Introduced the `thmproof` function for creating proof environments.
+- Inserting `#qedhere` in a block equation/list/enum item (in a proof) places
+  the qed symbol on the same line. The qed symbol can be customized via
+  `thmrules`.
+
+### v1.1.1
+
+- Extra named arguments given to a theorem environment produced by `thmbox` (or
+  `thmplain`) are passed to `block`.
+
+### v1.1.0
+
+- The `supplement` (for references) is no longer set in `thmenv`. It can be
+  passed to the theorem environment directly, along with `refnumbering` to
+  control the appearance of `@reference`s.
+- Extra named arguments given to `thmbox` are passed to `block`.
+- Fixed spacing bug for unnumbered environments.
+- Replaced dummy figure with labelled metadata.
+
+### v1.0.0
+
+- Extra named arguments given to a theorem environment are passed to its
+  formatting function `fmt`.
+- Removed `thmref`, introduced normal `<label>`s and `@reference`s.
+- Import must be followed by `show: thmrules`.
+- Removed `name: ...` from theorem environments; use `#theorem("Euclid")[]`
+  instead of `#theorem(name: "Euclid")[]`.
+- Theorems are now wrapped in `figure`s.
 
 
 ## Acknowledgements
@@ -99,15 +160,15 @@ The [differential_calculus.typ](differential_calculus.typ) ([render](differentia
 Thanks to
 
 - [MJHutchinson](https://github.com/MJHutchinson) for suggesting and
-  implementing the `base_level` and `base: none` features,
+  implementing the `base-level` and `base: none` features,
 - [rmolinari](https://github.com/rmolinari) for suggesting and
   implementing the `separator: ...` feature,
 - [DVDTSB](https://github.com/DVDTSB) for contributing
   - the idea of passing named arguments from the theorem directly to the `fmt`
     function.
   - the `number: ...` override feature.
-  - the `title: ...` override feature in `thmbox`.
+  - the `title: ...` override feature in `thm-box`.
 - [PgBiel](https://github.com/PgBiel) for fixing breaking changes in version
   updates.
-- The awesome devs of [typst.app](https://typst.app/) for their
-  support.
+- The authors of the LaTeX packages `amsthm`, `thmtools`, `apxproof`.
+- The awesome devs of [typst.app](https://typst.app/) for their support.

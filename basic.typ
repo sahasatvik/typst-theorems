@@ -1,57 +1,61 @@
-#import "theorems.typ": *
-#show: thmrules.with(qed-symbol: $square$)
+#import "lib.typ": *
+#import thm-state: thm-restate
+#import thm-themes.ams: *
+#show: thm-rules.with(qed-symbol: $square$)
 
+#set document(title: "Basic")
 #set page(width: 16cm, height: auto, margin: 1.5cm)
-#set text(font: "Libertinus Serif", lang: "en")
-#set heading(numbering: "1.1.")
+#set heading(numbering: "1.")
+#show heading: set block(below: 1em)
 
-#let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
-#let corollary = thmplain(
-  "corollary",
-  "Corollary",
-  base: "theorem",
-  titlefmt: strong
+#let theorem = theorem.with(
+  outset: 1em,
+  spacing: 2em,
+  fill: rgb("#eeffee"),
 )
-#let definition = thmbox("definition", "Definition", inset: (x: 1.2em, top: 1em))
-
-#let example = thmplain("example", "Example").with(numbering: none)
-#let proof = thmproof("proof", "Proof")
 
 
-= Prime numbers
+= Random variables
 
-#definition[
-  A natural number is called a #highlight[_prime number_] if it is greater
-  than 1 and cannot be written as the product of two smaller natural numbers.
-]
-#example[
-  The numbers $2$, $3$, and $17$ are prime.
-  @cor_largest_prime shows that this list is not exhaustive!
+#definition[Expectation][
+  The expectation of a random variable $X$ on a probability space $(Omega, cal(E), PP)$ is $
+    EE[X] = integral X dif PP,
+  $ whenever well-defined.
+] <expectation>
+
+#remark[
+  We require at least one of $EE[X^+], EE[X^-]$ to be finite.
 ]
 
-#theorem("Euclid")[
-  There are infinitely many primes.
-]
-#proof[
-  Suppose to the contrary that $p_1, p_2, dots, p_n$ is a finite enumeration
-  of all primes. Set $P = p_1 p_2 dots p_n$. Since $P + 1$ is not in our list,
-  it cannot be prime. Thus, some prime factor $p_j$ divides $P + 1$.  Since
-  $p_j$ also divides $P$, it must divide the difference $(P + 1) - P = 1$, a
-  contradiction.
-]
+#proposition[
+  For any $A in cal(B)(RR)$, $
+    PP(X in A) = EE[bold(1)_A (X)].
+  $
+] <prob-exp>
 
-#corollary[
-  There is no largest prime number.
-] <cor_largest_prime>
-#corollary[
-  There are infinitely many composite numbers.
-]
-
-#theorem[
-  There are arbitrarily long stretches of composite numbers.
-]
-#proof[
-  For any $n > 2$, consider $
-    n! + 2, quad n! + 3, quad ..., quad n! + n #qedhere
+#theorem[Markov][
+  Let $X >= 0$. For all $a > 0$, $
+    PP(X > a) <= EE[X] / a.
+  $
+] <markov>
+#proof([of @markov], defer: true)[
+  $
+    PP(X > a)
+      &= EE[bold(1)_((a, oo))(X)]   #tag[(@prob-exp)] \
+      &<= EE[(X / a) bold(1)_((a, oo))(X)] \
+      &<= EE[X] / a. #qedhere
   $
 ]
+
+#corollary[Chebyshev][
+  Let $EE[X] = mu$, $"var"[X] = sigma^2$. Then, $
+    PP(|X - mu| >= k sigma) <= 1 / k^2.
+  $
+] <chebyshev>
+
+
+#counter(heading).update(0)
+#set heading(numbering: "A.")
+= Appendix
+
+#thm-restate()
