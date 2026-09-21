@@ -30,7 +30,7 @@ Theorem environments can
 This package also introduces a few miscellaneous features related to
 mathematical writing.
 - Proof environments, with _QED_ symbols.
-- Equation tags (in the manner of #LATEX's `\tag`).
+- Equation tags (in the manner of LaTeX's `\tag`).
 - Predefined sets of commonly used theorem environments, and a few themes.
 
 ## Manual and Examples
