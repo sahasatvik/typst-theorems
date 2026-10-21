@@ -576,7 +576,7 @@
 
   show figure.where(kind: "thm-env"): it => {
     set block(breakable: true)
-    set align(left)
+    set align(start)
     it.body
   }
 
