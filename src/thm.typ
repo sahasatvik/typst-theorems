@@ -348,13 +348,20 @@
   }
 
   return figure(
-    number-update + thm-update +  // hacky!
-    [#metadata(supplement) <meta:thm-env-counter>] +
-    context {
-      let thm-s = thm-stored.get().last()
-      let thm = thm + (number: thm-s.number, loc: thm-s.loc)
-      fmt(thm)
-    },
+    number-update
+      + thm-update
+      + // hacky!
+      [#metadata(supplement) <meta:thm-env-counter>]
+      + {
+        let thm = (
+          thm
+            + (
+              number: context { thm-stored.get().last().number },
+              loc: context { thm-stored.get().last().loc },
+            )
+        )
+        fmt(thm)
+      },
     kind: "thm-env",
     outlined: false,
     caption: name,
