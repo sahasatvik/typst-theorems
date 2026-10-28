@@ -276,7 +276,7 @@
       return
     }
     if supplement != none and supplement != [] { supplement = [#supplement~] }
-    [#supplement#link(thm.loc, thm.number)]
+    [#supplement#link(thm.loc, [#thm.number])]
   },
 ) = {
   if name == auto {
