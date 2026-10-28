@@ -48,17 +48,17 @@
   /// -> content
   separator: [*.* ],
 ) = {
-  let name = []
-  if thm.name != none {
-    name = [ #name-fmt(thm.name)]
-  }
-
   // Swallow formatting arguments passed directly to the `thm`
   block-args = thm.args.remove("block-args", default: block-args)
   name-fmt   = thm.args.remove("name-fmt",   default: name-fmt)
   title-fmt  = thm.args.remove("title-fmt",  default: title-fmt)
   body-fmt   = thm.args.remove("body-fmt",   default: body-fmt)
   separator  = thm.args.remove("separator",  default: separator)
+
+  let name = []
+  if thm.name != none {
+    name = [ #name-fmt(thm.name)]
+  }
 
   let title = thm.supplement
   if not thm.number == none {
