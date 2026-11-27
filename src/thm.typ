@@ -327,34 +327,32 @@
     ref-fmt: ref-fmt,
   )
 
-  let thm-update = context {
+  let thm-content = context {
     let loc = here()
     let number-computed = number
     if number == auto and numbering != none {
       number-computed = _numbering(numbering, ..thm-counter-get(counter))
     }
+    let thm = thm + (number: number-computed, loc: loc)
     thm-stored.update(thms => {
-      let thm = thm + (number: number-computed, loc: loc)
       if thms == none {
         return (thm, )
       } else {
         return thms + (thm, )
       }
     })
+    if not defer {
+      [#metadata(supplement) <meta:thm-env-counter>]
+      fmt(thm)
+    }
   }
 
   if defer {
-    return number-update + thm-update
+    return number-update + thm-content
   }
 
   return figure(
-    number-update + thm-update +  // hacky!
-    [#metadata(supplement) <meta:thm-env-counter>] +
-    context {
-      let thm-s = thm-stored.get().last()
-      let thm = thm + (number: thm-s.number, loc: thm-s.loc)
-      fmt(thm)
-    },
+    number-update + thm-content,
     kind: "thm-env",
     outlined: false,
     caption: name,
